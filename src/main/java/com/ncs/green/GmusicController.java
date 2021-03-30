@@ -14,22 +14,22 @@ public class GmusicController {
 
 	@RequestMapping(value = "/termsp")
 	public ModelAndView termsp(ModelAndView mv, HttpServletRequest request) {
-		mv.setViewName("project/termsp");
+		mv.setViewName("footer/termsp");
 		return mv;
 	}
 	@RequestMapping(value = "/introcompany")
 	public ModelAndView introcompany(ModelAndView mv, HttpServletRequest request) {
-		mv.setViewName("project/introcompany");
+		mv.setViewName("footer/introcompany");
 		return mv;
 	}
 	@RequestMapping(value = "/privacy")
 	public ModelAndView privacy(ModelAndView mv, HttpServletRequest request) {
-		mv.setViewName("project/privacy");
+		mv.setViewName("footer/privacy");
 		return mv;
 	}
 	@RequestMapping(value = "/youth")
 	public ModelAndView youth(ModelAndView mv, HttpServletRequest request) {
-		mv.setViewName("project/youth");
+		mv.setViewName("footer/youth");
 		return mv;
 	}
 

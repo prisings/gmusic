@@ -1,26 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Gmusic</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
-	href="https://fonts.googleapis.com/css2?family=Croissant+One&display=swap"
+	href="https://fonts.googleapis.com/css2?family=Chela+One&display=swap"
 	rel="stylesheet">
-<!-- footer font link start -->
+<script src="resources/myLib/jquery-3.2.1.min.js"></script>
+<script src="resources/myLib/topmenu.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
 	rel="stylesheet">
-<!-- footer font link  end-->
 <style>
-a {
-	text-decoration: none;
-	color: black;
-}
-
 body {
 	margin: 0;
 }
@@ -30,11 +24,17 @@ hr {
 	margin-bottom: 0px;
 }
 
+a {
+	text-decoration: none;
+	color: black;
+}
+
+/* header */
 #header {
-	background-color: ghostwhite;
+	background-color: silver;
 	height: 40px;
 	width: 100%;
-	margin: 0 auto; /* 중앙정렬 */
+	margin: 0 auto;
 	width: 75%;
 }
 
@@ -47,40 +47,87 @@ hr {
 #headermenu>li {
 	display: inline;
 }
+/* header */
 
+/* nav */
 #nav {
 	height: 160px;
 	background-color: ghostwhite;
 	margin: 0 auto; /* 중앙정렬 */
 	width: 75%;
+	border-bottom-width: 3px;
+	border-bottom-color: navy;
+	border-bottom-style: solid;
 }
 
-#menubar {
-	padding-top: 15;
-	float: left;
+#keyword {
+	margin-bottom: 25px;
+}
+
+#searchBtn {
+	margin-bottom: 25px;
+}
+
+#logofont {
+	font-family: 'Chela One', cursive;
+}
+
+#searchdiv {
+	height: 80px;
+}
+
+#topmenu {
+	position: absolute;
+	z-index: 100;
+	background-color: ghostwhite;
+	height: 80px;
+	width: 75%;
+}
+
+#topmenu ul {
 	list-style: none;
-	height: 40px;
-	float: left;
-	padding: 0px;
 }
 
-#menubar>li {
-	display: inline;
+#topmenu ul ul {
+	display: none;
 }
 
-#menubar>li>a {
-	font-family: "Croissant One", sans-serif;
+#topmenu ul li a:hover {
+	color: hotpink;
+}
+
+#topmenu ul li:hover ul {
+	display: table-row-group;
+	background-color: ghostwhite;
+}
+
+#topmenu>ul>li {
 	float: left;
-	text-align: center;
-	line-height: 50px;
 	margin-left: 15px;
 }
 
+#topmenu ul a {
+	line-height: 30px;
+	text-decoration: none;
+	font-size: 20px;
+	font-weight: bold;
+	color: gray;
+	padding: 5px;
+}
+
+@media ( max-width :1200px) {
+	#topmenu>ul>li {
+		margin-left: 1px;
+	}
+}
+
+/* nav */
+
+/* section */
 #section {
 	height: 900px;
 	margin: 0 auto; /* 중앙정렬 */
 	width: 75%;
-	background-color: ghostwhite;
 	display: grid;
 	grid-template-columns: 2fr 1fr;
 }
@@ -91,24 +138,38 @@ hr {
 
 #sec1>div {
 	border-bottom: solid green;
-	height: 299px;
-}
-
-#sec1>div>ul>li {
-	margin: 0 auto;
-	list-style-type: none;
-	float: left;
+	height: 295px;
 }
 
 #login {
 	border-bottom: solid green;
-	height: 300px;
+	height: 265px;
+	padding: 16px 16px 12px 17px;
+	border: 1px solid #dae1e6;
+}
+
+#login_location {
+	height: 50px;
+	width: 244px;
+	margin: 0 auto;
+	padding: 50px 88px 47px 13px;
+}
+
+#login_button {
+	height: 60px;
+	width: 322px;
+	background-color: #00d344;
+	font-size: 20px;
+	color: #fff;
 }
 
 #chart {
-	border-bottom: solid green;
-	height: 600px;
+	height: 580px;
+	list-style: none;
+	font-weight: normal;
 }
+/* section */
+
 /*footer---------------------------- */
 #footer {
 	height: 100px;
@@ -120,7 +181,7 @@ hr {
 #footerinfo {
 	text-align: center;
 	padding-top: 15px;
-	margin-bottom: 10px; 
+	margin-bottom: 10px;
 	font-size: 20px;
 	font-family: "Cute Font", sans-serif;
 }
@@ -137,27 +198,6 @@ hr {
 	font-size: 5px;
 }
 /*footer---------------------------- */
-/* 로고 이미지 */
-#gm {
-	width: 80px;
-	height: 80px;
-	margin-left: 8px;
-	margin-top: 8px;
-}
-
-#keyword {
-	margin-bottom: 25px;
-}
-
-#searchBtn {
-	margin-bottom: 25px;
-}
-
-#tese {
-	font-family: "Croissant One", sans-serif;
-	padding-left: 15px;
-	padding-right: 15px;
-}
 </style>
 </head>
 <body>
@@ -175,90 +215,59 @@ hr {
 					<a href="javascript:;">로그인</a>
 				</button></li>
 			<li><button>
-					<a href="javascript:;">회원가입</a>
+					<a href="checkterm">회원가입</a>
 				</button></li>
 		</ul>
-
 	</div>
+	<!-- header -->
+
 	<div id="nav">
-		<br>
-		<div>
-			<font id="tese" size="20">GMUSIC</font> <input type="text"
+		<div id="searchdiv">
+			<font size="20" id="logofont">GMISIC</font> <input type="text"
 				name="keyword" id="keyword" maxlength="10" size="50"
 				style="vertical-align: middle;">
 			<button id="searchBtn" style="vertical-align: middle;">Search</button>
 		</div>
-		<div>
-			<ul id="menubar">
-				<li><a href="javascript:;">차트순위</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">최신음악</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">장르음악</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">뮤직비디오</a></li>
-			</ul>
-		</div>
+		<hr>
+		<div id="topmenu"></div>
+		<!-- topmenu -->
 	</div>
-
 	<div id="section">
 		<div id="sec1">
-			<div>
-				<a href="javascript:;">선호장르음악&nbsp;&gt;</a>
-
-				<ul>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-					</li>
-				</ul>
-			</div>
-			<div>
-				<a href="javascript:;">최신음악&nbsp;&gt;</a>
-
-				<ul>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-					</li>
-				</ul>
-			</div>
-			<div>
-				<a href="javascript:;">뮤직비디오&nbsp;&gt;</a>
-
-				<ul>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-						&nbsp;&nbsp;&nbsp;</li>
-					<li><img src="./image/IU1.JPG" width="200" height="200">
-					</li>
-				</ul>
-			</div>
+			<div>아</div>
+			<div>아</div>
+			<div>아</div>
 		</div>
-		<div id="sec2">
-			<div id="login">아</div>
-			<div id="chart">아</div>
+	<div id="sec2">
+			<div id="login" button type="button">
+				<div id="login_location">
+					<button type="button" id="login_button">로그인</button>
+				</div>
+			</div>
+			
+			<!-- 일일,주간,월간 차트리스트 -->
+			<div id="chart" role="group">
+				<h3>** G-MUSIC 차트 **</h3>
+				<hr>
+				<!-- <span id="dlist" class="textLink">[일일차트]</span> &nbsp;&nbsp; -->
+				<span id="pmlist" class="textLink">[일일차트]</span> &nbsp;&nbsp; <span
+					id="wlist" class="textLink">[주간차트]</span>&nbsp;&nbsp; <span
+					id="monlist" class="textLink">[월간차트]</span>&nbsp;&nbsp; <a
+					href="home">[Home]</a>&nbsp;&nbsp;
+				<hr>
+				<div id="dlistArea1"></div>
+				<div id="wlistArea2"></div>
+				<div id="monlistArea3"></div>
+			</div>
 		</div>
 	</div>
-
 
 	<div id="footer">
 		<div id="footerinfo">
-			<a href="introcompany">회사 소개</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp;
-			<a href="termsp">이용약관</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp;
-			<a href="privacy">개인정보처리방침</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp;
-			<a href="youth">청소년보호정책</a>
+			<a href="introcompany">회사 소개</a>&nbsp;&nbsp; <font class="footerbar">|</font>
+			&nbsp;&nbsp; <a href="termsp">이용약관</a>&nbsp;&nbsp; <font
+				class="footerbar">|</font> &nbsp;&nbsp; <a href="privacy">개인정보처리방침</a>&nbsp;&nbsp;
+			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="youth">청소년보호정책</a>
 		</div>
 		<div id="footerlist">
 			<font>G-MUSIC</font> &nbsp;&nbsp; <font class="footerbar">|</font>

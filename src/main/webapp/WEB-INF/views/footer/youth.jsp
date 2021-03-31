@@ -16,175 +16,23 @@
 	rel="stylesheet">
 <!-- footer font link  end-->
 <style>
-a {
-	text-decoration: none;
-	color: black;
-}
-
-body {
-	margin: 0;
-}
-
-hr {
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
-#header {
-	background-color: ghostwhite;
-	height: 40px;
-	width: 100%;
-	margin: 0 auto; /* 중앙정렬 */
-	width: 75%;
-}
-
-#headermenu {
-	float: right;
-	list-style: none;
-	margin: 8px 8px 8px;
-}
-
-#headermenu>li {
-	display: inline;
-}
-
-#nav {
-	height: 160px;
-	background-color: ghostwhite;
-	margin: 0 auto; /* 중앙정렬 */
-	width: 75%;
-}
-
-#menubar {
-	padding-top: 15;
-	float: left;
-	list-style: none;
-	height: 40px;
-	float: left;
-	padding: 0px;
-}
-
-#menubar>li {
-	display: inline;
-}
-
-#menubar>li>a {
-	font-family: "Croissant One", sans-serif;
-	float: left;
-	text-align: center;
-	line-height: 50px;
-	margin-left: 15px;
-}
-
-#section {
-	height: 900px;
-	margin: 0 auto; /* 중앙정렬 */
-	width: 75%;
-	background-color: ghostwhite;
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-}
 
 #text {
-   margin-left: 15px;
-   width: 1392px;
-   height: 457px;
+	white-space: normal;
    background-color: ghostwhite;
+   width: 800px;
+   height: 600px;
+   /* margin-left: 30px;
    border: none;
-   resize: none;
-}
-/*footer---------------------------- */
-#footer {
-	height: 100px;
-	background-color: ghostwhite;
-	margin: 0 auto; /* 중앙정렬 */
-	width: 75%;
+   resize: none; */
 }
 
-#footerinfo {
-	text-align: center;
-	padding-top: 15px;
-	margin-bottom: 10px;
-	font-size: 20px;
-	font-family: "Cute Font", sans-serif;
-}
-
-#footerlist {
-	text-align: center;
-	padding-bottom: 10px;
-	font-family: "Cute Font", sans-serif;
-	font-size: 15px;
-	padding-bottom: 10px;
-}
-
-#footerbar {
-	font-size: 5px;
-}
-/*footer---------------------------- */
-/* 로고 이미지 */
-#gm {
-	width: 80px;
-	height: 80px;
-	margin-left: 8px;
-	margin-top: 8px;
-}
-
-#keyword {
-	margin-bottom: 25px;
-}
-
-#searchBtn {
-	margin-bottom: 25px;
-}
-
-#tese {
-	font-family: "Croissant One", sans-serif;
-	padding-left: 15px;
-	padding-right: 15px;
-}
 </style>
 </head>
 <body>
-	<div id="header">
-		<ul id="headermenu">
-			<!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
-			<!-- <li>로그아웃</li> -->
-			<li><button>
-					<a href="javascript:;">공지사항/이벤트</a>
-				</button></li>
-			<li><button>
-					<a href="javascript:;">이용권구매</a>
-				</button></li>
-			<li><button>
-					<a href="javascript:;">로그인</a>
-				</button></li>
-			<li><button>
-					<a href="javascript:;">회원가입</a>
-				</button></li>
-		</ul>
-
-	</div>
-	<div id="nav">
-		<br>
-		<div>
-			<font id="tese" size="20"><a href="home">GMUSIC</a>></font> <input
-				type="text" name="keyword" id="keyword" maxlength="10" size="50"
-				style="vertical-align: middle;">
-			<button id="searchBtn" style="vertical-align: middle;">Search</button>
-		</div>
-		<div>
-			<ul id="menubar">
-				<li><a href="javascript:;">차트순위</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">최신음악</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">장르음악</a></li>&nbsp;&nbsp;
-				<li><a href="javascript:;">뮤직비디오</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div id="section">
-      <table>
-         <tr>
+<div>
+      <h2>청소년보호정책</h2>
+         
             <textarea id="text" row="100" cols="220">
 1. 청소년 보호를 위한 목표 및 기본 원칙
 회사는 청소년이 정신적•신체적으로 유해한 환경으로부터 보호받고 유익한 환경을 조성하도록 노력하며, 안전하게 인터넷을 이용할 수 있는 서비스를 제공하기 위해 청소년보호 정책을 명시하고 있습니다. 이용자가 불건전한 행위를 할 경우 서비스 이용약관 등을 통하여 이용 제한을 받을 수 있음을 고지하고 있으며, 신종 유해 정보가 발생했을 경우 공지사항 또는 이메일을 통하여 이를 신속 시 전파함으로써 청소년 및 전체 이용자를 보호하고 있습니다. 또한 각종 정보 건전화 교육 및 캠페인 등을 통하여 네티켓 의식 고취를 위하여 노력하고 있습니다.
@@ -211,26 +59,6 @@ hr {
 7. 청소년보호정책의 개정
 본 정책은 관련 법률 및 정부지침의 변경과 회사의 정책에 따라 개정될 수 있으며 개정된 사항은 홈페이지를 통해 공지하겠습니다.
 </textarea>
-         </tr>
-      </table>
-   </div>
-
-
-	<div id="footer">
-		<div id="footerinfo">
-			<a href="introcompany">회사 소개</a>&nbsp;&nbsp; <font class="footerbar">|</font>
-			&nbsp;&nbsp; <a href="termsp">이용약관</a>&nbsp;&nbsp; <font
-				class="footerbar">|</font> &nbsp;&nbsp; <a href="privacy">개인정보처리방침</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="youth">청소년보호정책</a>
-		</div>
-		<div id="footerlist">
-			<font>G-MUSIC</font> &nbsp;&nbsp; <font class="footerbar">|</font>
-			&nbsp;&nbsp; 그린 컴퓨터 아카데미 &nbsp;&nbsp; <font class="footerbar">|</font>
-			&nbsp;&nbsp; 공동작업 : 김지수, 남철우, 정재필, 정현근 &nbsp;&nbsp; <font
-				class="footerbar">|</font> &nbsp;&nbsp; 사업자등록번호 : ???-??-????? <br>
-			문의전화 : 0000-0000 (평일 09:00 ~ 05:00) &nbsp;&nbsp; <font
-				class="footerbar">|</font> &nbsp;&nbsp; 이메일 : gproject @ naver.com
-		</div>
-	</div>
+</div>
 </body>
 </html>

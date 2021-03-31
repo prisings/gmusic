@@ -10,6 +10,7 @@
 	rel="stylesheet">
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
 <script src="resources/myLib/topmenu.js"></script>
+<script src="resources/myLib/footer.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
@@ -205,25 +206,34 @@ a {
 		<ul id="headermenu">
 			<!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
 			<!-- <li>로그아웃</li> -->
-			<li><button>
-					<a href="javascript:;">공지사항/이벤트</a>
-				</button></li>
+
 			<li><button>
 					<a href="javascript:;">이용권구매</a>
 				</button></li>
-			<li><button>
-					<a href="javascript:;">로그인</a>
-				</button></li>
-			<li><button>
-					<a href="checkterm">회원가입</a>
-				</button></li>
+			<c:if test="${id == null}">
+				<li><button>
+						<a href="javascript:;">로그인</a>
+					</button></li>
+				<li><button>
+						<a href="checkterm">회원가입</a>
+					</button></li>
+			</c:if>
+			<c:if test="${id != null}">
+				<li><button>
+						<a href="javascript:;">로그아웃</a>
+					</button></li>
+				<li><button>
+						<a href="checkterm">마이페이지</a>
+					</button></li>
+			</c:if>
+
 		</ul>
 	</div>
 	<!-- header -->
 
 	<div id="nav">
 		<div id="searchdiv">
-			<font size="20" id="logofont">GMISIC</font> <input type="text"
+			<font size="20" id="logofont">GMUSIC</font> <input type="text"
 				name="keyword" id="keyword" maxlength="10" size="50"
 				style="vertical-align: middle;">
 			<button id="searchBtn" style="vertical-align: middle;">Search</button>
@@ -238,13 +248,13 @@ a {
 			<div>아</div>
 			<div>아</div>
 		</div>
-	<div id="sec2">
+		<div id="sec2">
 			<div id="login" button type="button">
 				<div id="login_location">
 					<button type="button" id="login_button">로그인</button>
 				</div>
 			</div>
-			
+
 			<!-- 일일,주간,월간 차트리스트 -->
 			<div id="chart" role="group">
 				<h3>** G-MUSIC 차트 **</h3>
@@ -264,10 +274,10 @@ a {
 
 	<div id="footer">
 		<div id="footerinfo">
-			<a href="introcompany">회사 소개</a>&nbsp;&nbsp; <font class="footerbar">|</font>
-			&nbsp;&nbsp; <a href="termsp">이용약관</a>&nbsp;&nbsp; <font
-				class="footerbar">|</font> &nbsp;&nbsp; <a href="privacy">개인정보처리방침</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="youth">청소년보호정책</a>
+			<a href="javascript:;" class="footergroup" id="introcompany">회사 소개</a>&nbsp;&nbsp; <font class="footerbar">|</font>
+			&nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="termsp">이용약관</a>&nbsp;&nbsp; <font
+				class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="privacy">개인정보처리방침</a>&nbsp;&nbsp;
+			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="youth">청소년보호정책</a>
 		</div>
 		<div id="footerlist">
 			<font>G-MUSIC</font> &nbsp;&nbsp; <font class="footerbar">|</font>

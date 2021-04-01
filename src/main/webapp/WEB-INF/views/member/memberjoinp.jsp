@@ -45,7 +45,7 @@
 /* 필수사항 테이블 */
 #essential {
 	width: 400px;
-	height: 630px;
+	height: 570px;
 	border: 1px solid #bcbcbc;
 	margin-left: 50px;
 	border-radius: 5px 5px 5px 5px;
@@ -108,7 +108,7 @@ div>input, #email2 {
 }
 
 /*select 태그 이메일 css */
-#selectEmail {
+#email3 {
 	background-color: #FAFAFA;
 	padding-left: 12px;
 	border-radius: 5px 5px 5px 5px;
@@ -140,19 +140,21 @@ div>input, #email2 {
 		// 직접입력 인풋박스 기존에는 숨김
 		$("#email2").hide();
 
-		$("#selectEmail").change(function() {
+		$("#email3").change(function() {
 			// 직접입력을 누를 때 나타남
+			// 아닐때는 값을 지움
 			// select 태그는 css를 조절하여 숨김
-			if ($("#selectEmail").val() == "direct") {
-				$("#email2").show();
-				$('#selectEmail').css({
+			if ($('#email3').val() == "direct") {
+				$('#email2').show();
+				$('#email3').css({
 					width : "15px",
 					height : "35px"
 				});
 
 			} else {
-				$("#email2").hide();
-				$('#selectEmail').css({
+				$('#email2').hide();
+				$('#email2').val('');
+				$('#email3').css({
 					width : "155px",
 					height : "35px"
 				});
@@ -203,20 +205,19 @@ div>input, #email2 {
 							<span class="font1">성별</span>
 							<div>
 								<select name="sex" id="sex" size="1">
-									<option selected="selected" disabled="disabled">성별
+									<option selected="selected" value="N">(성별)선택 안함
 									<option value="M">남자
 									<option value="F">여자
-									<option value="N">선택 안함
 								</select>
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
 							<span class="font1">이메일</span>
 							<div>
-								<input type="text" name="email" id="email" size="10" placeholder="이메일">
+								<input type="text" name="email1" id="email1" size="10" placeholder="이메일">
 								@
 								<input type="text" name="email2" id="email2" size="7" placeholder="직접입력">
-								<select name="selectEmail" id="selectEmail" size="1">
+								<select name="email3" id="email3" size="1">
 									<option selected="selected" disabled="disabled">선택
 									<option value="direct">직접입력
 									<option value="naver.com">naver.com
@@ -238,7 +239,9 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">휴대폰 번호</span>
 							<div>
-								<input type="text" name="phone" id="phone" size="36" placeholder="휴대폰 번호">
+								<input type="text" name="phone1" id="phone1" size="2" placeholder="010">&nbsp;-&nbsp;
+								<input type="text" name="phone2" id="phone2" size="2" placeholder="0000">&nbsp;-&nbsp;
+								<input type="text" name="phone3" id="phone3" size="2" placeholder="0000">
 
 								<br> <span id=iMessage class="message"></span>
 							</div>
@@ -258,25 +261,10 @@ div>input, #email2 {
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
-							<span class="font1">autopay</span>
-							<div>
-								<input type="text" name="autopay" id="autopay" size="36" placeholder="autopay">
-								<br> <span id=iMessage class="message"></span>
-							</div>
-						</div>
-						<div style="text-align: left;" class="box1">
-							<span class="font1">grade</span>
-							<div>
-								<input type="text" name="grade" id="grade" size="36" placeholder="grade">
-								<br> <span id=iMessage class="message"></span>
-							</div>
-						</div> 
-						<div style="text-align: left;" class="box1">
 							<span class="font1">선호장르1</span>
 							<div class="box2">
 								<select name="genre1" class="genre" id="genre1" size="1">
-									<option selected="selected" disabled="disabled">선택
-									<option value="N">선택 안함
+									<option selected="selected" value="N">선택 안함
 									<option value="dance">댄스
 									<option value="rap">랩/힙합
 									<option value="R&B">R&B/Soul
@@ -290,8 +278,7 @@ div>input, #email2 {
 							<span class="font1">선호장르2</span>
 							<div>
 								<select name="genre2" class="genre" id="genre2" size="1">
-									<option selected="selected" disabled="disabled">선택
-									<option value="N">선택 안함
+									<option selected="selected" value="N">선택 안함
 									<option value="dance">댄스
 									<option value="rap">랩/힙합
 									<option value="R&B">R&B/Soul
@@ -321,27 +308,18 @@ div>input, #email2 {
 									//    읽기 동작이 성공적으로 완료 되었을 때마다 발생.
 									// => e.target : 이벤트를 유발시킨 DOM 객체
 
-									$('#uploadfilef')
-											.change(
-													function() {
-														if (this.files
-																&& this.files[0]) {
-															var reader = new FileReader;
-															reader.onload = function(
-																	e) {
-																$(".select_img")
-																		.attr(
-																				"src",
-																				e.target.result)
-																		.width(
-																				70)
-																		.height(
-																				70);
-															} // onload_function
-															reader
-																	.readAsDataURL(this.files[0]);
-														} // if
-													}); // change
+									$('#uploadfilef').change(function() {
+										if (this.files&& this.files[0]) {
+											var reader = new FileReader;
+											reader.onload = function(e) {
+												$(".select_img")
+														.attr("src",e.target.result)
+														.width(70)
+														.height(70);
+											} // onload_function
+											reader.readAsDataURL(this.files[0]);
+										} // if
+									}); // change
 								</script>
 
 							</div>

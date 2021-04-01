@@ -7,18 +7,18 @@ import lombok.Data;
 @Data
 public class GmemberVO {
 	
-	String id;
-	String password;
-	String sex;
-	String email;
-	String phone;
-	String birthday;
-	String rid;
-	String genre1;
-	String genre2;
-	String grade;
-	int autopay;
-	String uploadfile;
-	MultipartFile uploadfilef;
+	private String id;
+	private String password;
+	private String sex;
+	private String email;
+	private String phone;
+	private String birthday;
+	private String rid;
+	private String genre1;
+	private String genre2;
+	private String grade;
+	private int autopay;
+	private String uploadfile;
+	private MultipartFile uploadfilef;
 	
 }

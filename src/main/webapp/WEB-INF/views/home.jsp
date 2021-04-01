@@ -11,6 +11,7 @@
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
 <script src="resources/myLib/topmenu.js"></script>
 <script src="resources/myLib/footer.js"></script>
+<script src="resources/myLib/login.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
@@ -159,7 +160,7 @@ a {
 #login_button {
 	height: 60px;
 	width: 322px;
-	background-color: #00d344;
+	background-color: #0b3f9a;
 	font-size: 20px;
 	color: #fff;
 }
@@ -286,6 +287,7 @@ a {
 				class="footerbar">|</font> &nbsp;&nbsp; 사업자등록번호 : ???-??-????? <br>
 			문의전화 : 0000-0000 (평일 09:00 ~ 05:00) &nbsp;&nbsp; <font
 				class="footerbar">|</font> &nbsp;&nbsp; 이메일 : gproject @ naver.com
+				<a href="myinfochangep">테스트용</a>
 		</div>
 	</div>
 </body>

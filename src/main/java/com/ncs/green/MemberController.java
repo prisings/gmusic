@@ -2,6 +2,8 @@ package com.ncs.green;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,9 +22,9 @@ public class MemberController {
 
 	@Autowired
 	GmemberService service;
-	
+
 	@Autowired
-	PasswordEncoder passwordEncoder ;
+	PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/checkterm")
 	public ModelAndView checkterm(ModelAndView mv, HttpServletRequest request) {
@@ -65,7 +67,7 @@ public class MemberController {
 
 		// 실습2) ver02 (배포환경 or 개발환경)
 		if (realPath.contains(".eclipse.")) {
-			realPath = "D:/jaepil/MyWork/Spring03/src/main/webapp/resources/uploadImage/";
+			realPath = "D:/jaepil/MyWork/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources\\uploadImage\\";
 		}
@@ -125,6 +127,24 @@ public class MemberController {
 		// => 다이제스트 생성 & vo에 set
 		vo.setPassword(passwordEncoder.encode(vo.getPassword()));
 
+		// ** 이메일 통합 처리
+		String email1 = request.getParameter("email1");
+		String email2 = request.getParameter("email2");
+		String email3 = request.getParameter("email3");
+
+		if (email2 != null && email2.length() > 0) {
+			vo.setEmail(email1 + "@" + email2);
+		} else {
+			vo.setEmail(email1 + "@" + email3);
+		}
+
+		// ** 휴대폰 통합 처리
+		String phone1 = request.getParameter("phone1");
+		String phone2 = request.getParameter("phone2");
+		String phone3 = request.getParameter("phone3");
+
+		vo.setPhone(phone1 + phone2 + phone3);
+
 		int cnt = service.insert(vo);
 		if (cnt > 0) {
 			// 가입성공 -> 로그인 유도 메시지 출력 : loginForm.jsp
@@ -137,5 +157,33 @@ public class MemberController {
 		}
 		return mv;
 	} // memberjoin
+
+	@RequestMapping(value = "/loginp")
+	public ModelAndView loginp(ModelAndView mv, HttpServletRequest request) {
+		mv.setViewName("member/memberloginp");
+		return mv;
+	}
+
+	@RequestMapping(value = "/myinfochangep")
+	public ModelAndView myinfochangep(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
+		mv.setViewName("member/myinfochangep");
+		return mv;
+	}// myinfochangep
+
+	@RequestMapping(value = "/myinfochange")
+	public ModelAndView myinfochange(ModelAndView mv, HttpServletRequest request, GmemberVO vo) throws UnsupportedEncodingException {
+		String message = null;
+		if (service.update(vo) > 0) {
+			// 수정성공 -> message, List출력 (memberList.jsp)
+			// url 로 전달되는 한글 message 처리 위한 encoding
+			message = URLEncoder.encode("~~ 정보수정 성공 ~~", "UTF-8");
+			mv.setViewName("redirect:mlist?message=" + message); // sendRedirect
+		} else {
+			// 수정실패 -> message, Ddetail (mdetail)
+			message = URLEncoder.encode("~~ 정보수정 실패 !!! 다시 하세요 ~~", "UTF-8");
+			mv.setViewName("redirect:mdetail?id=" + vo.getId() + "&message=" + message + "&jcode=U"); // sendRedirect
+		}
+		return mv;
+	}
 
 }

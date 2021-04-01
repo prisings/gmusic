@@ -2,9 +2,9 @@ package vo;
 
 public class TermsVO {
 	
-	int frist;
-	String title;
-	String second;
-	String content;
+	private int frist;
+	private String title;
+	private String second;
+	private String content;
 	
 }

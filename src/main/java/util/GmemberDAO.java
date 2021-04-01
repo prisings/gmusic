@@ -13,19 +13,23 @@ public class GmemberDAO {
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	private static final String NS = "com.ncs.GmemberMapper.";
-	
+
 	public List<GmemberVO> selectList() {
-		return sqlSession.selectList(NS+"selectList") ;
+		return sqlSession.selectList(NS + "selectList");
 	}
 
 	public int insert(GmemberVO vo) {
-		return sqlSession.insert(NS+"insert", vo);
+		return sqlSession.insert(NS + "insert", vo);
+	}
+
+	public GmemberVO selectOne(GmemberVO vo) {
+		return sqlSession.selectOne(NS + "selectOne", vo);
 	}
 	
-	
-	
-	
-	
+	public int update(GmemberVO vo) {
+		return sqlSession.update(NS + "update", vo);
+	}
+
 }

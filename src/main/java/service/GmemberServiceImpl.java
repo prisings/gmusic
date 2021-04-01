@@ -24,4 +24,15 @@ public class GmemberServiceImpl implements GmemberService {
 		return dao.insert(vo);
 	}
 
+
+	public GmemberVO selectOne(GmemberVO vo) {
+		return dao.selectOne(vo);
+	}
+
+
+	public int update(GmemberVO vo) {
+		return dao.update(vo);
+	}
+	
+
 }

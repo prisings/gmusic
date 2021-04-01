@@ -8,8 +8,17 @@
 insert into gmember values(
 #{id},#{password},#{sex},#{email},
 #{phone},#{birthday},#{rid},#{genre1},
-#{genre2},#{grade},#{autopay},#{uploadfile}
+#{genre2},default,default,#{uploadfile}
 )
 </insert>
+
+<select id="selectOne">
+select id,birthday,sex,email,phone,genre1,genre2 from gmember where id = #{id}
+
+</select>
+<update id="update">
+update gmember set password = #{password} ,genre1 = #{genre1}, genre2 = #{genre2} where id = #{id}
+
+</update>
 
 </mapper>  

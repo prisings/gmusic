@@ -50,7 +50,7 @@ a {
 					href="search_password" class="search_password">비밀번호 찾기</a></td>
 			</tr>
 			<tr>
-				<td><button type="button" id="login_button">로그인</button></td>
+				<td><input type="submit" value="Login" ></td>
 			</tr>
 		</table>
 	</form>

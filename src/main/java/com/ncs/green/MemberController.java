@@ -6,13 +6,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import service.GmemberService;
 import vo.GmemberVO;
@@ -67,7 +72,7 @@ public class MemberController {
 
 		// 실습2) ver02 (배포환경 or 개발환경)
 		if (realPath.contains(".eclipse.")) {
-			realPath = "D:/jaepil/MyWork/gproject/src/main/webapp/resources/uploadImage/";
+			realPath = "C:/NamCheolWoo/MyWork/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources\\uploadImage\\";
 		}
@@ -149,7 +154,7 @@ public class MemberController {
 		if (cnt > 0) {
 			// 가입성공 -> 로그인 유도 메시지 출력 : loginForm.jsp
 			mv.addObject("message", " 회원 가입 성공 !!! 로그인 후 이용하세요 ~~");
-			mv.setViewName("member/memberloginp");
+			mv.setViewName("member/memberloginpage");
 		} else {
 			// 가입실패 -> 재가입 유도 메시지 출력 : joinForm.jsp
 			mv.addObject("message", " 회원 가입 실패 !!! 다시 하세요 ~~");
@@ -160,18 +165,14 @@ public class MemberController {
 
 	@RequestMapping(value = "/loginp")
 	public ModelAndView loginp(ModelAndView mv, HttpServletRequest request) {
-		mv.setViewName("member/memberloginp");
+//		mv.setViewName("member/memberloginp");
+		mv.setViewName("member/logintest");
 		return mv;
 	}
 
-	@RequestMapping(value = "/myinfochangep")
-	public ModelAndView myinfochangep(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
-		mv.setViewName("member/myinfochangep");
-		return mv;
-	}// myinfochangep
-
 	@RequestMapping(value = "/myinfochange")
-	public ModelAndView myinfochange(ModelAndView mv, HttpServletRequest request, GmemberVO vo) throws UnsupportedEncodingException {
+	public ModelAndView myinfochange(ModelAndView mv, HttpServletRequest request, GmemberVO vo)
+			throws UnsupportedEncodingException {
 		String message = null;
 		if (service.update(vo) > 0) {
 			// 수정성공 -> message, List출력 (memberList.jsp)
@@ -186,4 +187,91 @@ public class MemberController {
 		return mv;
 	}
 
+	// 추가////////////////////////////////
+	// *** ID 중복확인
+	@RequestMapping(value = "/idCheck")
+	public ModelAndView idCheck(ModelAndView mv, GmemberVO vo) {
+		// ** 전달된 ID 가 존재하는지 확인
+		// => notNull : 존재 -> 사용불가
+		// => Null : 없음 -> 사용가능
+		// => 그러므로 전달된 ID 보관 해야함
+		mv.addObject("newID", vo.getId());
+		if (service.selectOne(vo) != null) {
+			mv.addObject("idUse", "F"); // 사용불가
+		} else {
+			mv.addObject("idUse", "T"); // 사용가능
+		}
+		mv.setViewName("member/idDupCheck");
+		return mv;
+	} // idCheck
+
+	// *** ID ajax 중복확인
+	// https://hongku.tistory.com/122 method get, post차이
+	// method = RequestMethod.GET
+	@RequestMapping(value = "/idCheck2", method = RequestMethod.GET)
+	@ResponseBody
+	public int idCheck2(@RequestParam("id") String id) {
+
+		return service.userIdCheck(id);
+	}
+
+	@RequestMapping(value = "/emailCheck", method = RequestMethod.GET)
+	@ResponseBody
+	public int emailCheck(@RequestParam("email") String email) {
+
+		return service.userEmailCheck(email);
+	}
+	// 지수씨 수정부분 /////////////////////////////////
+   @RequestMapping(value = "/mlogin")
+   public ModelAndView mlogin(HttpServletRequest request, ModelAndView mv, GmemberVO vo) {
+      
+      String password = vo.getPassword();
+      vo = service.selectOne(vo);
+      if ( vo != null) { 
+         if(passwordEncoder.matches(password, vo.getPassword())) {
+            request.getSession().setAttribute("loginID", vo.getId());
+            request.getSession().setAttribute("loginPW",password);
+//             mv.setViewName("member/loginsuccess"); 
+             mv.setViewName("redirect:home"); 
+         }else {
+            // Password 오류
+            mv.addObject("message", "~~ Password 오류 !! 다시 하세요 ~~");
+            mv.setViewName("member/memberloginpage");
+         }
+      }else { // ID 오류
+         mv.addObject("message", "~~ ID 오류 !! 다시 하세요 ~~");
+         mv.setViewName("member/memberloginpage");
+      }
+      return mv;
+   } //mlogin
+   
+   @RequestMapping(value = "/mlogout")
+   public ModelAndView mlogout(HttpServletRequest request, 
+                  ModelAndView mv, RedirectAttributes rttr) {
+      
+      HttpSession session = request.getSession(false);
+      String message = null;
+      if (session !=null && session.getAttribute("loginID") !=null) {
+         session.invalidate();
+         message = "~~ 로그아웃 성공 ~~";
+      }else {
+         message = "~~ 로그인 하지 않았습니다 ~~";
+      }
+      rttr.addFlashAttribute("message",message) ;
+      mv.setViewName("redirect:home"); 
+      return mv;
+   } //mlogout
+   
+   @RequestMapping(value = "/memberloginpage")
+   public ModelAndView memberloginpage(HttpServletRequest request, 
+		   ModelAndView mv, RedirectAttributes rttr) {
+	   mv.setViewName("member/memberloginpage");
+	   return mv;
+   }
+   @RequestMapping(value = "/loginsuccess")
+   public ModelAndView loginsuccess(HttpServletRequest request, 
+		   ModelAndView mv) {
+		  mv.setViewName("member/loginsuccess");
+	   return mv;
+   }
 }

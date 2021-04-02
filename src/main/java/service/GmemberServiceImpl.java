@@ -19,20 +19,23 @@ public class GmemberServiceImpl implements GmemberService {
 		return dao.selectList();
 	}
 
-
 	public int insert(GmemberVO vo) {
 		return dao.insert(vo);
 	}
-
-
+	
+	public int update(GmemberVO vo ) {
+		return dao.update(vo);
+	}
+	// 추가부분./////////////////
 	public GmemberVO selectOne(GmemberVO vo) {
 		return dao.selectOne(vo);
 	}
 
-
-	public int update(GmemberVO vo) {
-		return dao.update(vo);
+	public int userIdCheck(String id) {
+		return dao.checkOverId(id);
 	}
 	
-
+	public int userEmailCheck(String email) {
+		return dao.checkOverEmail(email);
+	}
 }

@@ -12,6 +12,26 @@
 <script src="resources/myLib/topmenu.js"></script>
 <script src="resources/myLib/footer.js"></script>
 <script src="resources/myLib/login.js"></script>
+
+<script type="text/javascript"> 
+$(function(){ //ready로 감싸야 id식별 가능
+ var sessionUId= "<%=session.getAttribute("loginID") %>"
+ if(sessionUId!=null){
+		$.ajax({ // 로그인 디폴트 화면
+				type:'Get',
+				url:'loginsuccess',
+				success:function(resultPage){
+					$('#login').html('');
+					$('#login').html(resultPage);
+					},
+				error:function(){
+					$('#login').html("~~ 오류발생 ~~");
+				}
+			});//ajax
+	}
+});
+</script>
+
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
@@ -150,7 +170,7 @@ a {
 	border: 1px solid #dae1e6;
 }
 
-#login_location {
+.login_location {
 	height: 50px;
 	width: 244px;
 	margin: 0 auto;
@@ -211,15 +231,15 @@ a {
 			<li><button>
 					<a href="javascript:;">이용권구매</a>
 				</button></li>
-			<c:if test="${id == null}">
+			<c:if test="${loginID == null}">
 				<li><button>
-						<a href="javascript:;">로그인</a>
+						<a href="loginp">로그인</a>
 					</button></li>
 				<li><button>
 						<a href="checkterm">회원가입</a>
 					</button></li>
 			</c:if>
-			<c:if test="${id != null}">
+			<c:if test="${loginID != null}">
 				<li><button>
 						<a href="javascript:;">로그아웃</a>
 					</button></li>
@@ -250,10 +270,13 @@ a {
 			<div>아</div>
 		</div>
 		<div id="sec2">
-			<div id="login" button type="button">
-				<div id="login_location">
+			<div id="login">
+				<c:if test="${loginID == null}">
+					<div class="login_location">
+				
 					<button type="button" id="login_button">로그인</button>
-				</div>
+					</div>
+				</c:if>
 			</div>
 
 			<!-- 일일,주간,월간 차트리스트 -->
@@ -287,7 +310,6 @@ a {
 				class="footerbar">|</font> &nbsp;&nbsp; 사업자등록번호 : ???-??-????? <br>
 			문의전화 : 0000-0000 (평일 09:00 ~ 05:00) &nbsp;&nbsp; <font
 				class="footerbar">|</font> &nbsp;&nbsp; 이메일 : gproject @ naver.com
-				<a href="myinfochangep">테스트용</a>
 		</div>
 	</div>
 </body>

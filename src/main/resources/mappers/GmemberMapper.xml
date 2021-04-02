@@ -12,13 +12,20 @@ insert into gmember values(
 )
 </insert>
 
-<select id="selectOne">
-select id,birthday,sex,email,phone,genre1,genre2 from gmember where id = #{id}
+<select id="selectOne" resultType="vo.GmemberVO">
+		select * from gmember where id=#{id}
+	</select>
 
+<select id="checkOverId" parameterType="String" resultType="int">
+		select count(*) from gmember where id = #{id}
 </select>
+
+<select id="checkOverEmail" parameterType="String"
+	resultType="int">
+	select count(*) from gmember where email = #{email}
+</select>
+	
 <update id="update">
 update gmember set password = #{password} ,genre1 = #{genre1}, genre2 = #{genre2} where id = #{id}
-
 </update>
-
 </mapper>  

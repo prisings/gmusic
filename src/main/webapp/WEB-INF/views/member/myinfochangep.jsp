@@ -1,10 +1,44 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>내 정보 수정</title>
+<script src="resources/myLib/jquery-3.2.1.min.js"></script>
+<script src="resources/myLib/idcheck.js"></script>
+
+<script>
+var pCheck=false;
+var p2Check=false;
+
+$(function(){
+	$('#password').focusout(function() {
+		pCheck=pwCheck();
+	}); //password
+
+	$('#password2').focusout(function() {
+		p2Check=pw2Check();
+	}); //ready
+}); //password2
+
+function inCheck() { //password 무결성 check
+	if (pCheck==false) {
+		$('#pMessage').html(' Password 를 확인 하세요 ~~');
+	}
+	if (p2Check==false) {
+		$('#p2Message').html(' 올바르게 Password 재입력 하셨나요?');
+	}
+	if (pCheck==true && p2Check==true) {
+			alert('~~ 입력 성공, 전송하시겠습니까?'); // 얼터대신 프롬프트로 바꿀 수 있는지 고려해봐야함(사용자 편리성 up)
+		}else {
+	        return false;
+	        $('#password').focusout;
+	        $('#password2').focusout;    
+		}
+} //inCheck
+</script>
 <style>
 .layer {
 	position: absolute;
@@ -34,21 +68,26 @@
 	border-radius: 5px 5px 5px 5px;
 }
 
-/* 테이블명 */
-#tablename {
-	color: #0b3f9a;
-	margin-left: 700px;
-}
-
 /* 필수사항 테이블 */
 #essential {
-	width: 700px;
-	height: 800px;
+	width: 610px;
+	height: 500px;
 	border: 1px solid #bcbcbc;
-	margin-left: 700px;
 	border-radius: 5px 5px 5px 5px;
 }
 
+#sub {
+	width: 610px;
+	height: 500px;
+	border: 1px solid #bcbcbc;
+	border-radius: 5px 5px 5px 5px;
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	margin-top: 0px;
+	left: 50%;
+	text-align: center;
+}
 /* 메인 div class */
 .box1 {
 	padding-bottom: 20px;
@@ -115,7 +154,7 @@ div>input, #email2 {
 /* 가입하기 버튼 css */
 #submit, #reset {
 	background-color: #EEEEEF;
-	width: 300px;
+	width: 150px;
 	height: 50px;
 	font-weight: bold;
 	color: #8a8a8d;
@@ -126,7 +165,6 @@ div>input, #email2 {
 </head>
 <body>
 
-	<h2 id="tablename">내 정보 수정</h2>
 	<form action="myinfochange" method="post">
 		<table>
 			<div id="table">
@@ -134,58 +172,71 @@ div>input, #email2 {
 					<div style="text-align: left;" class="box1">
 						<span class="font1">아이디</span>
 						<div>
-							<input type="text" name="id" id="id" size="72"
+							<input type="text" name="id" id="id" size="50" value="${vo.id }"
 								placeholder="${vo.id}" readonly="readonly">
 						</div>
 					</div>
+					<br>
 					<div style="text-align: left;" class="box1">
 						<span class="font1">비밀번호</span>
 						<div class="box2">
-							<input type="password" name="password" id="password" size="72"
-								placeholder="비밀번호">
+							<input type="password" name="password" id="password" size="50"
+								placeholder="비밀번호"><br> <span id="pMessage" class="message"> <br></span>
 						</div>
+						<br>
 						<div>
-							<input type="password" name="password2" id="password2" size="72"
-								placeholder="비밀번호 확인"> <br> <span id="pMessage"
+							<input type="password" name="password2" id="password2" size="50"
+								placeholder="비밀번호 확인"> <br> <span id="p2Message"
 								class="message"></span>
 						</div>
 					</div>
+					<br>
 					<div style="text-align: left;" class="box1">
 						<span class="font1">생년월일</span>
 						<div>
 							<input type="text" name="birthday" id="birthday"
-								placeholder="${vo.birthday}" size="72" readonly="readonly">
-							<br> <span id="bMessage" class="message"></span>
+								value="${vo.birthday }" placeholder="${vo.birthday}" size="50"
+								readonly="readonly"> <br> <span id="bMessage"
+								class="message"></span>
 						</div>
 					</div>
+					<br>
 					<div style="text-align: left;" class="box1">
 						<span class="font1">성별</span>
 						<div>
 							<input type="text" name="sex" id="sex" placeholder="${vo.sex }"
-								readonly="readonly" size="72">
+								value="${vo.sex }" readonly="readonly" size="50">
 						</div>
 					</div>
-					<div style="text-align: left;" class="box1">
-						<span class="font1">이메일</span>
-						<div>
-							<input type="text" name="email" id="email" size="72"
-								placeholder="${vo.email }" readonly="readonly"> <br>
-							<span id=iMessage class="message"></span>
-						</div>
+
+				</div>
+
+			</div>
+			<div id="sub">
+				<br>
+				<div style="text-align: left;" class="box1">
+					<span class="font1">이메일</span>
+					<div>
+						<input type="text" name="email" id="email" size="50"
+							value="${vo.email }" placeholder="${vo.email }"
+							readonly="readonly"> <br> <span id=iMessage
+							class="message"></span>
 					</div>
-					<div style="text-align: left;" class="box1">
-						<span class="font1">휴대폰 번호</span>
-						<div>
-							<input type="text" name="phone1" id="phone1" size="72"
-								placeholder="${vo.phone }" readonly="readonly">
-						</div>
+				</div>
+				<br>
+				<div style="text-align: left;" class="box1">
+					<span class="font1">휴대폰 번호</span>
+					<div>
+						<input type="text" name="phone1" id="phone1" size="50"
+							value="${vo.phone }" placeholder="${vo.phone }"
+							readonly="readonly">
 					</div>
 					<br>
 					<div style="text-align: left;" class="box1">
 						<span class="font1">선호장르1</span>
 						<div class="box2">
 							<select name="genre1" class="genre" id="genre1" size="1">
-								<option selected="selected" value="N">선택 안함
+								<option selected="selected" value="${vo.genre1}">${vo.genre1}
 								<option value="dance">댄스
 								<option value="rap">랩/힙합
 								<option value="R&B">R&B/Soul
@@ -196,10 +247,11 @@ div>input, #email2 {
 								<option value="oldPop">올드팝
 							</select>
 						</div>
+						<br>
 						<span class="font1">선호장르2</span>
 						<div>
 							<select name="genre2" class="genre" id="genre2" size="1">
-								<option selected="selected" value="N">선택 안함
+								<option selected="selected" value="${vo.genre2 }">${vo.genre2}
 								<option value="dance">댄스
 								<option value="rap">랩/힙합
 								<option value="R&B">R&B/Soul
@@ -211,8 +263,10 @@ div>input, #email2 {
 							</select>
 						</div>
 					</div>
-					<br> <input type="submit" value="수정하기" id="submit" size="25">
-					<input type="reset" value="취소하기" id="reset" size="25">
+					<br>
+					<button type="submit" value="수정하기" id="submit" size="10"
+						onclick="return inCheck()">수정하기</button>
+					<input type="reset" value="취소하기" id="reset" size="10">
 				</div>
 			</div>
 		</table>

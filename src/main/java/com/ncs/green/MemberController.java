@@ -72,9 +72,9 @@ public class MemberController {
 
 		// 실습2) ver02 (배포환경 or 개발환경)
 		if (realPath.contains(".eclipse.")) {
-			realPath = "C:/NamCheolWoo/MyWork/gproject/src/main/webapp/resources/uploadImage/";
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage";
 		} else {
-			realPath += "resources\\uploadImage\\";
+			realPath += "resources/uploadImage/";
 		}
 
 		// ** 폴더 만들기 (File 클래스활용)
@@ -163,30 +163,6 @@ public class MemberController {
 		return mv;
 	} // memberjoin
 
-	@RequestMapping(value = "/loginp")
-	public ModelAndView loginp(ModelAndView mv, HttpServletRequest request) {
-//		mv.setViewName("member/memberloginp");
-		mv.setViewName("member/logintest");
-		return mv;
-	}
-
-	@RequestMapping(value = "/myinfochange")
-	public ModelAndView myinfochange(ModelAndView mv, HttpServletRequest request, GmemberVO vo)
-			throws UnsupportedEncodingException {
-		String message = null;
-		if (service.update(vo) > 0) {
-			// 수정성공 -> message, List출력 (memberList.jsp)
-			// url 로 전달되는 한글 message 처리 위한 encoding
-			message = URLEncoder.encode("~~ 정보수정 성공 ~~", "UTF-8");
-			mv.setViewName("redirect:mlist?message=" + message); // sendRedirect
-		} else {
-			// 수정실패 -> message, Ddetail (mdetail)
-			message = URLEncoder.encode("~~ 정보수정 실패 !!! 다시 하세요 ~~", "UTF-8");
-			mv.setViewName("redirect:mdetail?id=" + vo.getId() + "&message=" + message + "&jcode=U"); // sendRedirect
-		}
-		return mv;
-	}
-
 	// 추가////////////////////////////////
 	// *** ID 중복확인
 	@RequestMapping(value = "/idCheck")
@@ -222,56 +198,156 @@ public class MemberController {
 		return service.userEmailCheck(email);
 	}
 	// 지수씨 수정부분 /////////////////////////////////
-   @RequestMapping(value = "/mlogin")
-   public ModelAndView mlogin(HttpServletRequest request, ModelAndView mv, GmemberVO vo) {
-      
-      String password = vo.getPassword();
-      vo = service.selectOne(vo);
-      if ( vo != null) { 
-         if(passwordEncoder.matches(password, vo.getPassword())) {
-            request.getSession().setAttribute("loginID", vo.getId());
-            request.getSession().setAttribute("loginPW",password);
-//             mv.setViewName("member/loginsuccess"); 
-             mv.setViewName("redirect:home"); 
-         }else {
-            // Password 오류
-            mv.addObject("message", "~~ Password 오류 !! 다시 하세요 ~~");
-            mv.setViewName("member/memberloginpage");
-         }
-      }else { // ID 오류
-         mv.addObject("message", "~~ ID 오류 !! 다시 하세요 ~~");
-         mv.setViewName("member/memberloginpage");
-      }
-      return mv;
-   } //mlogin
-   
-   @RequestMapping(value = "/mlogout")
-   public ModelAndView mlogout(HttpServletRequest request, 
-                  ModelAndView mv, RedirectAttributes rttr) {
-      
-      HttpSession session = request.getSession(false);
-      String message = null;
-      if (session !=null && session.getAttribute("loginID") !=null) {
-         session.invalidate();
-         message = "~~ 로그아웃 성공 ~~";
-      }else {
-         message = "~~ 로그인 하지 않았습니다 ~~";
-      }
-      rttr.addFlashAttribute("message",message) ;
-      mv.setViewName("redirect:home"); 
-      return mv;
-   } //mlogout
-   
-   @RequestMapping(value = "/memberloginpage")
-   public ModelAndView memberloginpage(HttpServletRequest request, 
-		   ModelAndView mv, RedirectAttributes rttr) {
-	   mv.setViewName("member/memberloginpage");
-	   return mv;
-   }
-   @RequestMapping(value = "/loginsuccess")
-   public ModelAndView loginsuccess(HttpServletRequest request, 
-		   ModelAndView mv) {
-		  mv.setViewName("member/loginsuccess");
-	   return mv;
-   }
+
+	@RequestMapping(value = "/loginp")
+	public ModelAndView loginp(ModelAndView mv, HttpServletRequest request) {
+		mv.setViewName("member/memberloginp");
+		return mv;
+	}
+
+	@RequestMapping(value = "/mlogin")
+	public ModelAndView mlogin(HttpServletRequest request, ModelAndView mv, GmemberVO vo, RedirectAttributes rttr) {
+
+		String password = vo.getPassword();
+		vo = service.selectOne(vo);
+		if (vo != null) {
+			if (passwordEncoder.matches(password, vo.getPassword())) {
+				request.getSession().setAttribute("loginID", vo.getId());
+				request.getSession().setAttribute("loginPW", password);
+				rttr.addFlashAttribute("message", "로그인 성공!");
+				mv.setViewName("redirect:home");
+				/* mv.setViewName("member/loginsuccess"); */
+			} else {
+				// Password 오류
+				mv.addObject("message", "~~ Password 오류 !! 다시 하세요 ~~");
+				mv.setViewName("member/memberloginpage");
+			}
+		} else { // ID 오류
+			mv.addObject("message", "~~ ID 오류 !! 다시 하세요 ~~");
+			mv.setViewName("member/memberloginpage");
+		}
+		return mv;
+	} // mlogin
+
+	@RequestMapping(value = "/mlogout")
+	public ModelAndView mlogout(HttpServletRequest request, ModelAndView mv, RedirectAttributes rttr) {
+
+		HttpSession session = request.getSession(false);
+		String message = null;
+		if (session != null && session.getAttribute("loginID") != null) {
+			session.invalidate();
+			message = "~~ 로그아웃 성공 ~~";
+		} else {
+			message = "~~ 로그인 하지 않았습니다 ~~";
+		}
+		rttr.addFlashAttribute("message", message);
+		mv.setViewName("redirect:home");
+		return mv;
+	} // mlogout
+//------------------------------------ 마이페이지 -----------------------------------
+
+	@RequestMapping(value = "/mypage")
+	public ModelAndView mypage(HttpServletRequest request, ModelAndView mv, GmemberVO vo) {
+		vo = service.selectOne(vo);
+		mv.addObject("vo", vo);
+		mv.setViewName("member/mypage"); // 마이페이지 이동 set
+		return mv;
+	}// mypage로 이동
+
+	@RequestMapping(value = "/myinfopage")
+	public ModelAndView myinfopage(HttpServletRequest request, ModelAndView mv, RedirectAttributes rttr, GmemberVO vo) {
+		request.getSession().setAttribute("loginID", vo.getId()); // 세션 아이디값을 보냄
+
+		vo = service.selectOne(vo); // id값에 대한 vo을 확인
+		mv.addObject("vo", vo); // 값을 불러오기 위한 vo값을 jsp에 전송
+		mv.setViewName("member/myinfopage");
+		return mv;
+	}// 내 정보 띄우기.
+
+	@RequestMapping(value = "/memberfiximage")
+	public ModelAndView memberfiximage(HttpServletRequest request, ModelAndView mv, RedirectAttributes rttr,
+			GmemberVO vo) throws IllegalStateException, IOException {
+		// ** 경로
+		String realPath = request.getRealPath("/");
+		if (realPath.contains(".eclipse.")) {
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage";
+		} else {
+			realPath += "resources/uploadImage/";
+		}
+
+		MultipartFile uploadfilef = null;
+		// => 기본 Image 설정
+		String file1, file2;
+		// 전송된 Image 가 있는지 확인
+		uploadfilef = vo.getUploadfilef();
+		if (uploadfilef != null && !uploadfilef.isEmpty()) { // newImage 선택
+			file1 = realPath + uploadfilef.getOriginalFilename();
+			// 드라이브에 저장되는 실제 경로와 화일명
+			uploadfilef.transferTo(new File(file1)); // file 붙여넣기
+			file2 = "resources/uploadImage/" + uploadfilef.getOriginalFilename();
+			vo.setUploadfile(file2);
+		}
+		if (service.imageupdate(vo) > 0) {
+			rttr.addFlashAttribute("message", "업데이트 성공");
+			mv.setViewName("member/mypage");
+
+		} else {
+			rttr.addFlashAttribute("message", "업데이트 실패");
+			mv.setViewName("member/mypage");
+		}
+
+		return mv;
+	}// 프로필 이미지 업데이트
+
+	@RequestMapping(value = "/myinfochangep")
+	public ModelAndView myinfochangep(ModelAndView mv, HttpServletRequest request, GmemberVO vo)
+			throws UnsupportedEncodingException {
+		vo = service.selectOne(vo);// 값 넘겨주어야 해당 id값이 나옴
+		mv.addObject("vo", vo);
+		mv.setViewName("member/myinfochangep");
+		return mv;
+	}// 내 정보 수정 페이지
+
+	@RequestMapping(value = "/myinfochange")
+	public ModelAndView myinfochange(ModelAndView mv, HttpServletRequest request, GmemberVO vo, RedirectAttributes rttr)
+			throws UnsupportedEncodingException {
+		vo.setPassword(passwordEncoder.encode(vo.getPassword()));
+		if (service.update(vo) > 0) {
+			rttr.addFlashAttribute("message", "업데이트 성공");
+			mv.setViewName("member/mypage");
+		} else {
+			rttr.addFlashAttribute("message", "업데이트 실패");
+			mv.setViewName("member/myinfochangp");
+		}
+		return mv;
+	}// 내 정보 수정 (update)
+	
+	@RequestMapping(value = "/memberdelete")
+	public ModelAndView memberdelete(ModelAndView mv, HttpServletRequest request, GmemberVO vo, RedirectAttributes rttr)
+			throws UnsupportedEncodingException {
+		System.out.println("넘어오나?");
+		HttpSession session = request.getSession(false);
+		if (session !=null && session.getAttribute("loginID") !=null) {
+			// 삭제준비
+			vo.setId((String)session.getAttribute("loginID"));
+			// 삭제오류 Test -> Detail
+			//vo.setId("testtest");
+			// 삭제처리
+			if (service.delete(vo) > 0) { // 삭제성공 -> session삭제, List
+				session.invalidate();   // session삭제
+				mv.addObject("message", "정상적으로 삭제되었습니다");
+				mv.setViewName("redirect:home"); // sendRedirect
+			}else { // 삭제오류 -> Detail
+				mv.addObject("message", "삭제가 실패하였습니다");
+				mv.setViewName("member/mypage");
+			}
+		}else {
+			mv.addObject("message", "삭제할 정보가 없습니다");
+			mv.setViewName("member/mypage"); 
+		}
+		return mv;
+	}
+	
+	
+	// ----------------------------------마이페이지------------------------------------
 }

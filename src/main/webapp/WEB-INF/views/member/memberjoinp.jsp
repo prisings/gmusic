@@ -18,7 +18,8 @@ var	eCheck=false;
 var	e2Check=false;
 var	bCheck=false;
 var	phCheck=false;
-
+var idoverlapping=false; // id 중복체크
+var emailoverlapping=false; // email 중복체크
 //2. 개별적 focusout 이벤트리스너 function 작성 : JQuery,
 $(function(){
 	// 이메일 직접입력 하게 해주는 jquery
@@ -32,6 +33,8 @@ $(function(){
 			// select 태그는 css를 조절하여 숨김
 			if ($('#email3').val() == "direct") {
 				$('#email2').show();
+				
+
 				$('#email3').css({
 					width : "15px",
 					height : "35px"
@@ -77,7 +80,7 @@ $(function(){
 		bCheck=bdCheck();
 	}); //birthd
 	
-	$('#phone3').focusout(function() {
+	$('.phone').focusout(function() {
 		phCheck=phoneCheck();
 	}); //phone
 	
@@ -116,6 +119,7 @@ $(function(){
 						if(idCheck()){
 							$("#iMessage").text("사용 가능한 아이디입니다");
 							$("#iMessage").css("color", "green");
+							idoverlapping=true;
 							//$("#reg_submit").attr("disabled", false);
 						}
 						
@@ -124,26 +128,26 @@ $(function(){
 						console.log("실패");
 				}
 			});
-		});
+	});//id
 	
-	/* 이메일2 포커스아웃 체크 해결해야함
-	$("#email2").blur(function() {
-		$("#email3").blur
-	} */
-	$("#email3").blur(function() {
-		
+	// email2,email3 는 backemail 클래스임
+	$(".backemail").blur(function() { // email2,email3 둘중하나라도 포커스 아웃하면.
+		var backemail = $(this).attr('id'); // 이벤트발생 클래스의 id:(email2 or email3). email2 포커스 아웃인지 email3에 의한 포커스아웃인지 판별
+		if($("#email3").val()=="direct"){ // email3가 직접입력이라면 backemail을 email2로 바꿈
+			backemail = "email2";		  //- 직접입력을 누르고 email2에 아무것도 안쓰고 넘어갔을때 문제가 안생기는 오류를 막음.  
+		}else{							  //- 직접입력시 email2를 무결성체크,중복체크해줌
+			backemail = "email3";
+		}								  
+
 		var email = $('#email1').val();
 			
 		if($('#email2').val() != null && $('#email2').val().length > 0){
-			
 			var email = $('#email1').val() + "@" + $('#email2').val();
 		}
 		
 		if($('#email3').val() != null && $('#email3').val().length > 0 && $('#email3').val() != 'direct'){
-			
 			var email = $('#email1').val() + "@" + $('#email3').val();
-		
-		}
+		}			// email 1,2,3 병합 코드
 		
 		$.ajax({
 			url : 'emailCheck?email='+ email,
@@ -152,19 +156,41 @@ $(function(){
 			success : function(data) {
 				console.log("email 중복 검사 1 = 중복o / 0 = 중복x : "+ data);							
 				
-					if (data == 1) {
-						if(eCheck){
-							// 1 : 아이디가 중복되는 문구
-							$("#eMessage").text("사용중인 이메일입니다 :p");
-							$("#eMessage").css("color", "red");
-							//$("#reg_submit").attr("disabled", true);
-						}//eCheck
-					} else {
-						if(eCheck){
-							$("#eMessage").text("사용 가능한 이메일입니다");
-							$("#eMessage").css("color", "green");
-							//$("#reg_submit").attr("disabled", false);
-						}//eCheck
+					if (data == 1) { 
+						if("email2"==backemail){ // 미리 무결성체크한 변수로 처리하는건 어떤 오류를 야기할지 모름-> 함수로 체크.
+							if(emailCheck() && email2Check()){ //email 1,2 체크
+								// 1 : 아이디가 중복되는 문구
+								$("#eMessage").text("사용중인 이메일입니다 :p");
+								$("#eMessage").css("color", "red");
+								emailoverlapping=false;
+								//$("#reg_submit").attr("disabled", true);
+							}//eCheck
+						}else{ // 포커스 아웃이 email3이고 direct가 아니라면
+							if(emailCheck() && email3Check()){ //email 1,3 체크
+								// 1 : 아이디가 중복되는 문구
+								$("#eMessage").text("사용중인 이메일입니다 :p");
+								$("#eMessage").css("color", "red");
+								emailoverlapping=false;
+								//$("#reg_submit").attr("disabled", true);
+							}//eCheck
+						}
+					} else { // data == 0
+						if("email2"==backemail){ // 포커스아웃이 email2에서 일어났다면.
+							if(emailCheck() && email2Check()){ //email 1,2 체크
+								$("#eMessage").text("사용 가능한 이메일입니다");
+								$("#eMessage").css("color", "green");
+								emailoverlapping=true; // email 중복체크 되면 서브밋가능
+								//$("#reg_submit").attr("disabled", false);
+							}//eCheck
+						}else{	// 포커스 아웃이 email3이고 direct가 아니라면
+							if(emailCheck() && email3Check()){ //email 1,3 체크
+								$("#eMessage").text("사용 가능한 이메일입니다");
+								$("#eMessage").css("color", "green");
+								emailoverlapping=true; // email 중복체크 되면 서브밋가능
+								//$("#reg_submit").attr("disabled", false);
+							}//eCheck
+							
+						}
 					}
 				}, error : function() {
 						console.log("실패");
@@ -198,27 +224,26 @@ function inCheck() {
 		$('#phMessage').html(' 전화번호 를 확인 하세요 ~~');
 	}
 	if (iCheck==true && pCheck==true && p2Check==true &&
-		eCheck==true && e2Check==true && bCheck==true && phCheck==true	) {
+		eCheck==true && e2Check==true && bCheck==true && phCheck==true && emailoverlapping==true && idoverlapping==true	) {
 		alert('~~ 입력 성공, 전송하시겠습니까?'); // 얼터대신 프롬프트로 바꿀 수 있는지 고려해봐야함(사용자 편리성 up)
 	}else {
         return false;   // submit 무효화 
+        $('#id').focusout; // 가입실패시 모든 '무결성체크 + 메시지 표출' 하기 위해 포커스아웃
+        $('#password').focusout;
+        $('#password2').focusout;
+        $('#email1').focusout;
+        if($('#email3').val=="direct"){
+        	$('#email2').focusout;
+        }else{
+	        $('#email3').focusout;
+        }
+        $('#birthday').focusout;
+        $('#phone1').focusout;
+        $('#phone2').focusout;
+        $('#phone3').focusout;
 	}
 } //inCheck
 
-//** 4. ID 중복 확인하기 
-function idDupCheck() {
-	// => id 입력값의 무결성 확인
-	if (iCheck==false) {
-		iCheck=idCheck();
-	}else {
-		// => 서버로 요청보내어 중복확인 , 결과 처리 
-		// => window.open()
-		//    url 요청을 서버로 전달하고 그 결과를 open 해줌.
-		var url="idCheck?id="+$('#id').val();
-		window.open(url,"_blank",
-			"toolbar=no,menubar=yes,scrollbars=yes,resizable=yes,width=500,height=400");
-	}
-} //idDupCheck
 	
 </script>
 <style type="text/css">
@@ -362,7 +387,6 @@ div>input, #email2 {
 							<span class="font1">아이디</span>
 							<div>
 								<input type="text" name="id" id="id" size="20" placeholder="아이디" maxlength="12">
-								<input type="button" value="중복확인"  id="idDup" onclick="idDupCheck()">
 								<br> <span id=iMessage class="message"><br></span>
 							</div>
 						</div>
@@ -397,10 +421,10 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">이메일</span>
 							<div>
-								<input type="text" name="email1" id="email1" size="10" placeholder="이메일" maxlength="17">
+								<input type="text" name="email1" id="email1" class="backemail" size="10" placeholder="이메일" maxlength="17">
 								@
-								<input type="text" name="email2" id="email2" size="7" placeholder="직접입력" maxlenth="15">
-								<select name="email3" id="email3" size="1">
+								<input type="text" name="email2" id="email2" class="backemail" size="7" placeholder="직접입력" maxlenth="15">
+								<select name="email3" id="email3" class="backemail" size="1">
 									<option selected="selected" disabled="disabled">선택
 									<option value="direct">직접입력
 									<option value="naver.com">naver.com
@@ -422,9 +446,9 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">휴대폰 번호</span>
 							<div>
-								<input type="text" name="phone1" id="phone1" size="2" placeholder="010" maxlength="3">&nbsp;-&nbsp;
-								<input type="text" name="phone2" id="phone2" size="2" placeholder="0000" maxlength="4">&nbsp;-&nbsp;
-								<input type="text" name="phone3" id="phone3" size="2" placeholder="0000" maxlength="4">
+								<input type="text" name="phone1" id="phone1" class="phone" size="2" placeholder="010" maxlength="3">&nbsp;-&nbsp;
+								<input type="text" name="phone2" id="phone2" class="phone" size="2" placeholder="0000" maxlength="4">&nbsp;-&nbsp;
+								<input type="text" name="phone3" id="phone3" class="phone" size="2" placeholder="0000" maxlength="4">
 
 								<br> <span id=phMessage class="message"> <br></span>
 							</div>
@@ -508,7 +532,7 @@ div>input, #email2 {
 							</div>
 						</div>
 						<br>
-						<input type="submit" value="가입하기" id="submit" disabled onclick="return inCheck()">
+						<button type="submit" id="submit" onclick="return inCheck()">가입하기</button>
 					</div>
 				</div>
 			</form>

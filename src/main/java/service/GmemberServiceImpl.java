@@ -38,4 +38,12 @@ public class GmemberServiceImpl implements GmemberService {
 	public int userEmailCheck(String email) {
 		return dao.checkOverEmail(email);
 	}
+
+	public int imageupdate(GmemberVO vo) {
+		return dao.imageupdate(vo);
+	}
+
+	public int delete(GmemberVO vo) {
+		return dao.delete(vo);
+	}
 }

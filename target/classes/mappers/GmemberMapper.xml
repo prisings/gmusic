@@ -4,28 +4,36 @@
 <mapper namespace="com.ncs.GmemberMapper">
 
 
-<insert id="insert" >
-insert into gmember values(
-#{id},#{password},#{sex},#{email},
-#{phone},#{birthday},#{rid},#{genre1},
-#{genre2},default,default,#{uploadfile}
-)
-</insert>
+	<insert id="insert">
+		insert into gmember values(
+		#{id},#{password},#{sex},#{email},
+		#{phone},#{birthday},#{rid},#{genre1},
+		#{genre2},default,default,#{uploadfile}
+		)
+	</insert>
 
-<select id="selectOne" resultType="vo.GmemberVO">
-		select * from gmember where id=#{id}
+	<select id="selectOne" resultType="vo.GmemberVO">
+		select * from gmember where	id=#{id}
 	</select>
 
-<select id="checkOverId" parameterType="String" resultType="int">
+	<select id="checkOverId" parameterType="String" resultType="int">
 		select count(*) from gmember where id = #{id}
-</select>
+	</select>
 
-<select id="checkOverEmail" parameterType="String"
-	resultType="int">
-	select count(*) from gmember where email = #{email}
-</select>
+	<select id="checkOverEmail" parameterType="String"
+		resultType="int">
+		select count(*) from gmember where email = #{email}
+	</select>
+
+	<update id="update">
+		update gmember set password = #{password} ,genre1 = #{genre1}, genre2 =	#{genre2} where id = #{id}
+	</update>
 	
-<update id="update">
-update gmember set password = #{password} ,genre1 = #{genre1}, genre2 = #{genre2} where id = #{id}
-</update>
+	<update id="imageupdate">
+		update gmember set uploadfile = #{uploadfile} where id = #{id}
+	</update>
+	<delete id="delete">
+	DELETE from gmember where id=#{id}
+	</delete>
+	
 </mapper>  

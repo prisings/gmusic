@@ -12,26 +12,8 @@
 <script src="resources/myLib/topmenu.js"></script>
 <script src="resources/myLib/footer.js"></script>
 <script src="resources/myLib/login.js"></script>
-
-<script type="text/javascript"> 
-$(function(){ //ready로 감싸야 id식별 가능
- var sessionUId= "<%=session.getAttribute("loginID") %>"
- if(sessionUId!=null){
-		$.ajax({ // 로그인 디폴트 화면
-				type:'Get',
-				url:'loginsuccess',
-				success:function(resultPage){
-					$('#login').html('');
-					$('#login').html(resultPage);
-					},
-				error:function(){
-					$('#login').html("~~ 오류발생 ~~");
-				}
-			});//ajax
-	}
-});
-</script>
-
+<script src="resources/myLib/mypage.js"></script>
+<script src="resources/myLib/myinfochange.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
 	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
@@ -170,7 +152,7 @@ a {
 	border: 1px solid #dae1e6;
 }
 
-.login_location {
+#login_location {
 	height: 50px;
 	width: 244px;
 	margin: 0 auto;
@@ -221,6 +203,12 @@ a {
 }
 /*footer---------------------------- */
 </style>
+<c:if test="${message!=null}">
+	<script>
+		alert('${message}');
+	</script>
+</c:if>
+
 </head>
 <body>
 	<div id="header">
@@ -233,7 +221,7 @@ a {
 				</button></li>
 			<c:if test="${loginID == null}">
 				<li><button>
-						<a href="loginp">로그인</a>
+						<a href="javascript:;">로그인</a>
 					</button></li>
 				<li><button>
 						<a href="checkterm">회원가입</a>
@@ -243,18 +231,18 @@ a {
 				<li><button>
 						<a href="javascript:;">로그아웃</a>
 					</button></li>
+					
 				<li><button>
-						<a href="checkterm">마이페이지</a>
+						<a href="mypage?id=${loginID}"> 마이페이지</a>
 					</button></li>
 			</c:if>
-
 		</ul>
 	</div>
 	<!-- header -->
 
 	<div id="nav">
 		<div id="searchdiv">
-			<font size="20" id="logofont">GMUSIC</font> <input type="text"
+			<a href="home" id="logofont">GMUSIC</a> <input type="text"
 				name="keyword" id="keyword" maxlength="10" size="50"
 				style="vertical-align: middle;">
 			<button id="searchBtn" style="vertical-align: middle;">Search</button>
@@ -269,14 +257,20 @@ a {
 			<div>아</div>
 			<div>아</div>
 		</div>
+
 		<div id="sec2">
 			<div id="login">
-				<c:if test="${loginID == null}">
-					<div class="login_location">
-				
-					<button type="button" id="login_button">로그인</button>
-					</div>
-				</c:if>
+				<div id="login_location">
+					<c:if test="${empty loginID}">
+						<button type="button" id="login_button">로그인</button>
+					</c:if>
+					<c:if test="${loginID!=null}">
+						<h1>${loginID}님반갑습니다.</h1>
+						<h1>
+							<a href="mlogout">로그아웃</a>
+						</h1>
+					</c:if>
+				</div>
 			</div>
 
 			<!-- 일일,주간,월간 차트리스트 -->
@@ -298,10 +292,13 @@ a {
 
 	<div id="footer">
 		<div id="footerinfo">
-			<a href="javascript:;" class="footergroup" id="introcompany">회사 소개</a>&nbsp;&nbsp; <font class="footerbar">|</font>
-			&nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="termsp">이용약관</a>&nbsp;&nbsp; <font
-				class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="privacy">개인정보처리방침</a>&nbsp;&nbsp;
-			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;" class="footergroup" id="youth">청소년보호정책</a>
+			<a href="javascript:;" class="footergroup" id="introcompany">회사
+				소개</a>&nbsp;&nbsp; <font class="footerbar">|</font> &nbsp;&nbsp; <a
+				href="javascript:;" class="footergroup" id="termsp">이용약관</a>&nbsp;&nbsp;
+			<font class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;"
+				class="footergroup" id="privacy">개인정보처리방침</a>&nbsp;&nbsp; <font
+				class="footerbar">|</font> &nbsp;&nbsp; <a href="javascript:;"
+				class="footergroup" id="youth">청소년보호정책</a>
 		</div>
 		<div id="footerlist">
 			<font>G-MUSIC</font> &nbsp;&nbsp; <font class="footerbar">|</font>

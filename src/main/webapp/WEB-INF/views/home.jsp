@@ -221,7 +221,7 @@ a {
 				</button></li>
 			<c:if test="${loginID == null}">
 				<li><button>
-						<a href="javascript:;">로그인</a>
+						<a href="memberloginpage">로그인</a>
 					</button></li>
 				<li><button>
 						<a href="checkterm">회원가입</a>
@@ -229,7 +229,7 @@ a {
 			</c:if>
 			<c:if test="${loginID != null}">
 				<li><button>
-						<a href="javascript:;">로그아웃</a>
+						<a href="mlogout">로그아웃</a>
 					</button></li>
 					
 				<li><button>

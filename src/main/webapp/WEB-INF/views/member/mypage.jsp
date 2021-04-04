@@ -249,6 +249,7 @@ $(function(){
 				}
 			});//ajax	
 		}else{
+			return false
 			$(location).attr("href", "mypage");
 		}
 	});	
@@ -274,7 +275,7 @@ $(function(){
 				</button></li>
 			<c:if test="${loginID == null}">
 				<li><button>
-						<a href="javascript:;">로그인</a>
+						<a href="memberloginpage">로그인</a>
 					</button></li>
 				<li><button>
 						<a href="checkterm">회원가입</a>
@@ -282,7 +283,7 @@ $(function(){
 			</c:if>
 			<c:if test="${loginID != null}">
 				<li><button>
-						<a href="javascript:;">로그아웃</a>
+						<a href="mlogout">로그아웃</a>
 					</button></li>
 				<li><button id="mypage">마이페이지</button></li>
 			</c:if>

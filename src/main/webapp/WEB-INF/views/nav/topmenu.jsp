@@ -21,15 +21,16 @@
 				<li><a href="javascript:;">발라드</a>
 				<li><a href="javascript:;">댄스</a>
 				<li><a href="javascript:;">랩/힙합</a>
-				<li><a href="javascript:;">뭐</a>
-				<li><a href="javascript:;">댄스</a>
-				<li><a href="javascript:;">댄스</a>
-				<li><a href="javascript:;">댄스</a>
+				<li><a href="javascript:;">트로트</a>
+				<li><a href="javascript:;">락</a>
+				<li><a href="javascript:;">인디</a>
+				<li><a href="javascript:;">재즈</a>
+				<li><a href="javascript:;">올드팝</a>
 				<li><a href="javascript:;">POP</a>
 			</ul>
 		<li><a href="javascript:;">고객센터</a>
 			<ul>
-				<li><a href="javascript:;">문의</a>
+				<li><a href="qna">1:1 문의</a>
 			</ul>
 	</ul>
 </body>

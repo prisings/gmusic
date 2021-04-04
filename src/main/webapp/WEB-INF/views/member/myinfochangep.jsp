@@ -7,7 +7,6 @@
 <meta charset="UTF-8">
 <title>내 정보 수정</title>
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
-<script src="resources/myLib/idcheck.js"></script>
 
 <script>
 var pCheck=false;
@@ -22,7 +21,49 @@ $(function(){
 		p2Check=pw2Check();
 	}); //ready
 }); //password2
+//--------------- js파일이 적용이안되서 직접 입력------------------
+function pwCheck(){
+	var password=$("#password").val();
+	var password2=$("#password2").val();
+	var pLength = password.length;
+	if(pLength <6 || pLength >12){
+		$('#pMessage').html(' password는 6글자 이상 12글자 이하로 입력하세요 ~~');
+	    return false;
+	}else if(password.replace(/[0-9]/gi,'').length>=pLength){
+		$('#pMessage').html(' Password는 영어,숫자,특수문자가 모두 포함돼야합니다 다시 입력하세요 ~~');
+	    return false;
+	}else if (password.replace(/[!-*]/gi,'').length>=pLength){
+		$('#pMessage').html(' Password는 영어,숫자,특수문자가 모두 포함돼야합니다 다시 입력하세요 ~~');
+	    return false;
+	}else if (password.replace(/[a-z]/gi,'').length>=pLength){
+		$('#pMessage').html(' Password는 영어,숫자,특수문자가 모두 포함돼야합니다 다시 입력하세요 ~~');
+	    return false;
+	}else {
+		$('#pMessage').html('');
+		if (password != password2) { // 패스워드1에서도 패스워드2와 매치 체크해줘야함. p2메시지에 표현
+			$('#p2Message').html('~~ password 가 다릅니다. 확인하세요  ~~');
+			p2Check=false;		//안맞으면 p2 false. 서브밋 방해
+		}else{
+			$('#p2Message').html('');
+			p2Check=true;
+		}
+		return true;
+	}
+} //pwCheck
 
+//  password 재입력 동일성 확인
+function pw2Check(){
+	var password=$('#password').val();
+	var password2=$('#password2').val();
+	if (password != password2) {
+		$('#p2Message').html('~~ password 가 다릅니다. 확인하세요  ~~');
+		return false;
+	}else {
+		$('#p2Message').html('');
+		return true;
+	}
+}
+//--------------- js파일이 적용이안되서 직접 입력------------------
 function inCheck() { //password 무결성 check
 	if (pCheck==false) {
 		$('#pMessage').html(' Password 를 확인 하세요 ~~');
@@ -31,7 +72,12 @@ function inCheck() { //password 무결성 check
 		$('#p2Message').html(' 올바르게 Password 재입력 하셨나요?');
 	}
 	if (pCheck==true && p2Check==true) {
-			alert('~~ 입력 성공, 전송하시겠습니까?'); // 얼터대신 프롬프트로 바꿀 수 있는지 고려해봐야함(사용자 편리성 up)
+			var fix = confirm('~~ 입력 성공, 전송하시겠습니까?'); //컨펌 확인누를시 수정 취소누를시 취소
+			if(fix == true){
+				return true;
+			}else{
+				return false;
+			}
 		}else {
 	        return false;
 	        $('#password').focusout;

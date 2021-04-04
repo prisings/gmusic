@@ -20,5 +20,6 @@ public class GmemberVO {
 	private int autopay;
 	private String uploadfile;
 	private MultipartFile uploadfilef;
+	private String authkey;
 	
 }

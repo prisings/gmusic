@@ -34,14 +34,6 @@ public class GmemberDAO {
 
 	}
 
-	public int checkOverId(String id) {
-		return sqlSession.selectOne(NS + "checkOverId", id);
-	}
-
-	public int checkOverEmail(String email) {
-		return sqlSession.selectOne(NS + "checkOverEmail", email);
-	}
-
 	public int imageupdate(GmemberVO vo) {// 프로필 이미지 업데이트
 		return sqlSession.update(NS + "imageupdate", vo);
 	}
@@ -49,5 +41,27 @@ public class GmemberDAO {
 	public int delete(GmemberVO vo) {// 회원 탈퇴
 		return sqlSession.delete(NS + "delete", vo);
 	}
+	// 회원 가입시 키값 저장
+	public int updateAuthkey(GmemberVO vo) {
+		return sqlSession.update(NS + "updateAuthkey", vo);
+	}
+	
+	
+	// 이메일 인증후 로그인 가능하게 바꾸는 값
+	public int updateAuthkeyconfirm(GmemberVO vo) {
+		return sqlSession.update(NS + "updateAuthkeyconfirm", vo);
+	}
+	
+	// id, email, phone 중복확인
+	public int userIdCheck(String id) {
+		return sqlSession.selectOne(NS + "userIdCheck", id);
+	}
 
+	public int userEmailCheck(String email) {
+		return sqlSession.selectOne(NS + "userEmailCheck", email);
+	}
+	
+	public int userPhoneCheck(String phone) {
+		return sqlSession.selectOne(NS + "userPhoneCheck", phone);
+	}
 }

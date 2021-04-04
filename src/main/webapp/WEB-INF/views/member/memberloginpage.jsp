@@ -91,7 +91,7 @@ a {
 </head>
 <body>
    <div id= loginf_location>
-   <div id="logo">GMUSIC</div><br><br>
+   <div ><a href="home" id="logo">GMUSIC</a></div><br><br>
    <form action="mlogin" method="get">
       <table>
       <tr>

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import service.GmemberService;
+import service.MailSendService;
 import vo.GmemberVO;
 
 @Controller
@@ -31,6 +32,11 @@ public class MemberController {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
+	// 메일 보내는거
+	@Autowired
+	private MailSendService mss;
+
+// -----------------------------이용약관 및 회원가입 ---------------------------------------
 	@RequestMapping(value = "/checkterm")
 	public ModelAndView checkterm(ModelAndView mv, HttpServletRequest request) {
 		mv.setViewName("member/checkterm");
@@ -44,6 +50,13 @@ public class MemberController {
 		mv.setViewName("member/memberjoinp");
 		return mv;
 	} // memberjoinp
+
+	@RequestMapping(value = "/memberloginpage") // 헤더 로그인 부분 페이징이동
+	public ModelAndView memberjoinpage(ModelAndView mv) {
+		// mv.setViewName("member/joinForm2"); // ui구현 Test
+		mv.setViewName("member/memberloginpage");
+		return mv;
+	} // memberjoinpage
 
 	@RequestMapping(value = "/memberjoin")
 	public ModelAndView memberjoin(HttpServletRequest request, ModelAndView mv, GmemberVO vo) throws IOException {
@@ -152,8 +165,20 @@ public class MemberController {
 
 		int cnt = service.insert(vo);
 		if (cnt > 0) {
+
+			// *** 이메일 인증 관련 코드
+			// https://moonong.tistory.com/45 참고
+			// https://blog.naver.com/vnemftnsska2/221413314636 참고
+
+			// 임의의 authKey 생성 & 이메일 발송
+			String authKey = mss.sendAuthMail(vo.getEmail(), vo.getId());
+			vo.setAuthkey(authKey);
+
+			// DB에 authKey 업데이트
+			service.updateAuthkey(vo);
+
 			// 가입성공 -> 로그인 유도 메시지 출력 : loginForm.jsp
-			mv.addObject("message", " 회원 가입 성공 !!! 로그인 후 이용하세요 ~~");
+			mv.addObject("message", " 회원 가입 성공 !!! 이메일 인증 완료 후 로그인하세요 ~~");
 			mv.setViewName("member/memberloginpage");
 		} else {
 			// 가입실패 -> 재가입 유도 메시지 출력 : joinForm.jsp
@@ -163,42 +188,62 @@ public class MemberController {
 		return mv;
 	} // memberjoin
 
-	// 추가////////////////////////////////
-	// *** ID 중복확인
-	@RequestMapping(value = "/idCheck")
-	public ModelAndView idCheck(ModelAndView mv, GmemberVO vo) {
-		// ** 전달된 ID 가 존재하는지 확인
-		// => notNull : 존재 -> 사용불가
-		// => Null : 없음 -> 사용가능
-		// => 그러므로 전달된 ID 보관 해야함
-		mv.addObject("newID", vo.getId());
-		if (service.selectOne(vo) != null) {
-			mv.addObject("idUse", "F"); // 사용불가
-		} else {
-			mv.addObject("idUse", "T"); // 사용가능
-		}
-		mv.setViewName("member/idDupCheck");
-		return mv;
-	} // idCheck
+	// *** 이메일 인증 확인 링크를 눌렀을때 실행
+	@RequestMapping(value = "/memberjoinconfirm")
+	public ModelAndView memberjoinconfirm(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
+		String authKey = vo.getAuthkey();
 
-	// *** ID ajax 중복확인
+		// Id가 DB에 있는지 확인
+		vo = service.selectOne(vo);
+		if (vo != null) { // 일치하는 아이디가 있음
+			// 받은 authKey 값과 DB의 저장된 키값이 일치할경우 Authkey의 값을 1로 업데이트
+			if (vo.getAuthkey().equals(authKey)) {
+
+				// 같으면 authStatus의 값을 1로 업데이트
+				service.updateAuthkeyconfirm(vo);
+
+				mv.addObject("message", "이메일 인증이 완료 되었습니다. 로그인 해주세요");
+				mv.setViewName("member/memberloginpage");
+			} else {
+				// 인증키 불일치 오류
+				mv.addObject("message", "이메일 인증키가 같지 않습니다. 인증을 다시 해주세요");
+				mv.setViewName("member/memberloginpage");
+			}
+		} else { // email 오류
+			mv.addObject("message", "~~ email 오류 !! 다시 하세요 ~~");
+			mv.setViewName("member/memberloginpage");
+		}
+		return mv;
+	}
+
+	// *** ID 중복확인
+	// *** Id ajax 중복확인
 	// https://hongku.tistory.com/122 method get, post차이
 	// method = RequestMethod.GET
-	@RequestMapping(value = "/idCheck2", method = RequestMethod.GET)
+	@RequestMapping(value = "/idCheck", method = RequestMethod.GET)
 	@ResponseBody
-	public int idCheck2(@RequestParam("id") String id) {
+	public int idCheck(@RequestParam("id") String id) {
 
 		return service.userIdCheck(id);
 	}
 
+	// *** Email ajax 중복확인
 	@RequestMapping(value = "/emailCheck", method = RequestMethod.GET)
 	@ResponseBody
 	public int emailCheck(@RequestParam("email") String email) {
 
 		return service.userEmailCheck(email);
 	}
-	// 지수씨 수정부분 /////////////////////////////////
 
+	// *** phone ajax 중복확인
+	@RequestMapping(value = "/phoneCheck", method = RequestMethod.GET)
+	@ResponseBody
+	public int phoneCheck(@RequestParam("phone") String phone) {
+
+		return service.userPhoneCheck(phone);
+	}
+
+// login 부분---------------------------------------------------------
 	@RequestMapping(value = "/loginp")
 	public ModelAndView loginp(ModelAndView mv, HttpServletRequest request) {
 		mv.setViewName("member/memberloginp");
@@ -212,11 +257,19 @@ public class MemberController {
 		vo = service.selectOne(vo);
 		if (vo != null) {
 			if (passwordEncoder.matches(password, vo.getPassword())) {
-				request.getSession().setAttribute("loginID", vo.getId());
-				request.getSession().setAttribute("loginPW", password);
-				rttr.addFlashAttribute("message", "로그인 성공!");
-				mv.setViewName("redirect:home");
-				/* mv.setViewName("member/loginsuccess"); */
+				// 메일 인증을 마친 사람만 로그인 가능 getAuthstatus = 0 인증안됨 / getAuthstatus = 1 인증됨
+				if (vo.getAuthkey().equals("Y")) {
+
+					request.getSession().setAttribute("loginID", vo.getId());
+					request.getSession().setAttribute("loginPW", password);
+//					mv.addObject("message", "로그인 성공!");
+					rttr.addFlashAttribute("message", "로그인 성공!");
+					mv.setViewName("redirect:home");
+					/* mv.setViewName("member/loginsuccess"); */
+				} else {
+					rttr.addFlashAttribute("message", "이메일 인증후 로그인할 수 있습니다");
+					mv.setViewName("redirect:home");
+				}
 			} else {
 				// Password 오류
 				mv.addObject("message", "~~ Password 오류 !! 다시 하세요 ~~");
@@ -244,6 +297,7 @@ public class MemberController {
 		mv.setViewName("redirect:home");
 		return mv;
 	} // mlogout
+		// login 부분---------------------------------------------------------
 //------------------------------------ 마이페이지 -----------------------------------
 
 	@RequestMapping(value = "/mypage")
@@ -321,33 +375,33 @@ public class MemberController {
 		}
 		return mv;
 	}// 내 정보 수정 (update)
-	
+
 	@RequestMapping(value = "/memberdelete")
 	public ModelAndView memberdelete(ModelAndView mv, HttpServletRequest request, GmemberVO vo, RedirectAttributes rttr)
 			throws UnsupportedEncodingException {
 		System.out.println("넘어오나?");
 		HttpSession session = request.getSession(false);
-		if (session !=null && session.getAttribute("loginID") !=null) {
+		if (session != null && session.getAttribute("loginID") != null) {
 			// 삭제준비
-			vo.setId((String)session.getAttribute("loginID"));
+			vo.setId((String) session.getAttribute("loginID"));
 			// 삭제오류 Test -> Detail
-			//vo.setId("testtest");
+			// vo.setId("testtest");
 			// 삭제처리
 			if (service.delete(vo) > 0) { // 삭제성공 -> session삭제, List
-				session.invalidate();   // session삭제
+				session.invalidate(); // session삭제
 				mv.addObject("message", "정상적으로 삭제되었습니다");
 				mv.setViewName("redirect:home"); // sendRedirect
-			}else { // 삭제오류 -> Detail
+			} else { // 삭제오류 -> Detail
 				mv.addObject("message", "삭제가 실패하였습니다");
 				mv.setViewName("member/mypage");
 			}
-		}else {
+		} else {
 			mv.addObject("message", "삭제할 정보가 없습니다");
-			mv.setViewName("member/mypage"); 
+			mv.setViewName("member/mypage");
 		}
 		return mv;
 	}
-	
-	
+
 	// ----------------------------------마이페이지------------------------------------
+
 }

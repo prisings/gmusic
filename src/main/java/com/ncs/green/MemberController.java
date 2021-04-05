@@ -85,7 +85,7 @@ public class MemberController {
 
 		// 실습2) ver02 (배포환경 or 개발환경)
 		if (realPath.contains(".eclipse.")) {
-			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage";
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources/uploadImage/";
 		}
@@ -220,27 +220,12 @@ public class MemberController {
 	// *** Id ajax 중복확인
 	// https://hongku.tistory.com/122 method get, post차이
 	// method = RequestMethod.GET
-	@RequestMapping(value = "/idCheck", method = RequestMethod.GET)
+	// *** Id, Email, phone ajax 중복확인
+	@RequestMapping(value = "/userCheck")
 	@ResponseBody
-	public int idCheck(@RequestParam("id") String id) {
+	public int userCheck(GmemberVO vo) {
 
-		return service.userIdCheck(id);
-	}
-
-	// *** Email ajax 중복확인
-	@RequestMapping(value = "/emailCheck", method = RequestMethod.GET)
-	@ResponseBody
-	public int emailCheck(@RequestParam("email") String email) {
-
-		return service.userEmailCheck(email);
-	}
-
-	// *** phone ajax 중복확인
-	@RequestMapping(value = "/phoneCheck", method = RequestMethod.GET)
-	@ResponseBody
-	public int phoneCheck(@RequestParam("phone") String phone) {
-
-		return service.userPhoneCheck(phone);
+		return service.userDuplicationCheck(vo);
 	}
 
 // login 부분---------------------------------------------------------
@@ -262,7 +247,7 @@ public class MemberController {
 
 					request.getSession().setAttribute("loginID", vo.getId());
 					request.getSession().setAttribute("loginPW", password);
-//					mv.addObject("message", "로그인 성공!");
+					request.getSession().setAttribute("loginGRADE", vo.getGrade()); 				
 					rttr.addFlashAttribute("message", "로그인 성공!");
 					mv.setViewName("redirect:home");
 					/* mv.setViewName("member/loginsuccess"); */
@@ -324,7 +309,7 @@ public class MemberController {
 		// ** 경로
 		String realPath = request.getRealPath("/");
 		if (realPath.contains(".eclipse.")) {
-			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage";
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources/uploadImage/";
 		}

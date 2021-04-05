@@ -102,7 +102,7 @@ $(function(){
 	$("#id").blur(function() {
 		var id = $('#id').val();
 		$.ajax({
-			url : 'idCheck?id='+ id,
+			url : 'userCheck?id='+ id,
 			type : 'get',
 			
 			success : function(data) {
@@ -118,6 +118,8 @@ $(function(){
 							$("#iMessage").text("사용 가능한 아이디입니다");
 							$("#iMessage").css("color", "green");
 							idoverlapping=true;
+						}else{
+							$("#iMessage").css("color", "red");
 						}
 						
 					}
@@ -148,7 +150,7 @@ $(function(){
 		}			// email 1,2,3 병합 코드
 		
 		$.ajax({
-			url : 'emailCheck?email='+ email,
+			url : 'userCheck?email='+ email,
 			type : 'get',
 			
 			success : function(data) {
@@ -176,12 +178,16 @@ $(function(){
 								$("#eMessage").text("사용 가능한 이메일입니다");
 								$("#eMessage").css("color", "green");
 								emailoverlapping=true; // email 중복체크 되면 서브밋가능
+							}else{
+								$("#eMessage").css("color", "red");
 							}//eCheck
 						}else{	// 포커스 아웃이 email3이고 direct가 아니라면
 							if(emailCheck() && email3Check()){ //email 1,3 체크
 								$("#eMessage").text("사용 가능한 이메일입니다");
 								$("#eMessage").css("color", "green");
 								emailoverlapping=true; // email 중복체크 되면 서브밋가능
+							}else{
+								$("#eMessage").css("color", "red");
 							}//eCheck
 							
 						}
@@ -196,7 +202,7 @@ $(function(){
 	$(".phone").blur(function() {
 		var phone = $('#phone1').val() + $('#phone2').val() + $('#phone3').val();
 		$.ajax({
-			url : 'phoneCheck?phone='+ phone,
+			url : 'userCheck?phone='+ phone,
 			type : 'get',
 			
 			success : function(data) {
@@ -212,6 +218,8 @@ $(function(){
 							$("#phMessage").text("사용 가능한 핸드폰 번호입니다");
 							$("#phMessage").css("color", "green");
 							phoneoverlapping=true;
+						}else{
+							$("#phMessage").css("color", "red");
 						}
 						
 					}

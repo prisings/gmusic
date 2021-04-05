@@ -130,7 +130,7 @@ footer {
 </style>
 </head>
 <body>
-<header><a href="home"><img src="resources/image/gm.png" width="40px" height="40px"></a>
+<header><a href="home"><img src="resources/uploadimage/gm.png" width="40px" height="40px"></a>
       <ul id="headermenu">
          <!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
          <!-- <li>로그아웃</li> -->

@@ -53,15 +53,8 @@ public class GmemberDAO {
 	}
 	
 	// id, email, phone 중복확인
-	public int userIdCheck(String id) {
-		return sqlSession.selectOne(NS + "userIdCheck", id);
+	public int userDuplicationCheck(GmemberVO vo) {
+		return sqlSession.selectOne(NS + "userDuplicationCheck", vo);
 	}
 
-	public int userEmailCheck(String email) {
-		return sqlSession.selectOne(NS + "userEmailCheck", email);
-	}
-	
-	public int userPhoneCheck(String phone) {
-		return sqlSession.selectOne(NS + "userPhoneCheck", phone);
-	}
 }

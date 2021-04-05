@@ -39,7 +39,7 @@ public class GmemberServiceImpl implements GmemberService {
 		return dao.delete(vo);
 	}
 		
-		// 회원 가입시 키값 저장
+	// 회원 가입시 키값 저장
 	public int updateAuthkey(GmemberVO vo) {
 		return dao.updateAuthkey(vo);
 	}
@@ -50,16 +50,10 @@ public class GmemberServiceImpl implements GmemberService {
 	}
 
 	// id, email, phone 중복확인
-	public int userIdCheck(String id) {
-		return dao.userIdCheck(id);
+	public int userDuplicationCheck(GmemberVO vo) {
+		return dao.userDuplicationCheck(vo);
 	}
 
-	public int userEmailCheck(String email) {
-		return dao.userEmailCheck(email);
-	}
 
-	public int userPhoneCheck(String phone) {
-		return dao.userPhoneCheck(phone);
-	}
 
 }

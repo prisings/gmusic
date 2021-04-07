@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 import criteria.Criteria;
 import criteria.PageMaker;
 import service.BoardService;
-import service.FaqService;
 import vo.BoardVO;
 
 @Controller
@@ -19,8 +18,7 @@ public class BoardController {
 	@Autowired
 	BoardService service;
 	
-	@Autowired
-	FaqService FAQservice;
+
 	
 	// ** Criteria PageList ver01_Ver02
 		@RequestMapping(value = "/faq")
@@ -36,12 +34,12 @@ public class BoardController {
 			//mv.addObject("Banana", service.criBList(cri)); //ver01
 			// ** ver02 : 검색조건(searchType, keyword)에 따른검색
 			// => service 추가 : searchList(cri) , searchRowCount()  Blist
-			mv.addObject("Banana", FAQservice.searchFList(cri)); 
+			mv.addObject("Banana", service.searchFList(cri)); 
 			
 			// 3) PageMaker 처리
 			pageMaker.setCri(cri);
 			//pageMaker.setTotalRow(service.totalRowCount()); //ver01
-			pageMaker.setTotalRow(FAQservice.searchRowCount(cri)); //ver02
+			pageMaker.setTotalRow(service.searchRowCountF(cri)); //ver02
 			
 			mv.addObject("pageMaker",pageMaker);
 			mv.setViewName("faq/faqpage");		

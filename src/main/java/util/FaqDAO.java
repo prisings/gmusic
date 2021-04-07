@@ -20,7 +20,7 @@ public class FaqDAO {
 	private static final String NS ="com.ncs.FaqMapper.";
 	
 	//SearchCriteria PageList
-	public int searchRowCount(Criteria cri) {
+	public int searchRowCountF(Criteria cri) {
 		return sqlSession.selectOne(NS+"searchRowCount");
 	}  
 	public List<FaqVO> searchFList(Criteria cri) {

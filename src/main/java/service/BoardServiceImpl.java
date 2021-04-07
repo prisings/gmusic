@@ -7,12 +7,18 @@ import org.springframework.stereotype.Service;
 
 import criteria.Criteria;
 import util.BoardDAO;
+import util.FaqDAO;
 import vo.BoardVO;
+import vo.FaqVO;
+import vo.PageVO;
 @Service
 public class BoardServiceImpl implements BoardService{
 	
 	@Autowired
 	BoardDAO dao;
+	
+	@Autowired
+	FaqDAO Fdao;
 	
 	@Override
 	public List<BoardVO> searchBList(Criteria cri) {
@@ -46,4 +52,36 @@ public class BoardServiceImpl implements BoardService{
 	public int replyInsert(BoardVO vo) {
 		return dao.replyInsert(vo);
 	} //replyInsert
+	
+	
+
+	// ** SearchCriteria PageList
+	public int searchRowCountF(Criteria cri) {
+		return Fdao.searchRowCountF(cri);
+	}
+	public List<FaqVO> searchFList(Criteria cri) {
+			return Fdao.searchFList(cri);
+	}
+	
+	// ** Criteria PageList
+	public int totalRowCount() {
+		return Fdao.totalRowCount();
+	}
+	public List<FaqVO> criFList(Criteria cri) {
+		return Fdao.criBList(cri);
+	}
+
+	// ** Page BoardList
+	// => totalRowCount set, 출력할 board row set 
+	public PageVO<FaqVO> pageList(PageVO<FaqVO> vo) {
+		vo.setTotalRowCount(Fdao.totalRowCount());
+		vo.setList(Fdao.pageList(vo));
+		return vo; 
+	}
+
+	// ** Check BoardList
+	public List<FaqVO> checkselectList(FaqVO vo) {
+		return Fdao.checkselectList(vo);
+	}
+	
 }

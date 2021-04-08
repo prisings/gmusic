@@ -9,6 +9,8 @@
 <title>Gmusic LoginPage</title>
 <link href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
    rel="stylesheet">
+<script src="resources/myLib/jquery-3.2.1.min.js"></script>
+<!-- <script src="resources/myLib/footer.js"></script> -->
 <style>
 body {
    height: 95%;

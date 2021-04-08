@@ -34,7 +34,8 @@
 	//https://devlink.tistory.com/307 참고
 	// https://emessell.tistory.com/149 참고
 	// 1. 전체 선택, 전체 해제
-	$(function() {
+	$(function() {  //ready
+		
 		$("#check_all").click(function() {
 
 			var checked = $(this).is(":checked");
@@ -45,11 +46,10 @@
 				$(".normalCheck").prop('checked', false);
 			}
 		});
-	});
+	
 
 	// 2. 전체선택 후 하나만 해제했을 때, 전체선택도 해체
 	// 3. 개별 선택으로 전체 다 선택되었을 때, 전체선택에도 체크
-	$(function() {
 		$(".normalCheck").click(function() {
 
 			var checked1 = $("#check_1").is(":checked");
@@ -62,7 +62,31 @@
 				$("#check_all").prop('checked', false);
 			}
 		});
-	});
+	
+	
+	
+ 	// 전체 선택이된 경우 동의 css가 바뀜 
+		$(".inputcheck").click(function() {
+			
+			if($("#check_all").is(":checked")==true){
+		 		$('.agreementbutton').css({
+		 			backgroundColor: "#0b3f9a",
+					color: "#fff"
+				}); 
+			}
+	 		else{
+				$('.agreementbutton').css({
+					backgroundColor: "#EEEEEF",
+					color: "#8a8a8d"
+				});
+			}
+		});
+		
+		
+	});//ready *
+
+	
+
 </script>
 
 <style type="text/css">
@@ -174,11 +198,11 @@ textarea:focus {
 
 								<hr style="border: solid 1px #0b3f9a; width: 500px;">
 								<br>
-								<input type="checkbox" name="check_all" value="1" id="check_all">
+								<input type="checkbox" name="check_all" value="1" id="check_all" class="inputcheck">
 								<label for="check_all" class="check_allLabel"><span>회원가입 약관에 모두 동의합니다</span></label><br> <br>
 								<hr style="border-width: 1px 0px 0px 0px; width: 500px;">
 								<br>
-								<input type="checkbox" name="agree" value="1" id="check_1" class="normalCheck">
+								<input type="checkbox" name="agree" value="1" id="check_1" class="normalCheck inputcheck">
 								<label for="check_1" class="normalCheckLabel"><span>이용약관 동의</span><span class="necessaryfont">&nbsp;(필수)</span> </label> <br> <br>
 								<textarea rows="20" cols="150" readonly="readonly">
    제1조(목적) 이 약관은 업체 회사(전자상거래 사업자)가 운영하는 업체 사이버 GMUSIC(이하 “GMUSIC”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 GMUSIC과 이용자의 권리․의무 및 책임사항을 규정함을 목적으로 합니다.
@@ -419,7 +443,7 @@ textarea:focus {
   ② “GMUSIC”과 이용자 간에 제기된 전자상거래 소송에는 한국법을 적용합니다.
    </textarea>
 								<br> <br>
-								<input type="checkbox" name="agree" value="1" id="check_2" class="normalCheck">
+								<input type="checkbox" name="agree" value="1" id="check_2" class="normalCheck inputcheck">
 								<label for="check_2" class="normalCheckLabel"><span>개인정보 수집 및 이용 동의</span><span class="necessaryfont">&nbsp;(필수)</span> </label><br> <br>
 								<textarea rows="20" cols="150" readonly="readonly">
 개인정보처리방침
@@ -560,7 +584,7 @@ textarea:focus {
 2) 시행일자 : 2018년 05월 01일 
    </textarea>
 								<br> <br>
-								<input type="checkbox" name="agree" value="1" id="check_3" class="normalCheck">
+								<input type="checkbox" name="agree" value="1" id="check_3" class="normalCheck inputcheck">
 								<label for="check_3" class="normalCheckLabel"><span>만 14세 이상 확인</span><span class="necessaryfont">&nbsp;(필수)</span> </label><br> <br>
 							</td>
 						</tr>

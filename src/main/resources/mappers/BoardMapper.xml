@@ -137,7 +137,7 @@
 	(select nvl(max(seq),0)+1 from gboard),0)
 </insert>
 -->
-<!-- 
+ 
 <update id="update">
 	UPDATE gboard set title=#{title}, content=#{content} WHERE seq=#{seq} 
 </update> 
@@ -145,10 +145,10 @@
 <delete id="delete">
 	DELETE from gboard
 	<if test="seq==root">where root=#{seq}</if> 
-	원글삭제 : 동일한 root를 가진 글들은 모두 삭제
+	<!-- 원글삭제 : 동일한 root를 가진 글들은 모두 삭제 -->
 	<if test="seq!=root">where seq=#{seq}</if> 
-	답글삭제
-</delete>  -->
+	<!-- 답글삭제 -->
+</delete> 
 <!-- 
 Controller 에서 count 증가후 service 시행 
 	=> UPDATE gboard set count=count+1 WHERE seq=#{seq} 

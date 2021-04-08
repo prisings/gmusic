@@ -21,6 +21,8 @@
 	height: 130px;
 }
 
+a { text-decoration:none } 
+
 .menu a {                       /* 클릭했을때 리스트 나오게끔 */
 	cursor: pointer;
 	font-weight: 400;
@@ -54,6 +56,12 @@ ol{
 	padding: 22px 10px 21px 124px;
 	height: 50px;
 }
+body{
+height: 60%;
+width: 60%;
+margin: 0 auto;
+}
+
 </style>
 
 <script>  
@@ -95,19 +103,32 @@ ol{
 
 </head>
 <body>
+	<c:if test="${message != null}">
+   			=> ${message}
+	</c:if>
 	<div class="title">
-	<h2>FAQ</h2>
+	<a href="home"><h2>FAQ</h2></a>
 	</div>
 	<!-------------------------------------- main  title , content 부분 -------------------------------->
 <div>
 		<ul>
-			<c:forEach var="faq" items="${Banana}">
-				<li class="menu"><a><img src="resources/uploadimage/aa.png" width="30px" height="30px"/> ${faq.title}</a>
+			<c:forEach var="Apple" items="${Banana}">
+				<li class="menu"><a><img src="resources/image/qq.png" width="30px" height="30px"/>
+				${Apple.title}
+				<c:if test="${loginGRADE=='admin'}">
+						&nbsp; <a href="fdetail?seq=${Apple.seq}&jcode=U">FAQ수정</a>
+						&nbsp;  <a href="fdelete?seq=${Apple.seq}">글삭제</a>&nbsp;
+				</c:if> 
+				</a>
+			 <c:if test="${loginGRADE!='admin'}"> <!-- 관리자로 로그인시 list 숨기는거 조건을줌 -->
 					<ol class="hide">
-						<li> <img src="resources/uploadimage/aa.png" width="30px"height="30px" /> ${faq.content}</li>
+					</c:if> 
+						<li> <img src="resources/image/aa.png" width="30px"height="30px" /> 
+						${Apple.content}
+						</li>
 					</ol>
 					</li>
-			<hr align="center" style="width: 90%;">
+			<hr align="center" style="width: 82%;">
 			</c:forEach>
 		</ul>
 	</div>
@@ -163,9 +184,7 @@ ol{
 		<a href="faq${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;Next</a>&nbsp;  
 		<a href="faq${pageMaker.searchQuery(pageMaker.lastPageNo)}">Last</a>&nbsp;&nbsp;
 	</c:if>
+	
 </div>
-<hr>
-<a href="home">[Home]</a>
-
 	</body>
 </html>

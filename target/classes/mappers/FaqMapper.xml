@@ -3,6 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ncs.FaqMapper">
 
+
 <!-- SQL 쿼리문에서 비교연산자 사용하는 경우  
 XML에서는  <,>등 비교연산자의 경우 XML규칙상 에러 나기때문에,
 이기호를 연산자로 인식하도록 하기 위해서는 SQL문을 CDATA로 묶어 주어야 한다.
@@ -55,7 +56,7 @@ XML에서는  <,>등 비교연산자의 경우 XML규칙상 에러 나기때문�
  <select id="searchFList" resultType="vo.FaqVO">
  <![CDATA[
  select seq,title,content,rnum from
- (select f.* , ROW_NUMBER() OVER(order by seq asc) rnum from faq f 
+ (select f.* , ROW_NUMBER() OVER(order by seq desc) rnum from faq f 
    where seq > 0 ]]>
   <include refid="search"></include>
   where rnum between #{sno} and #{eno}
@@ -75,5 +76,45 @@ XML에서는  <,>등 비교연산자의 경우 XML규칙상 에러 나기때문�
 	#{title},#{content})
 </insert>
 
+<!-- ******************************* -->
+<select id="selectList" resultType="vo.FaqVO">
+	 select * from faq order by root desc, step asc
+</select>
+
+<select id="selectOne" resultType="vo.FaqVO">
+	 select * from faq where seq=#{seq}
+</select>
+
+<!-- selectKey Test 
+=> https://deeplify.dev/back-end/spring/select-key
+=> AutoNumbering 을 편리하게 할 수 있도록 지원
+=> DB작업중 먼저 어떤 키값을 가져와서 증가시켜서 입력하거나 혹은 입력후에 증가된 키값을 가져올 필요가 있을때다.
+   selectKey를 이용하면 별도의 쿼리로직 없이 해당 메소드에서 일괄처리할 수가 있음.
+   keyProperty: selectKey구문의 결과가 셋팅될 대상 프로퍼티.
+   resultType: 결과의 타입.
+   order: BEFORE 또는 AFTER
+          BEFORE로 설정하면 키를 먼저 조회하고 그 값을 keyProperty 에 셋팅한 뒤 insert 구문실행.
+          AFTER로 설정하면 insert 구문을 실행한 뒤 selectKey 구문 실행.
+          오라클에서는 insert구문 내부에서 일관된 호출형태로 처리한다.
+   statementType: STATEMENT, PREPARED 또는 CALLABLE중 하나 선택가능.
+          마이바티스에게 Statement, PreparedStatement 또는 CallableStatement를 사용하게 한다.
+          디폴트는 PREPARED.
+-->
+<insert id="insert">
+	<selectKey keyProperty="seq" resultType="int" order="BEFORE">
+		SELECT NVL(MAX(seq),0)+1 FROM faq
+	</selectKey>
+	INSERT INTO faq VALUES(
+		#{seq},
+		#{title}, #{content},
+</insert>
+
+<update id="update">
+	UPDATE faq set title=#{title}, content=#{content} WHERE seq=#{seq} 
+</update>
+
+<delete id="delete">
+	DELETE from faq where seq=#{seq} 
+</delete>
 
 </mapper>  

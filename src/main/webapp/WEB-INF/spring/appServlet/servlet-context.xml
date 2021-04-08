@@ -103,4 +103,10 @@ Component-scan과의 차이점은 이 설정은 Bean을 등록하는 작업을 �
 						value="errorPage/exceptionMessage" />
 	</beans:bean>	
 	
+	<!--  다운로드 테스트-->
+	   <beans:bean id="viewResolver" 
+         class="org.springframework.web.servlet.view.BeanNameViewResolver">
+      <beans:property name="order" value="1" />
+   </beans:bean>
+	<beans:bean id="download" class="downTest.DownloadView"/> 
 </beans:beans>

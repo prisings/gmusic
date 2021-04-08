@@ -1,36 +1,61 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Gmusic</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-	href="https://fonts.googleapis.com/css2?family=Croissant+One&display=swap"
-	rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Croissant+One&display=swap" rel="stylesheet">
 <!-- footer font link start -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-	href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
-	rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap" rel="stylesheet">
 <!-- footer font link  end-->
 <style>
+/* 화면중앙정렬 코드 */
+.layer {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	margin-top: 200px;
+}
+
+.layer .content {
+	display: inline-block;
+	vertical-align: middle
+}
+
+.layer .blank {
+	display: inline-block;
+	width: 0;
+	height: 100%;
+	vertical-align: middle
+}
+
+/* 약관내용있는곳 */
 #text {
 	white-space: pre-line;
-   background-color: ghostwhite;
-   width: 800px;
-   height: 600px;
-   /* margin-left: 30px;
-   border: none;
-   resize: none; */
+	background-color: ghostwhite;
+	width: 1000px;
+	height: 800px;
+	font-size: 12px;
+	resize: none;
+	border: 0px;
+}
+
+/* textarea 외곽 포커싱선 지우기 */
+textarea:focus {
+	outline: none;
 }
 </style>
 </head>
 <body>
-<div>
-<h2>개인정보처리방침</h2>
-<textarea id="text" row="100" cols="220">
+
+	<div class="layer">
+		<span class="content"><h2>개인정보처리방침</h2>
+		<textarea id="text" row="100" cols="220" readonly="readonly">
 	1. 총칙
 
 본 업체 사이트는 회원의 개인정보보호를 소중하게 생각하고, 회원의 개인정보를 보호하기 위하여 항상 최선을 다해 노력하고 있습니다. 
@@ -149,6 +174,8 @@
 1) 공고일자 : 2021년 03월 30일
 2) 시행일자 : 2021년 03월 30일 
 </textarea>
-</div>
+</span><span class="blank"></span>
+	</div>
+
 </body>
 </html>

@@ -216,10 +216,7 @@ public class MemberController {
 		return mv;
 	}
 
-	// *** ID 중복확인
-	// *** Id ajax 중복확인
-	// https://hongku.tistory.com/122 method get, post차이
-	// method = RequestMethod.GET
+	
 	// *** Id, Email, phone ajax 중복확인
 	@RequestMapping(value = "/userCheck")
 	@ResponseBody
@@ -227,6 +224,7 @@ public class MemberController {
 
 		return service.userDuplicationCheck(vo);
 	}
+
 
 // login 부분---------------------------------------------------------
 	@RequestMapping(value = "/loginp")
@@ -246,8 +244,9 @@ public class MemberController {
 				if (vo.getAuthkey().equals("Y")) {
 
 					request.getSession().setAttribute("loginID", vo.getId());
+					request.getSession().setAttribute("loginGRADE", vo.getGrade());
 					request.getSession().setAttribute("loginPW", password);
-					request.getSession().setAttribute("loginGRADE", vo.getGrade()); 				
+//					mv.addObject("message", "로그인 성공!");
 					rttr.addFlashAttribute("message", "로그인 성공!");
 					mv.setViewName("redirect:home");
 					/* mv.setViewName("member/loginsuccess"); */

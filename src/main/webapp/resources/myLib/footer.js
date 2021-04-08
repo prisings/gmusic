@@ -11,8 +11,11 @@ $(function(){ //ready로 감싸야 id식별 가능
 					$('#section').html(resultPage);
 					},
 				error:function(){
-					$('#section').html("~~ 오류발생 ~~");
+					$('section').html("~~ 오류발생 ~~");
 				}
 			});//ajax
 	});
+	
 });//ready
+
+

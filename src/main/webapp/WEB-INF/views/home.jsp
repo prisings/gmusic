@@ -144,7 +144,7 @@ a {
 	border-bottom: solid green;
 	height: 295px;
 }
-
+/* 로그인 파트부분 */
 #login {
 	border-bottom: solid green;
 	height: 265px;
@@ -167,11 +167,34 @@ a {
 	color: #fff;
 }
 
+#loginsuccess {
+	height: 126px;
+	width: 293px;
+	background-color: ghostwhite;
+	border: 3px black;
+}
+
+#welcome {
+	height: 81px;
+	width: 290px;
+	background-color: ghostwhite;
+}
+
+#logout_btn {
+	height: 38px;
+	width: 136px;
+	background-color: #0b3f9a;
+	font-size: 15px;
+	color: #fff;
+}
+
 #chart {
 	height: 580px;
 	list-style: none;
 	font-weight: normal;
 }
+/* ----------- login 부분--------- */
+
 /* section */
 
 /*footer---------------------------- */
@@ -231,7 +254,7 @@ a {
 				<li><button>
 						<a href="mlogout">로그아웃</a>
 					</button></li>
-					
+
 				<li><button>
 						<a href="mypage?id=${loginID}"> 마이페이지</a>
 					</button></li>
@@ -253,7 +276,27 @@ a {
 	</div>
 	<div id="section">
 		<div id="sec1">
-			<div>아</div>
+			<div>
+				<a href="musictest">musictest</a>
+				<%-- <table width=800 border="1">
+					<tr align="center" height="30" bgcolor="pink">
+						<td>sname</td>
+						<td>stitle</td>
+						<td>downloadfile</td>
+						<td>Image</td>
+					</tr>
+					<c:forEach var="row" items="${Banana}">
+						<tr>
+							<td><a href="mdetail?id=${row.id}">${row.id}</a></td>
+							<td>${row.sname}</td>
+							<td>${row.stitle}</td>
+							<td>${row.downloadfile}</td>
+							<td><img src="${row.image}" width="70" height="70">
+							</td>
+						</tr>
+					</c:forEach>
+				</table> --%>
+			</div>
 			<div>아</div>
 			<div>아</div>
 		</div>
@@ -264,11 +307,19 @@ a {
 					<c:if test="${empty loginID}">
 						<button type="button" id="login_button">로그인</button>
 					</c:if>
+					<!-- ----------------------------------로그인 후 페이지-------------------------- div로 해볼까 생각중;;-->
 					<c:if test="${loginID!=null}">
-						<h1>${loginID}님반갑습니다.</h1>
-						<h1>
-							<a href="mlogout">로그아웃</a>
-						</h1>
+						<div id="loginsuccess">
+							<div id="welcome" style="font-size: 23px">
+								<img src="resources/uploadImage/basicman1.jpg" width="40"
+									height="40">${loginID}님 환영합니다!!<br>
+								<br> <a href="mlogout"><button type="button"
+										id=logout_btn>로그아웃</button></a>
+								<!-- &nbsp;  -->
+								<a href="mypage?id=${loginID}"><button type="button"
+										id=logout_btn>내정보</button></a>
+							</div>
+						</div>
 					</c:if>
 				</div>
 			</div>

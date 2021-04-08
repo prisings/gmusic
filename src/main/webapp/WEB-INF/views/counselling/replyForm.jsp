@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>QNA 게시판 답변</title>
+<title>QNA 게시판(답변)</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link
    href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
@@ -14,20 +14,33 @@
 <script src="resources/myLib/footer.js"></script>
 <style type="text/css">
 .leftbar{color:white;
-	font-weight: bold;
-	background-color: #0b3f9a;
+   font-weight: bold;
+   background-color: #0b3f9a;
+   text-align: center;
+   width:70px;
 }
 a {
    text-decoration: none;
    color: black;
 }
 th{color:white;
+  height:50px;
+}
+table{
+  width:100%;
+}
+textarea{
+  width:100%;
+}
+h1{ text-align: center;font-size:50px; margin-top:20px; margin-bottom:20px;
+   color: #0b3f9a; 
 }
 /* header */
 header {
    background-color: black;
    height: 40px;
-   width: 100%;
+   margin:0 auto;
+   width: 75%;
 }
 #headermenu {
    float: right;
@@ -43,19 +56,19 @@ nav {
    border-bottom-width: 3px;
    border-bottom-color: navy;
    border-bottom-style: solid;
-   width: 100%;
+   margin:0 auto;
+   width: 75%;
    height: 70px;
    padding-top: 1px;
 }
 /* body */
 body{
-	margin:0;
+   margin:0;
 }
 section{
    margin: 0 auto;
    width: 75%;
    height: 450px;
-   padding-top: 20px;
 
 }
 /* topmenu(nav) */
@@ -94,7 +107,7 @@ footer{
 border-top-style:solid;
 border-top-color:navy;
 border-top-width:1px;
-	
+   
 }
 /*footer---------------------------- */
 footer {
@@ -125,12 +138,17 @@ footer {
 /*footer---------------------------- */
 /* 반응형 미디어 쿼리 */
 @media(max-width:650px) {
-	
+   
 }
 </style>
 </head>
 <body>
-<header><a href="home"><img src="resources/uploadimage/gm.png" width="40px" height="40px"></a>
+<c:if test="${message!=null}">
+   <script>
+      alert('${message}');
+   </script>
+</c:if>
+<header><a href="home"><img src="resources/uploadImage/gm.png" width="40px" height="40px"></a>
       <ul id="headermenu">
          <!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
          <!-- <li>로그아웃</li> -->
@@ -140,55 +158,59 @@ footer {
             </button></li>
          <c:if test="${loginID == null}">
             <li><button>
-                  <a href="javascript:;">로그인</a>
+                  <a href="memberloginpage?jcode=Q">로그인</a>
                </button></li>
             <li><button>
-                  <a href="checkterm">회원가입</a>
+                  <a href="checkterm?jcode=Q">회원가입</a>
                </button></li>
          </c:if>
          <c:if test="${loginID != null}">
             <li><button>
-                  <a href="javascript:;">로그아웃</a>
+                  <a href="mlogout?jcode=Q">로그아웃</a>
                </button></li>
             <li><button id="mypage">
-                    마이페이지
+                     <a href="mypage?id=${loginID}"> 마이페이지</a>
                </button></li>
          </c:if>
       </ul>
 </header>
 <nav>
-	<ul>
-		<li><a href="home">메인페이지</a>
-		<li><a href="qna">1대1 문의</a>
-		<li><a href="faq">자주묻는 질문</a>
-	</ul>
+   <ul>
+      <li><a href="home">메인페이지</a>
+      <li><a href="qna">1대1 문의</a>
+      <li><a href="faq">자주묻는 질문</a>
+   </ul>
 </nav>
 <section>
 <!-- /////////////////SECTION START//////////////////////////////////////////////////////// -->
+<h1>Answer</h1>
 <form action="replyinsert" method="post"><table>
-  <tr height="40"><td bgcolor="Plum ">I D</td>
-  	  <td><input type="text" name="id" value="${loginID}" readonly></td>
+   <tr><th class="leftbar"colspan="2">관리자 메뉴</th></tr>
+   <tr>
+       <td><input type="text" name="id" value="${loginID}" readonly  hidden="hidden"></td>
   </tr>
-  <tr height="40"><td bgcolor="Plum ">Title</td>
-	<td><input type="text" name="title"></td>
+  <tr height="40"><td class="leftbar">제목</td>
+   <td><input type="text" name="title" maxlength="100"></td>
   </tr>
-  <tr height="40"><td bgcolor="Plum ">Content</td>
-	<td><textarea rows="10" cols="40" name="content"></textarea></td>
+  <tr height="40"><td class="leftbar">내용</td>
+   <td><textarea rows="10" cols="40" name="content" maxlength="2000"></textarea></td>
   </tr>
   <tr><td></td>
-  	  <td><input type="text" name="root" value="${boardVO.root}" hidden> <!-- 값: 디테일->컨트롤러 폼->여기->컨트롤러 리플라이 -->
-  	  	  <input type="text" name="step" value="${boardVO.step}" hidden>
-  	     </td>
+       <td><input type="text" name="root" value="${boardVO.root}" hidden> <!-- 값: 디테일->컨트롤러 폼->여기->컨트롤러 리플라이 -->
+            <input type="text" name="step" value="${boardVO.step}" hidden>
+          </td>
   </tr>
   <tr height="40"><td></td>
     <td><input type="submit" value="전송">&nbsp;&nbsp;
-  	    <input type="reset" value="취소">&nbsp;&nbsp;
+         <input type="reset" value="취소">&nbsp;&nbsp;
   </tr>
 </table></form>
+<hr>
+<a href="#" onClick="history.back()">이전페이지</a>&nbsp;&nbsp; 
 <!-- ///////////////////SECTION END////////////////////////////////////////////////////// -->
 </section>
 <footer>
-	<div id="footerinfo">
+   <div id="footerinfo">
          <a href="javascript:;" class="footergroup" id="introcompany">회사
             소개</a>&nbsp;&nbsp; <font class="footerbar">|</font> &nbsp;&nbsp; <a
             href="javascript:;" class="footergroup" id="termsp">이용약관</a>&nbsp;&nbsp;

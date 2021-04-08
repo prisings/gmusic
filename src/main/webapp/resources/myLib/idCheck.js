@@ -30,7 +30,7 @@ function idCheck() {
 		$('#iMessage').html(' ID는 영문과 숫자로만 입력하세요 ~~ ');
 		return false;
 	}else {
-		$('#iMessage').html('');
+		//$('#iMessage').html('');
 		return true;
 	}
 } //idCheck
@@ -109,7 +109,7 @@ function emailCheck() {
 	   	$('#eMessage').html(' email id를 입력해주세요');
 	   	return false;
 	}else {
-	  	$('#eMessage').html('');
+	  	//$('#eMessage').html('');
 	  	return true;
 	}
 } //emailCheck 
@@ -126,7 +126,7 @@ function email2Check() {
 	   	$('#eMessage').html(' email뒷부분의 형식은 소문자 알파벳이 들어가야 합니다 ~~');
 		return false;
 	}else {
-	  	$('#eMessage').html('');
+	  	//$('#eMessage').html('');
 	  	return true;
 	}
 } //email2Check 
@@ -139,7 +139,7 @@ function email3Check() {
 		$('#eMessage').html(' email 뒷부분을 확인하세요~'); //- 직접입력의 값이 없으면 false
 		return false;
 	}else {
-		$('#eMessage').html(''); // 위 조건이 아니라면 성공
+		//$('#eMessage').html(''); // 위 조건이 아니라면 성공
 	  	return true;
 	}
 } //email3Check
@@ -156,7 +156,7 @@ function phoneCheck() {
     	$('#phMessage').html(' 전화번호는 숫자로만 입력하세요 ~~');
         return false;
     }else {
-	    $('#phMessage').html('');
+	    //$('#phMessage').html('');
 	    return true;
 	}
 } //phoneCheck 

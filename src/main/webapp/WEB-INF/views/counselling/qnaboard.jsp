@@ -33,17 +33,32 @@ $(function(){
 });//ready
 </script>
 <style type="text/css">
+.leftbar{color:white;
+	font-weight: bold;
+	background-color: #0b3f9a;
+}
 a {
    text-decoration: none;
    color: black;
 }
 th{color:white;
+  height:50px;
+}
+table{
+  width:100%
+}
+textarea{
+  width:100%
+}
+h1{ text-align: center;font-size:50px; margin-top:20px; margin-bottom:20px;
+   color: #0b3f9a; 
 }
 /* header */
 header {
    background-color: black;
    height: 40px;
-   width: 100%;
+   width: 75%;
+   margin:0 auto;
 }
 #headermenu {
    float: right;
@@ -59,7 +74,8 @@ nav {
    border-bottom-width: 3px;
    border-bottom-color: navy;
    border-bottom-style: solid;
-   width: 100%;
+   width: 75%;
+   margin:0 auto;
    height: 70px;
    padding-top: 1px;
 }
@@ -145,7 +161,12 @@ border-top-width:1px;
 </style>
 </head>
 <body>
-<header><a href="home"><img src="resources/uploadimage/gm.png" width="40px" height="40px"></a>
+<c:if test="${message!=null}">
+	<script>
+		alert('${message}');
+	</script>
+</c:if>
+<header><a href="home"><img src="resources/uploadImage/gm.png" width="40px" height="40px"></a>
       <ul id="headermenu">
          <!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
          <!-- <li>로그아웃</li> -->
@@ -155,18 +176,18 @@ border-top-width:1px;
             </button></li>
          <c:if test="${loginID == null}">
             <li><button>
-                  <a href="javascript:;">로그인</a>
+                   <a href="memberloginpage?jcode=Q">로그인</a>
                </button></li>
             <li><button>
-                  <a href="checkterm">회원가입</a>
+                  <a href="checkterm?jcode=Q">회원가입</a>
                </button></li>
          </c:if>
          <c:if test="${loginID != null}">
             <li><button>
-                  <a href="javascript:;">로그아웃</a>
+                  <a href="mlogout?jcode=Q">로그아웃</a>
                </button></li>
             <li><button id="mypage">
-                    마이페이지
+                     <a href="mypage?id=${loginID}"> 마이페이지</a>
                </button></li>
          </c:if>
       </ul>
@@ -206,7 +227,7 @@ border-top-width:1px;
 		<td>${row.seq}</td>
 		<td>
 			<!-- 답글 구분 -->
-			<c:if test="${row.step != 0}">
+			<c:if test="${row.step != 0}"> 
 				<span style="color:#0b3f9a; background-color: ghostwhite;">&nbsp;&nbsp;&nbsp;답변&nbsp;&nbsp;</span>
 			</c:if>
 			<a href="bdetail?seq=${row.seq}" style="font-weight: bold;">${row.title}</a>
@@ -240,9 +261,9 @@ border-top-width:1px;
 	<!-- ver 02 : pageMaker.searchQuery(?) -->
 <!-- 1) First << , Prev < : enabeld 여부 -->
 	<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
-		<a href="qna${pageMaker.searchQuery(1)}">First</a>&nbsp;
+		<a href="qna${pageMaker.searchQuery(1)}">&#8666;</a>&nbsp; <!-- First -->
 		<!-- "qna?currPage=1" -->
-		<a href="qna${pageMaker.searchQuery(pageMaker.sPageNo-1)}">Prev</a>
+		<a href="qna${pageMaker.searchQuery(pageMaker.sPageNo-1)}">&#8636;</a> <!-- Prev -->
 	</c:if>
 
 <!-- 2) sPage~ePage까지 displayPageNo 값 만큼 출력 -->
@@ -261,8 +282,8 @@ border-top-width:1px;
 
 <!-- 3) Next > , Last >> : enabled 여부 -->
 	<c:if test="${pageMaker.next && pageMaker.ePageNo>0}">
-		<a href="qna${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;Next</a>&nbsp;
-		<a href="qna${pageMaker.searchQuery(pageMaker.lastPageNo)}">Last</a>&nbsp;&nbsp;
+		<a href="qna${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;&#8640;</a>&nbsp; <!-- Next -->
+		<a href="qna${pageMaker.searchQuery(pageMaker.lastPageNo)}">&#8667;</a>&nbsp;&nbsp; <!-- Last -->
 		
 	</c:if>
 </div>

@@ -87,8 +87,5 @@ public class Criteria {
 		return "Criteria [currPage=" + currPage + ", rowPerPage=" + rowPerPage + ", sno=" + sno + ", eno=" + eno
 				+ ", searchType=" + searchType + ", keyword=" + keyword + "]";
 	}
-
-	
-	
 	
 }// class

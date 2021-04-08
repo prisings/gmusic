@@ -16,18 +16,31 @@
 .leftbar{color:white;
 	font-weight: bold;
 	background-color: #0b3f9a;
+	text-align: center;
+	width:70px;
 }
 a {
    text-decoration: none;
    color: black;
 }
 th{color:white;
+  height:50px;
+}
+table{
+  width:100%
+}
+textarea{
+  width:100%
+}
+h1{ text-align: center;font-size:50px; margin-top:20px; margin-bottom:20px;
+   color: #0b3f9a; 
 }
 /* header */
 header {
    background-color: black;
    height: 40px;
-   width: 100%;
+   margin:0 auto;
+   width: 75%;
 }
 #headermenu {
    float: right;
@@ -43,7 +56,8 @@ nav {
    border-bottom-width: 3px;
    border-bottom-color: navy;
    border-bottom-style: solid;
-   width: 100%;
+   margin:0 auto;
+   width: 75%;
    height: 70px;
    padding-top: 1px;
 }
@@ -54,8 +68,7 @@ body{
 section{
    margin: 0 auto;
    width: 75%;
-   height: 450px;
-   padding-top: 20px;
+   height: 550px;
 
 }
 /* topmenu(nav) */
@@ -130,28 +143,34 @@ footer {
 </style>
 </head>
 <body>
-<header><a href="home"><img src="resources/uploadimage/gm.png" width="40px" height="40px"></a>
+<c:if test="${message!=null}">
+	<script>
+		alert('${message}');
+	</script>
+</c:if>
+<header><a href="home"><img src="resources/uploadImage/gm.png" width="40px" height="40px"></a>
       <ul id="headermenu">
          <!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
          <!-- <li>로그아웃</li> -->
+         
 
          <li><button>
                <a href="javascript:;">이용권구매</a>
             </button></li>
          <c:if test="${loginID == null}">
             <li><button>
-                  <a href="javascript:;">로그인</a>
+                  <a href="memberloginpage?jcode=Q">로그인</a>
                </button></li>
             <li><button>
-                  <a href="checkterm">회원가입</a>
+                  <a href="checkterm?jcode=Q">회원가입</a>
                </button></li>
          </c:if>
          <c:if test="${loginID != null}">
             <li><button>
-                  <a href="javascript:;">로그아웃</a>
+                  <a href="mlogout?jcode=Q">로그아웃</a>
                </button></li>
             <li><button id="mypage">
-                    마이페이지
+                    <a href="mypage?id=${loginID}"> 마이페이지</a>
                </button></li>
          </c:if>
       </ul>
@@ -165,13 +184,13 @@ footer {
 </nav>
 <section>
 <!-- /////////////////SECTION START//////////////////////////////////////////////////////// -->
+<h1>Q & A</h1>
 <table>
+	<tr><th class="leftbar" colspan="2">${Apple.title}</th></tr>
 	<tr height="40"><td class="leftbar">No.</td>
 		<td>${Apple.seq}</td></tr>
-	<tr height="40"><td class="leftbar">I D</td>
+	<tr height="40"><td class="leftbar">글쓴이</td>
 		<td>${Apple.id}</td></tr>
-	<tr height="40"><td class="leftbar">제목</td>
-		<td>${Apple.title}</td></tr>	
 	<tr height="40"><td class="leftbar">내용</td>
 		<td><textarea rows="10" cols="80" readonly="readonly">${Apple.content}</textarea></td>
 	</tr>
@@ -186,13 +205,13 @@ footer {
 => ${message}
 </c:if>
 <hr>
-<a href="#" onClick="history.back()">목록</a>&nbsp;&nbsp; 
+<a href="#" onClick="history.back()">이전페이지</a>&nbsp;&nbsp; 
 <c:if test="${loginID!=null}">
 	<a href="binsertf">새글등록</a>&nbsp;&nbsp;
 </c:if>
 <c:if test="${loginGRADE=='admin'}">	
 	<a href="replyinsertf?root=${Apple.root}&step=${Apple.step}">답글등록</a>&nbsp;&nbsp;
-	<a href="bdelete?seq=${Apple.seq}&root=${Apple.root}">글삭제</a>&nbsp;&nbsp;
+	<a href="boarddelete?seq=${Apple.seq}&root=${Apple.root}">글삭제</a>&nbsp;&nbsp;
 </c:if>
 <c:if test="${Apple.id==loginID}">
 	<a href="bdetail?seq=${Apple.seq}&jcode=U">글수정</a>

@@ -40,6 +40,4 @@ public interface BoardService {
 
 // ** Check BoardList
 	public List<FaqVO> checkselectList(FaqVO vo);
-	
-	public int insertF(FaqVO vo); // 글등록
 }// interface

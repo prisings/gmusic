@@ -51,27 +51,27 @@ $(function(){
 	
 	// *** 무결성 체크 ***
 	$('#id').focus();
-	$('#id').focusout(function() {
+	$('#id').on("propertychange change keyup paste", function() {
 		iCheck=idCheck();
 	}); //id
 	
-	$('#password').focusout(function() {
+	$('#password').on("propertychange change keyup paste", function() {
 		pCheck=pwCheck();
 	}); //password
 	
-	$('#password2').focusout(function() {
+	$('#password2').on("propertychange change keyup paste", function() {
 		p2Check=pw2Check();
 	}); //password2
 	
-	$('#email1').focusout(function() {
+	$('#email1').on("propertychange change keyup paste", function() {
 		eCheck=emailCheck();
 	}); //email
 
-	$('#email2').focusout(function() {
+	$('#email2').on("propertychange change keyup paste", function() {
 		e2Check=email2Check();
 	}); //email2
 	
- 	$('#email3').focusout(function() {
+ 	$('#email3').on("propertychange change keyup paste", function() {
 		e2Check=email3Check();
 	}); //email3
 	
@@ -79,7 +79,7 @@ $(function(){
 		bCheck=bdCheck();
 	}); //birthd
 	
-	$('.phone').focusout(function() {
+	$('.phone').on("propertychange change keyup paste", function() {
 		phCheck=phoneCheck();
 	}); //phone
 	
@@ -99,12 +99,11 @@ $(function(){
 	    <version>2.8.5</version>
 	</dependency> */
 	
-	$("#id").blur(function() {
+	$("#id").on("propertychange change keyup paste input", function() {
 		var id = $('#id').val();
 		$.ajax({
 			url : 'userCheck?id='+ id,
 			type : 'get',
-			
 			success : function(data) {
 				console.log("id 중복 검사 1 = 중복o / 0 = 중복x : "+ data);							
 					if (data == 1) {
@@ -112,6 +111,7 @@ $(function(){
 							// 1 : 아이디가 중복되는 문구
 							$("#iMessage").text("사용중인 아이디입니다 :p");
 							$("#iMessage").css("color", "red");
+							idoverlapping=false;
 						}
 					} else {
 						if(idCheck()){
@@ -120,6 +120,7 @@ $(function(){
 							idoverlapping=true;
 						}else{
 							$("#iMessage").css("color", "red");
+							idoverlapping=false;
 						}
 						
 					}
@@ -129,9 +130,11 @@ $(function(){
 			});
 	});//id
 	
+
+	
 	// ajax,json,gson 이용 email 중복 검사
 	// email2,email3 는 backemail 클래스임
-	$(".backemail").blur(function() { // email2,email3 둘중하나라도 포커스 아웃하면.
+	$(".backemail").on("propertychange change keyup paste input", function() { // email2,email3 둘중하나라도 포커스 아웃하면.
 		var backemail = $(this).attr('id'); // 이벤트발생 클래스의 id:(email2 or email3). email2 포커스 아웃인지 email3에 의한 포커스아웃인지 판별
 		if($("#email3").val()=="direct"){ // email3가 직접입력이라면 backemail을 email2로 바꿈
 			backemail = "email2";		  //- 직접입력을 누르고 email2에 아무것도 안쓰고 넘어갔을때 문제가 안생기는 오류를 막음.  
@@ -152,7 +155,6 @@ $(function(){
 		$.ajax({
 			url : 'userCheck?email='+ email,
 			type : 'get',
-			
 			success : function(data) {
 				console.log("email 중복 검사 1 = 중복o / 0 = 중복x : "+ data);							
 				
@@ -180,6 +182,7 @@ $(function(){
 								emailoverlapping=true; // email 중복체크 되면 서브밋가능
 							}else{
 								$("#eMessage").css("color", "red");
+								emailoverlapping=false;
 							}//eCheck
 						}else{	// 포커스 아웃이 email3이고 direct가 아니라면
 							if(emailCheck() && email3Check()){ //email 1,3 체크
@@ -188,6 +191,7 @@ $(function(){
 								emailoverlapping=true; // email 중복체크 되면 서브밋가능
 							}else{
 								$("#eMessage").css("color", "red");
+								emailoverlapping=false;
 							}//eCheck
 							
 						}
@@ -199,12 +203,11 @@ $(function(){
 		}); //email
 	
 	// ajax,json,gson 이용 phon 중복 검사
-	$(".phone").blur(function() {
+	$(".phone").on("propertychange change keyup paste input", function() {
 		var phone = $('#phone1').val() + $('#phone2').val() + $('#phone3').val();
 		$.ajax({
 			url : 'userCheck?phone='+ phone,
 			type : 'get',
-			
 			success : function(data) {
 				console.log("phone 중복 검사 1 = 중복o / 0 = 중복x : "+ data);							
 					if (data == 1) {
@@ -212,6 +215,7 @@ $(function(){
 							// 1 : 핸드폰이 중복되는 문구
 							$("#phMessage").text("사용중인 핸드폰 번호입니다 :p");
 							$("#phMessage").css("color", "red");
+							phoneoverlapping=false;
 						}
 					} else {
 						if(phoneCheck()){
@@ -220,6 +224,7 @@ $(function(){
 							phoneoverlapping=true;
 						}else{
 							$("#phMessage").css("color", "red");
+							phoneoverlapping=false;
 						}
 						
 					}
@@ -229,55 +234,79 @@ $(function(){
 			});
 	});//phone
 	
+	// input 값 실시간 감지 
+	// https://karismamun.tistory.com/66 참고
+	// 필수사항이 모두 true면 가입하기 버튼 css 변경
+	$(".essentialinput").on("propertychange change keyup paste input", function() {
+		var essentialinput = false;
+		if (iCheck==true && pCheck==true && p2Check==true && eCheck==true && e2Check==true && bCheck==true && 
+				phCheck==true && emailoverlapping==true && idoverlapping==true && phoneoverlapping==true) {
+			essentialinput = true;
+		}
+		if(essentialinput){
+	 		$('#submit').css({
+	 			backgroundColor: "#0b3f9a",
+				color: "#fff"
+			}); 
+			
+		}else{
+			$('#submit').css({
+				backgroundColor: "#EEEEEF",
+				color: "#8a8a8d"
+			});
+		}
+	});
+
 	
-	
-}); //ready
+}); //ready	
 
 //3. 전체적으로 입력 오류 가 없음을 확인하고 submit 여부를 판단
 function inCheck() {
 	if (iCheck==false) {
+		$("#iMessage").css("color", "red");
 		$('#iMessage').html(' ID 를 확인 하세요 ~~');
 	}
 	if (pCheck==false) {
+		$("#pMessage").css("color", "red");
 		$('#pMessage').html(' Password 를 확인 하세요 ~~');
 	}
 	if (p2Check==false) {
+		$("#p2Message").css("color", "red");
 		$('#p2Message').html(' 올바르게 Password 재입력 하셨나요?');
 	}
 	if (eCheck==false) {
+		$("#eMessage").css("color", "red");
 		$('#eMessage').html(' email 을 확인 하세요 ~~');
 	}
 	if (e2Check==false) {
+		$("#eMessage").css("color", "red");
 		$('#eMessage').html(' email 형식을 확인 하세요 ~~');
 	}
 	if (bCheck==false) {
+		$("#bMessage").css("color", "red");
 		$('#bMessage').html(' 샐년월일을 확인 하세요 ~~');
 	}
 	if (phCheck==false) {
+		$("#phMessage").css("color", "red");
 		$('#phMessage').html(' 전화번호 를 확인 하세요 ~~');
 	}
 	if (iCheck==true && pCheck==true && p2Check==true && eCheck==true && e2Check==true && bCheck==true && 
 		phCheck==true && emailoverlapping==true && idoverlapping==true && phoneoverlapping==true) {
-		alert('~~ 입력 성공, 전송하시겠습니까?'); // 얼터대신 프롬프트로 바꿀 수 있는지 고려해봐야함(사용자 편리성 up)
+		
+		// confirm 으로 submit 하기
+		// https://blog.naver.com/kim1417/221029960262 참고
+		var answer = confirm("~~ 입력 성공, 전송하시겠습니까?");
+
+		if (answer){    //확인
+		}else{   //취소
+		   return false;
+		}
 	}else {
         return false;   // submit 무효화 
-        $('#id').focusout; // 가입실패시 모든 '무결성체크 + 메시지 표출' 하기 위해 포커스아웃
-        $('#password').focusout;
-        $('#password2').focusout;
-        $('#email1').focusout;
-        if($('#email3').val=="direct"){
-        	$('#email2').focusout;
-        }else{
-	        $('#email3').focusout;
-        }
-        $('#birthday').focusout;
-        $('#phone1').focusout;
-        $('#phone2').focusout;
-        $('#phone3').focusout;
 	}
 } //inCheck
 
-	
+
 </script>
 <style type="text/css">
 
@@ -306,7 +335,7 @@ function inCheck() {
 /* 전체 테이블 */
 #table {
 	width: 500px;
-	height: 1200px;
+	height: 1400px;
 	border-radius: 5px 5px 5px 5px;
 }
 
@@ -318,7 +347,7 @@ function inCheck() {
 /* 필수사항 테이블 */
 #essential {
 	width: 400px;
-	height: 670px;
+	height: 640px;
 	border: 1px solid #bcbcbc;
 	margin-left: 50px;
 	border-radius: 5px 5px 5px 5px;
@@ -327,7 +356,7 @@ function inCheck() {
 /* 선택사항 테이블 */
 #optional {
 	width: 400px;
-	height: 440px;
+	height: 500px;
 	border: 1px solid #bcbcbc;
 	margin-left: 50px;
 	border-radius: 5px 5px 5px 5px;
@@ -335,7 +364,7 @@ function inCheck() {
 
 /* 메인 div class */
 .box1 {
-	padding-bottom: 20px;
+	padding-bottom: 15px;
 	margin-left: 35px;
 }
 
@@ -357,7 +386,6 @@ div>input, #email2 {
 	padding: 9px 35px 9px 16px;
 	border-radius: 5px 5px 5px 5px;
 	border: 0px;
-	padding: 9px 35px 9px 16px;
 }
 
 /* 중복확인 버튼 태그 css */
@@ -403,7 +431,10 @@ div>input, #email2 {
 	height: 50px;
 	font-weight: bold;
 	color: #8a8a8d;
+	border-radius: 5px 5px 5px 5px;
+	border: 0px;
 }
+
 </style>
 </head>
 
@@ -419,25 +450,25 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">아이디</span>
 							<div>
-								<input type="text" name="id" id="id" size="36" placeholder="아이디" maxlength="12">
+								<input type="text" name="id" id="id" class="essentialinput" size="36" placeholder="아이디" maxlength="12">
 								<br> <span id=iMessage class="message"><br></span>
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
 							<span class="font1">비밀번호</span>
 							<div class="box2">
-								<input type="password" name="password" id="password" size="36" placeholder="비밀번호" maxlength="12">
+								<input type="password" name="password" id="password" class="essentialinput" size="36" placeholder="비밀번호" maxlength="12">
 								<br> <span id="pMessage" class="message"> <br></span>
 							</div>
 							<div>
-								<input type="password" name="password2" id="password2" size="36" placeholder="비밀번호 확인" maxlength="12">
+								<input type="password" name="password2" id="password2" class="essentialinput" size="36" placeholder="비밀번호 확인" maxlength="12">
 								<br> <span id="p2Message" class="message"> <br></span>
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
 							<span class="font1">생년월일</span>
 							<div>
-								<input type="date" name="birthday" id="birthday">
+								<input type="date" name="birthday" id="birthday" class="essentialinput">
 								<br> <span id="bMessage" class="message"> <br></span>
 							</div>
 						</div>
@@ -454,10 +485,10 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">이메일</span>
 							<div>
-								<input type="text" name="email1" id="email1" class="backemail" size="10" placeholder="이메일" maxlength="20">
+								<input type="text" name="email1" id="email1" class="backemail essentialinput" size="10" placeholder="이메일" maxlength="20">
 								@
-								<input type="text" name="email2" id="email2" class="backemail" size="7" placeholder="직접입력" maxlenth="15">
-								<select name="email3" id="email3" class="backemail" size="1">
+								<input type="text" name="email2" id="email2" class="backemail essentialinput" size="7" placeholder="직접입력" maxlenth="15">
+								<select name="email3" id="email3" class="backemail essentialinput" size="1">
 									<option selected="selected" disabled="disabled">선택
 									<option value="direct">직접입력
 									<option value="naver.com">naver.com
@@ -479,9 +510,9 @@ div>input, #email2 {
 						<div style="text-align: left;" class="box1">
 							<span class="font1">휴대폰 번호</span>
 							<div>
-								<input type="text" name="phone1" id="phone1" class="phone" size="2" placeholder="010" maxlength="3">&nbsp;-&nbsp;
-								<input type="text" name="phone2" id="phone2" class="phone" size="2" placeholder="0000" maxlength="4">&nbsp;-&nbsp;
-								<input type="text" name="phone3" id="phone3" class="phone" size="2" placeholder="0000" maxlength="4">
+								<input type="text" name="phone1" id="phone1" class="phone essentialinput" size="2" placeholder="010" maxlength="3">&nbsp;-&nbsp;
+								<input type="text" name="phone2" id="phone2" class="phone essentialinput" size="2" placeholder="0000" maxlength="4">&nbsp;-&nbsp;
+								<input type="text" name="phone3" id="phone3" class="phone essentialinput" size="2" placeholder="0000" maxlength="4">
 
 								<br> <span id=phMessage class="message"> <br></span>
 							</div>
@@ -492,12 +523,11 @@ div>input, #email2 {
 					<br>
 					<div id="optional">
 						<br> <span>선택 사항</span><br>
-
 						<div style="text-align: left;" class="box1">
 							<span class="font1">추천인</span>
 							<div>
 								<input type="text" name="rid" id="rid" size="36" placeholder="추천인" maxlength="12">
-								<br> <span id=iMessage class="message"> <br></span>
+								<br><!-- <span id=iMessage class="message"> <br></span> -->
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
@@ -507,12 +537,12 @@ div>input, #email2 {
 									<option selected="selected" value="N">선택 안함
 									<option value="dance">댄스
 									<option value="rap">랩/힙합
-									<option value="R&B">R&B/Soul
+									<option value="r&b">R&B/Soul
 									<option value="indie">인디음악
 									<option value="rock">록/메탈
 									<option value="trot">트로트
 									<option value="jazz">재즈
-									<option value="oldPop">올드팝
+									<option value="oldpop">올드팝
 								</select>
 							</div>
 							<span class="font1">선호장르2</span>
@@ -521,18 +551,21 @@ div>input, #email2 {
 									<option selected="selected" value="N">선택 안함
 									<option value="dance">댄스
 									<option value="rap">랩/힙합
-									<option value="R&B">R&B/Soul
+									<option value="r&b">R&B/Soul
 									<option value="indie">인디음악
 									<option value="rock">록/메탈
 									<option value="trot">트로트
 									<option value="jazz">재즈
-									<option value="oldPop">올드팝
+									<option value="oldpop">올드팝
 								</select>
 							</div>
 						</div>
 						<div style="text-align: left;" class="box1">
 							<span class="font1">이미지</span>
 							<div>
+							<span id="imgspace">
+							<br><br><br>
+							</span>
 								<img src="" class="select_img" />
 								<input type="file" name="uploadfilef" id="uploadfilef" size="36">
 								<script>
@@ -552,6 +585,7 @@ div>input, #email2 {
 										if (this.files&& this.files[0]) {
 											var reader = new FileReader;
 											reader.onload = function(e) {
+												$('#imgspace').html('');
 												$(".select_img")
 														.attr("src",e.target.result)
 														.width(70)

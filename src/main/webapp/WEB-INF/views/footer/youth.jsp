@@ -16,24 +16,51 @@
 	rel="stylesheet">
 <!-- footer font link  end-->
 <style>
-
-#text {
-	white-space: normal;
-   background-color: ghostwhite;
-   width: 800px;
-   height: 600px;
-   /* margin-left: 30px;
-   border: none;
-   resize: none; */
+/* 화면중앙정렬 코드 */
+.layer {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	margin-top: 200px;
 }
 
+.layer .content {
+	display: inline-block;
+	vertical-align: middle
+}
+
+.layer .blank {
+	display: inline-block;
+	width: 0;
+	height: 100%;
+	vertical-align: middle
+}
+
+/* 약관내용있는곳 */
+#text {
+	white-space: pre-line;
+	background-color: ghostwhite;
+	width: 1000px;
+	height: 800px;
+	font-size: 12px;
+	resize: none;
+	border: 0px;
+}
+
+/* textarea 외곽 포커싱선 지우기 */
+textarea:focus {
+	outline: none;
+}
 </style>
 </head>
 <body>
-<div>
-      <h2>청소년보호정책</h2>
-         
-            <textarea id="text" row="100" cols="220">
+
+	<div class="layer">
+		<span class="content"><h2>청소년보호정책</h2>
+		<textarea id="text" row="100" cols="220" readonly="readonly">
 1. 청소년 보호를 위한 목표 및 기본 원칙
 회사는 청소년이 정신적•신체적으로 유해한 환경으로부터 보호받고 유익한 환경을 조성하도록 노력하며, 안전하게 인터넷을 이용할 수 있는 서비스를 제공하기 위해 청소년보호 정책을 명시하고 있습니다. 이용자가 불건전한 행위를 할 경우 서비스 이용약관 등을 통하여 이용 제한을 받을 수 있음을 고지하고 있으며, 신종 유해 정보가 발생했을 경우 공지사항 또는 이메일을 통하여 이를 신속 시 전파함으로써 청소년 및 전체 이용자를 보호하고 있습니다. 또한 각종 정보 건전화 교육 및 캠페인 등을 통하여 네티켓 의식 고취를 위하여 노력하고 있습니다.
 
@@ -59,6 +86,8 @@
 7. 청소년보호정책의 개정
 본 정책은 관련 법률 및 정부지침의 변경과 회사의 정책에 따라 개정될 수 있으며 개정된 사항은 홈페이지를 통해 공지하겠습니다.
 </textarea>
-</div>
+</span><span class="blank"></span>
+	</div>
+	
 </body>
 </html>

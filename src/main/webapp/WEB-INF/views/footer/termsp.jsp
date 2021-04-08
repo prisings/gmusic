@@ -16,23 +16,51 @@
 	rel="stylesheet">
 <!-- footer font link  end-->
 <style>
-
-#text {
-	white-space: normal;
-   background-color: ghostwhite;
-   width: 800px;
-   height: 600px;
-   /* margin-left: 30px;
-   border: none;
-   resize: none; */
+/* 화면중앙정렬 코드 */
+.layer {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	margin-top: 200px;
 }
 
+.layer .content {
+	display: inline-block;
+	vertical-align: middle
+}
+
+.layer .blank {
+	display: inline-block;
+	width: 0;
+	height: 100%;
+	vertical-align: middle
+}
+
+/* 약관내용있는곳 */
+#text {
+	white-space: pre-line;
+	background-color: ghostwhite;
+	width: 1000px;
+	height: 800px;
+	font-size: 12px;
+	resize: none;
+	border: 0px;
+}
+
+/* textarea 외곽 포커싱선 지우기 */
+textarea:focus {
+	outline: none;
+}
 </style>
 </head>
 <body>
-<div>
-<h2>이용약관</h2>
-            <textarea id="text" rows="30" cols="100">
+
+	<div class="layer">
+		<span class="content"><h2>이용약관</h2>
+		<textarea id="text" row="100" cols="220" readonly="readonly">
 제1조(목적) 이 약관은 업체 회사(전자상거래 사업자)가 운영하는 업체 사이버 GMUSIC(이하 “GMUSIC”이라 한다)에서 제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를 이용함에 있어 사이버 GMUSIC과 이용자의 권리․의무 및 책임사항을 규정함을 목적으로 합니다.
  
   ※「PC통신, 무선 등을 이용하는 전자상거래에 대해서도 그 성질에 반하지 않는 한 이 약관을 준용합니다.」
@@ -270,6 +298,8 @@
  
   ② “GMUSIC”과 이용자 간에 제기된 전자상거래 소송에는 한국법을 적용합니다.
 </textarea>
-</div>
+</span><span class="blank"></span>
+	</div>
+	
 </body>
 </html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ncs.MusicMapper">
+
+<!-- ******************************* -->
+<select id="selectList" resultType="vo.MusicVO">
+	 select * from music order by releasedate desc
+</select>
+
+<select id="selectMusic" resultType="vo.MusicVO">
+	select * from music where snum=	#{snum}
+</select>
+
+</mapper>  

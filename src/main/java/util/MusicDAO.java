@@ -11,6 +11,7 @@ import vo.MusicVO;
 // ** Board CRUD 구현
 @Repository
 public class MusicDAO {
+<<<<<<< HEAD
 
 	@Autowired
 	private SqlSession sqlSession;
@@ -28,3 +29,18 @@ public class MusicDAO {
 	} // selctOne
 
 } // class
+=======
+	
+	@Autowired
+	private SqlSession sqlSession; 
+	
+	private static final String NS ="com.ncs.MusicMapper.";
+	
+// ** selectList
+	public List<MusicVO> selectList() {
+		return sqlSession.selectList(NS+"selectList");
+	} //selectList
+	
+
+} //class
+>>>>>>> refs/remotes/origin/master

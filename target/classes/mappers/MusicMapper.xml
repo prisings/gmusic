@@ -5,11 +5,15 @@
 
 <!-- ******************************* -->
 <select id="selectList" resultType="vo.MusicVO">
+<<<<<<< HEAD
 	 select * from music order by releasedate desc
 </select>
 
 <select id="selectMusic" resultType="vo.MusicVO">
 	select * from music where snum=	#{snum}
+=======
+	 select * from music order by snum
+>>>>>>> refs/remotes/origin/master
 </select>
 
 </mapper>  

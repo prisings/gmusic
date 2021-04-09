@@ -277,7 +277,11 @@ a {
 	<div id="section">
 		<div id="sec1">
 			<div>
+<<<<<<< HEAD
 				아
+=======
+				<a href="musictest">musictest</a>
+>>>>>>> refs/remotes/origin/master
 				<%-- <table width=800 border="1">
 					<tr align="center" height="30" bgcolor="pink">
 						<td>sname</td>

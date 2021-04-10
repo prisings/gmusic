@@ -9,11 +9,7 @@
 <body>
 	<ul>
 		<li><a href="javascript:;">공지사항 </a>
-<<<<<<< HEAD
 		<li><a href="musiclist">최신음악</a>
-=======
-		<li><a href="javascript:;">최신음악</a>
->>>>>>> refs/remotes/origin/master
 		<li><a href="javascript:;">순위차트</a>
 			<ul>
 				<li><a href="javascript:;">일간차트</a>

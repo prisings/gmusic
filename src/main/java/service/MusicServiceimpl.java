@@ -9,7 +9,6 @@ import util.MusicDAO;
 import vo.MusicVO;
 
 @Service
-<<<<<<< HEAD
 public class MusicServiceimpl implements MusicService {
 
 	@Autowired
@@ -23,15 +22,4 @@ public class MusicServiceimpl implements MusicService {
 		return dao.selectMusic(vo);
 	} // selectOne
 
-=======
-public class MusicServiceimpl implements MusicService{
-	
-  @Autowired 
-  MusicDAO dao;
-
-	public List<MusicVO> selectList() {
-		return dao.selectList(); 
-	} //selectList
-	
->>>>>>> refs/remotes/origin/master
 }

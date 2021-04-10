@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page trimDirectiveWhitespaces="true"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,57 +12,42 @@
 tr {
 	text-align: center;
 }
+
+#playlist {
+	list-style: none;
+}
+
 a {
 	text-decoration: none;
 	color: black;
 }
 </style>
-	<script>
-		function audioPlay() {
-			var currentSong = 0;
 
-			$("#playlist li a").click(function(e) {
-				e.preventDefault();
-				$("#audioPlay")[0].src = this;
-				$("#audioPlay")[0].play();
-				$("#playlist li").removeClass("current-song");
-				currentSong = $(this).parent().index();
-				$(this).parent().addClass("current-song");
-			});
-
-			$("#audioPlay")[0].addEventListener("ended", function() {
-				currentSong++;
-				if (currentSong == $("#playlist li a").length)
-					currentSong = 0;
-				$("#playlist li").removeClass("current-song");
-				$("#playlist li:eq(" + currentSong + ")").addClass(
-						"current-song");
-				$("#audioPlay")[0].src = $("#playlist li a")[currentSong].href;
-				$("#audioPlay")[0].play();
-			});
-		}
-		
-		
-	</script>
+<script> // 우클릭방지
+	$("*").bind("contextmenu", (function(n) {return !1}));
+</script>
 
 </head>
 <body>
 
-	<input id="snum" name="snum" hidden="hidden" value="${Apple.snum+1}">
-		 ${Apple.sname}
-	<br> ${Apple.singername}
+	<div id="songname">${Banana[0].sname}</div>
+	<div id="singername">${Banana[0].singername}</div>
+	<img src="${Banana[0].image}" width="200" height="200" id="musicimage" />
 	<br>
-	<img src="${Apple.image}" width="200" height="200" />
-	<br>
-	<audio src="${Apple.downloadfile}" id="audioPlay" controls="controls" volume="50%">
+	<audio src="${Banana[0].downloadfile}" id="audioplay"
+		controls="controls" autoplay="autoplay" onended="next()">
 	</audio>
-
-	<ul id="playlist">
-		<li class=" current-song"><a href="${Apple.downloadfile}">${Apple.sname}</a></li>
-		<c:forEach begin="1" end="${Banana.size()}" var="row" items="${Banana}">
-		<li><a href="${row.downloadfile}">${row.sname}</a></li>
+	<button type="button" onclick="privious">이전</button>
+	<button type="button" id="play()">재생</button>
+	<button type="button" onclick="next()">다음</button>
+	<select id="playlist">
+		<c:forEach begin="0" end="${Banana.size()}" var="row"
+			items="${Banana}">
+			<option value="${row.downloadfile}" class="current-song">${row.sname}</option>
 		</c:forEach>
-	</ul>
-
+	</select>
+	<c:if test="${Banana[0].lyrics != null }">
+		<textarea rows="50" cols="100">${Banana[0].lyrics}</textarea>
+	</c:if>
 </body>
 </html>

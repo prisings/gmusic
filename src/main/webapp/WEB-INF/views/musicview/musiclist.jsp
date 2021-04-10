@@ -7,6 +7,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
+<link rel="shortcut icon" href="#">
+
 <script>
 	$(function() { //ready
 
@@ -48,21 +50,25 @@
 	// 형식은 아이디 중복체크에서 가져옴
 	// 각 체크 박스의 밸류값 가져오기
 	// https://ungdoli0916.tistory.com/447 참고
-	function playlist() {
+function getCheckboxValue()  {
+  // 선택된 목록 가져오기
+  const query = 'input[name="snum"]:checked';
+  const selectedEls = 
+      document.querySelectorAll(query);
+  
+  // 선택된 목록에서 value 찾기
+	  let result = '';
+	  selectedEls.forEach((el) => {
+ 	   result += el.value + ',';
+		  });
+  
+  // 출력
+ 	 document.getElementById('result').innerText
+  	  = result;
 
-		var obj_length = document.getElementsByName("snum").length;
-		var songlist = new Array();
-		for (var i = 0; i < obj_length; i++) {
-			if (document.getElementsByName("snum")[i].checked == true) {
-				songlist[i] = +document.getElementsByName("snum")[i].value;
-
-			}
-		}
-
-		url = "playlist?snum=" + songlist;
+		url = "playlist?snum=" + result;
 		console.log(url);
-		window
-				.open(url, "myview",
+		window.open(url, "myview",
 						"toolbar=no,menubar=yes,scrollbars=yes,resizable=yes,width=500,height=400");
 
 	} //playlist
@@ -73,8 +79,9 @@
 
 </head>
 <body>
+	<div hidden="hidden" id="result"></div>
 	<form action="#" method="post">
-		<button type="button" onclick="playlist()">플레이리스트</button>
+		<button type="button" onclick="getCheckboxValue ()">플레이리스트</button>
 		<table width=1200 border="1">
 			<tr align="center" height="2" bgcolor="pink">
 				<td width="50"><input type="checkbox" id="check_all"

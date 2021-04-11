@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class GmusicController {
 		MusicVO music = new MusicVO();
 
 		String a = request.getParameter("snum");
+		
+		/*
+		 * request.getSession().setAttribute("snum2", a); System.out.println(a);
+		 */
+		
 		String[] b = a.split(",");
 		int[] c = new int[b.length];
 

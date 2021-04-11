@@ -23,31 +23,85 @@ a {
 }
 </style>
 
-<script> // 우클릭방지
+<script>
+	// 우클릭방지
 	$("*").bind("contextmenu", (function(n) {return !1}));
 </script>
 
-</head>
-<body>
+<script>
+	function previous() {
+		var index = $("#playlist option").index($("#playlist option:selected"));
+		console.log(index);
+		var size = <c:out value="${Banana.size()}"/> - 1
+		if (index == 0) {
+			index = size;
+			} else {
+			index = index - 1;
+			}
+		$("#playlist option:eq(" + index + ")").prop("selected", true);
+		play();
 
-	<div id="songname">${Banana[0].sname}</div>
-	<div id="singername">${Banana[0].singername}</div>
-	<img src="${Banana[0].image}" width="200" height="200" id="musicimage" />
+	}
+
+	function play() {
+		$("#songname").html($("#playlist option:selected").attr('value'));
+		$("#singername").html($("#playlist option:selected").attr('value2'));
+		$("#musicimage").attr("src", $("#playlist option:selected").attr('value3'));
+		$("#audioplay").attr("src",	$("#playlist option:selected").attr('value4'));
+		$("#lyrics").html($("#playlist option:selected").attr('value5'));
+	}
+
+	function next() {
+		var index = $("#playlist option").index($("#playlist option:selected"));
+		var size = <c:out value="${Banana.size()}"/> - 1
+		if (index == size) {
+		index = 0;
+		} else {
+		index = index + 1;
+		}
+		$("#playlist option:eq(" + index + ")").prop("selected", true);
+		play();
+	}
+	
+	function loop() {
+		var loops = false;
+		
+		if(loops == false){
+			
+		document.getElementById("audioplay").loop = true
+		loops = true;
+		console.log("1번" + loops)
+		
+		}else{
+			
+		document.getElementById("audioplay").loop = false
+		loops = false;
+		console.log("2번" + loops)	
+		}
+	}
+</script>
+</head>
+<body onload="play()">
+
+	<div id="songname"></div>
+	<div id="singername"></div>
+	<img src="" width="200" height="200" id="musicimage" />
 	<br>
-	<audio src="${Banana[0].downloadfile}" id="audioplay"
-		controls="controls" autoplay="autoplay" onended="next()">
+	<audio src="" id="audioplay" controls="controls" autoplay="autoplay" 
+		onended="next()">
 	</audio>
-	<button type="button" onclick="privious">이전</button>
-	<button type="button" id="play()">재생</button>
+	<button type="button" onclick="previous()">이전</button>
+	<button type="button" onclick="play()">재생</button>
 	<button type="button" onclick="next()">다음</button>
+	<button type="button" onclick="loop()">반복</button>
 	<select id="playlist">
 		<c:forEach begin="0" end="${Banana.size()}" var="row"
 			items="${Banana}">
-			<option value="${row.downloadfile}" class="current-song">${row.sname}</option>
+			<option value="${row.sname }" value2="${row.singername }"
+				value3="${row.image }" value5="${row.lyrics }"
+				value4="${row.downloadfile}" class="current-song">${row.sname}</option>
 		</c:forEach>
 	</select>
-	<c:if test="${Banana[0].lyrics != null }">
-		<textarea rows="50" cols="100">${Banana[0].lyrics}</textarea>
-	</c:if>
+	<textarea rows="50" cols="100" id=lyrics></textarea>
 </body>
 </html>

@@ -61,7 +61,7 @@ function getCheckboxValue()  {
 	  selectedEls.forEach((el) => {
  	   result += el.value + ',';
 		  });
-  
+   
   // 출력
  	 document.getElementById('result').innerText
   	  = result;
@@ -70,17 +70,24 @@ function getCheckboxValue()  {
 		console.log(url);
 		window.open(url, "myview",
 						"toolbar=no,menubar=yes,scrollbars=yes,resizable=yes,width=500,height=400");
+		
 
+		
+		
+		
 	} //playlist
+	
+
+	
 </script>
-
-
-
-
 </head>
 <body>
+
+
 	<div hidden="hidden" id="result"></div>
-	<form action="#" method="post">
+
+	<form action="#" method="post" name="musiclist">
+
 		<button type="button" onclick="getCheckboxValue ()">플레이리스트</button>
 		<table width=1200 border="1">
 			<tr align="center" height="2" bgcolor="pink">

@@ -9,7 +9,9 @@
 </select>
 
 <select id="selectMusic" resultType="vo.MusicVO">
-	select * from music where snum=	#{snum} order by releasedate desc , sname
+	   select snum, sname, stitle, singername, releasedate, genre, 
+      replace(lyrics,'-','') lyrics, country, musicurl, 
+      downloadfile, image, count from music where snum=#{snum}
 </select>
 
 </mapper>  

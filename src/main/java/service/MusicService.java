@@ -7,7 +7,9 @@ import vo.MusicVO;
 public interface MusicService {
 
 	public List<MusicVO> selectList();
-	public MusicVO selectMusic(MusicVO vo);
+	public MusicVO selectOne(MusicVO vo);
+	public void musicCount(MusicVO vo);
+	public List<MusicVO> selectdailyRank();
 	
 	
 }// interface

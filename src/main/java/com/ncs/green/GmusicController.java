@@ -2,10 +2,12 @@ package com.ncs.green;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,15 @@ public class GmusicController {
 	@Autowired
 	MusicService service;
 
+	@RequestMapping(value = "/musicCount")
+	public void musicCount(HttpServletRequest request, ModelAndView mv, MusicVO vo) {
+		
+		vo = service.selectOne(vo); // vo값 불러오기
+		vo.setCount(vo.getCount() + 1); // count + 1
+		service.musicCount(vo);
+
+	}
+
 	// musiclist
 	@RequestMapping(value = "/musiclist")
 	public ModelAndView musiclist(ModelAndView mv) {
@@ -38,38 +49,41 @@ public class GmusicController {
 
 	// playlist
 	@RequestMapping(value = "/playlist")
-	public ModelAndView playlist(HttpServletRequest request, ModelAndView mv) {
+	public ModelAndView playlist(HttpServletRequest request, ModelAndView mv, HttpServletResponse response) {
+		// 파라미터로 값을 받음
+		String snumVal = request.getParameter("snumVal");
+		request.getSession().setAttribute("snumValSession", snumVal);
 
-		MusicVO music = new MusicVO();
+		MusicVO vo = new MusicVO();
 
-		String a = request.getParameter("snum");
-		
-		/*
-		 * request.getSession().setAttribute("snum2", a); System.out.println(a);
-		 */
-		
-		String[] b = a.split(",");
-		int[] c = new int[b.length];
+		// 스트링 배열 "," 기준으로 쪼개 담음
+		String splitsnumVal[] = snumVal.split(",");
 
-		for (int i = 0; i < b.length; i++) {
-			c[i] = Integer.parseInt(b[i]);
-		}
+		// sql snum 형식이 int 이기 때문에 int 배열에 다시 담음
+		int intsnumVal[] = new int[splitsnumVal.length];
 
-		for (int i : c) {
-			System.out.println("i = " + i);
+		for (int i = 0; i < splitsnumVal.length; i++) {
+			intsnumVal[i] = Integer.parseInt(splitsnumVal[i]);
 		}
 
 		List<MusicVO> list = new ArrayList<MusicVO>();
-		for (int i = 0; i < c.length; i++) {
-			music.setSnum(c[i]);
-			list.add(service.selectMusic(music));
+		for (int i = 0; i < intsnumVal.length; i++) {
+			vo.setSnum(intsnumVal[i]);
+			list.add(service.selectOne(vo));
+
 		}
-		
-		mv.setViewName("musicview/playlist");
-		mv.addObject("Banana", list);
+		if (list != null) {
+			if ("U".equals(request.getParameter("jcode"))) {
+				// 셔플 함수 참고
+				// https://zetawiki.com/wiki/%ED%95%A8%EC%88%98_shuffle()
+				Collections.shuffle(list);
+			}
+			mv.addObject("Banana", list);
+			mv.setViewName("musicview/playlist");
+		}
 
 		return mv;
-	}
+	} // playlist
 
 	// ** Image DownLoad
 	@RequestMapping(value = "/dnload")

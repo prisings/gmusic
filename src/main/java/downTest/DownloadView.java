@@ -28,6 +28,7 @@ import org.springframework.web.servlet.view.AbstractView;
 public class DownloadView extends AbstractView {
 
 	public DownloadView() {
+		
 		setContentType("application/download; utf-8");
 		// 상위 추상 클래스에 정의되어있음.
 	}

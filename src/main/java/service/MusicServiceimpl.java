@@ -18,8 +18,19 @@ public class MusicServiceimpl implements MusicService {
 		return dao.selectList();
 	} // selectList
 
-	public MusicVO selectMusic(MusicVO vo) {
-		return dao.selectMusic(vo);
+	public MusicVO selectOne(MusicVO vo) {
+		return dao.selectOne(vo);
 	} // selectOne
+
+	public void musicCount(MusicVO vo) {
+	
+		dao.musicCount(vo);
+
+	}
+
+	public List<MusicVO> selectdailyRank() {
+		// TODO Auto-generated method stub
+		return dao.selectdailyRank();
+	}
 
 }

@@ -23,8 +23,16 @@ public class MusicDAO {
 	} // selectList
 
 	// ** selctOne
-	public MusicVO selectMusic(MusicVO vo) {
-		return sqlSession.selectOne(NS + "selectMusic", vo);
+	public MusicVO selectOne(MusicVO vo) {
+		return sqlSession.selectOne(NS + "selectOne", vo);
 	} // selctOne
+
+	public void musicCount(MusicVO vo) {
+		sqlSession.update(NS + "musicCount", vo);
+	}
+
+	public List<MusicVO> selectdailyRank() {
+		return sqlSession.selectList(NS + "selectdailyRank");
+	}
 
 } // class

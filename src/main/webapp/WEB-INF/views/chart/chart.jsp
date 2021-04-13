@@ -76,7 +76,7 @@
 			</c:forEach>
 			<div align="center">
 			<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
-			<a herf="chart"></a>
+			<a herf="chartPage"${pageMaker.search }></a>
 			</c:if>
 			
 			</div>

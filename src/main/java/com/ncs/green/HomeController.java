@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import criteria.Criteria;
+import criteria.PageMaker;
+import service.ChartService;
 import service.MusicService;
 import vo.MusicVO;
 
@@ -26,6 +29,9 @@ public class HomeController {
 
 	@Autowired
 	MusicService service;
+
+	@Autowired
+	ChartService chartService;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -136,4 +142,12 @@ public class HomeController {
 		return mv;
 	}
 
+	@RequestMapping(value = "/chartPage")
+	public ModelAndView chartPage(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker) {
+
+		cri.setSnoEno();
+		mv.addObject("Banana", chartService.searchPList(cri));
+
+		return mv;
+	}
 } // class

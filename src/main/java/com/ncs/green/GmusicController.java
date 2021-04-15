@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import criteria.Criteria;
+import criteria.PageMaker;
 import oracle.sql.ARRAY;
 import service.ChartService;
 import service.MusicService;
@@ -39,7 +41,7 @@ public class GmusicController {
 		
 		// 일간 count + 
 		cvo = chartService.selectOne(cvo); // vo값 불러오기 
-		cvo.setCount(cvo.getCount()); // count + 1
+		cvo.setCount(cvo.getCount()); 
 		chartService.dailyMusicCount(cvo);
 		
 	}
@@ -121,4 +123,25 @@ public class GmusicController {
 		 */
 	} // dnload
 
+	@RequestMapping(value = "/genrelist")
+	public ModelAndView genrelist(ModelAndView mv, Criteria cri, PageMaker pageMaker , MusicVO vo) {
+		System.out.println("***********Test "+vo.getGenre()); //vo엔 자동으로 장르만 들어와있음.
+		
+		cri.setRowPerPage(10); // 한 페이지당 20곡씩 출력
+		cri.setSnoEno();
+		cri.setGenre(vo.getGenre());
+		
+		List<MusicVO> list = service.genreList(cri); //장르에 해당하는 곡목록이 들어옴
+		if (list != null) {
+			mv.addObject("Banana", list);
+		}
+		pageMaker.setCri(cri);	// 계산된 cri를 페이지 메이커의 필드변수에 담아줌
+		pageMaker.setTotalRow(service.genreRowCount(vo)); //  장르 곡목록의 수
+		
+		mv.addObject("pageMaker", pageMaker);
+		mv.addObject("musicGenre", vo.getGenre());
+		mv.setViewName("musicview/genrelist");
+		return mv;
+	}
+	
 }

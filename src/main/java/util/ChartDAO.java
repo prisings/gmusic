@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import criteria.Criteria;
 import vo.ChartVO;
 import vo.MusicVO;
-import vo.PageVO;
 
 @Repository
 public class ChartDAO {
@@ -23,8 +22,8 @@ public class ChartDAO {
 		return sqlSession.selectList(NS + "selectdailyRank", cri);
 	}
 
-	public ChartVO selectOne(ChartVO cvo) {
-		return sqlSession.selectOne(NS + "selectOne", cvo);
+	public ChartVO dailyOne(ChartVO cvo) {
+		return sqlSession.selectOne(NS + "dailyOne", cvo);
 	}
 
 	public void dailyMusicCount(ChartVO cvo) {

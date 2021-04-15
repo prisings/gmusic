@@ -18,7 +18,7 @@
 
 	<select id="selectOne" resultType="vo.ChartVO"> <!-- 노래 재생목록을 위한 sql -->
 
-		select snum , count from music where snum=#{snum}
+		select snum , count from dailyChart where snum=#{snum}
 
 	</select>
 

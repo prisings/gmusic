@@ -9,7 +9,6 @@ import criteria.Criteria;
 import util.ChartDAO;
 import vo.ChartVO;
 import vo.MusicVO;
-import vo.PageVO;
 
 @Service
 public class ChartServiceImpl implements ChartService {
@@ -23,9 +22,9 @@ public class ChartServiceImpl implements ChartService {
 		return dao.selectdailyRank(cri);
 	} 
 
-	public ChartVO selectOne(ChartVO cvo) {
+	public ChartVO dailyOne(ChartVO cvo) {
 		// TODO Auto-generated method stub
-		return dao.selectOne(cvo);
+		return dao.dailyOne(cvo);
 	}
 
 	public void dailyMusicCount(ChartVO cvo) {

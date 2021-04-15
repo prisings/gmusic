@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import criteria.Criteria;
 import criteria.PageMaker;
-import oracle.sql.ARRAY;
 import service.ChartService;
 import service.MusicService;
 import vo.ChartVO;
@@ -40,9 +38,12 @@ public class GmusicController {
 		service.musicCount(vo);
 		
 		// 일간 count + 
-		cvo = chartService.selectOne(cvo); // vo값 불러오기 
-		cvo.setCount(cvo.getCount()); 
+		cvo = chartService.dailyOne(cvo); // vo값 불러오기 
+		cvo.setCount(cvo.getCount() + 1); 
 		chartService.dailyMusicCount(cvo);
+		
+		
+		
 		
 	}
 

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ChartVO {
 
-	private String snum;
+	private int snum;
 	private int count;
 	
 	@Autowired

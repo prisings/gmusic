@@ -18,6 +18,7 @@ import vo.FaqVO;
 
 @Controller
 public class BoardController {
+	
 	@Autowired
 	BoardService service;
 
@@ -36,7 +37,7 @@ public class BoardController {
 		pageMaker.setTotalRow(FAQservice.searchRowCountF(cri)); //ver02
 
 		mv.addObject("pageMaker",pageMaker);
-		mv.setViewName("faq/faqpage");		
+		mv.setViewName("faq/faqpage");
 		return mv;
 	} //faqpage
 

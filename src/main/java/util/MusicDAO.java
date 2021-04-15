@@ -31,8 +31,6 @@ public class MusicDAO {
 		sqlSession.update(NS + "musicCount", vo);
 	}
 
-	public List<MusicVO> selectdailyRank() {
-		return sqlSession.selectList(NS + "selectdailyRank");
-	}
+
 
 } // class

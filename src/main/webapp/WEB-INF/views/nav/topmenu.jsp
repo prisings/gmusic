@@ -12,7 +12,7 @@
 		<li><a href="musiclist">최신음악</a>
 		<li><a href="javascript:;">순위차트</a>
 			<ul>
-				<li><a href="javascript:;">일간차트</a>
+				<li><a href="dailyChart?part=daily">일간차트</a>
 				<li><a href="javascript:;">주간차트</a>
 				<li><a href="javascript:;">월간차트</a>
 			</ul>

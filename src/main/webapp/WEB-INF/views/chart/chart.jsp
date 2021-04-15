@@ -9,7 +9,6 @@
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
 <style>
 #chart {
-	
 	height: 50px;
 }
 
@@ -51,36 +50,35 @@
 </script>
 </head>
 <body>
-	<form name="musiclist">
-		<input type="hidden" id="snumVal" name="snumVal" value="">
-		<table border="1" id="chart">
-			<tr align="center" height="2" bgcolor="pink">
-				<td width="40">순 위</td>
-				<td>앨 범</td>
-				<td>곡 명</td>
-				<td>재 생</td>
-			</tr>
-			<c:forEach var="row" items="${Banana}" varStatus="vs" begin="0" end="9">
-				<tr>
-					<td >${vs.count}</td>
-					<td>
-						<img src="${row.image}" width="40" height="30">
-					</td>
-					<td id=textoverflow>${row.sname}</td>
-					<td>
-						<button type="button" id="playbutten" name="sname" value="${row.snum}">
-							<img src="resources/image/play.jpg" width="30" height="30">
-						</button>
-					</td>
+	<div>
+		<form name="musiclist">
+			<input type="hidden" id="snumVal" name="snumVal" value="">
+			<table border="1" id="chart">
+				<tr align="center" height="2" bgcolor="pink">
+					<td width="40">순 위</td>
+					<td>앨 범</td>
+					<td>곡 명</td>
+					<td>재 생</td>
 				</tr>
-			</c:forEach>
-			<div align="center">
-			<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
-			<a herf="chartPage"${pageMaker.search }></a>
-			</c:if>
-			
-			</div>
-		</table>
-	</form>
+				<c:forEach var="row" items="${Banana}" varStatus="vs" step="1">
+					<tr>
+						<td>${row.rnum}</td>
+						<td>
+							<img src="${row.image}" width="40" height="30">
+						</td>
+						<td id=textoverflow>${row.sname}</td>
+						<td>
+							<button type="button" id="playbutten" name="sname" value="${row.snum}">
+								<img src="resources/image/play.jpg" width="30" height="30">
+							</button>
+						</td>
+					</tr>
+				</c:forEach>
+				</div>
+				<div align="right">
+					<a href="dailyChart?part=jsp">더보기</a>
+				</div>
+			</table>
+		</form>
 </body>
 </html>

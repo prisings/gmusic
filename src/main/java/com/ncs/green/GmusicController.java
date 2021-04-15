@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import oracle.sql.ARRAY;
+import service.ChartService;
 import service.MusicService;
+import vo.ChartVO;
 import vo.MusicVO;
 
 @Controller
@@ -24,14 +26,22 @@ public class GmusicController {
 
 	@Autowired
 	MusicService service;
+	
+	@Autowired
+	ChartService chartService;
 
 	@RequestMapping(value = "/musicCount")
-	public void musicCount(HttpServletRequest request, ModelAndView mv, MusicVO vo) {
+	public void musicCount(HttpServletRequest request, ModelAndView mv, MusicVO vo ,ChartVO cvo) {
 		
 		vo = service.selectOne(vo); // vo값 불러오기
 		vo.setCount(vo.getCount() + 1); // count + 1
 		service.musicCount(vo);
-
+		
+		// 일간 count + 
+		cvo = chartService.selectOne(cvo); // vo값 불러오기 
+		cvo.setCount(cvo.getCount()); // count + 1
+		chartService.dailyMusicCount(cvo);
+		
 	}
 
 	// musiclist

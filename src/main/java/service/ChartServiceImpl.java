@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import criteria.Criteria;
 import util.ChartDAO;
+import vo.ChartVO;
 import vo.MusicVO;
 import vo.PageVO;
 
@@ -16,8 +17,25 @@ public class ChartServiceImpl implements ChartService {
 	@Autowired
 	ChartDAO dao;
 	
-	public List<MusicVO> searchPList(Criteria cri) {
-		return dao.searchPList(cri);
+	
+
+	public List<MusicVO> selectdailyRank(Criteria cri) {
+		return dao.selectdailyRank(cri);
+	} 
+
+	public ChartVO selectOne(ChartVO cvo) {
+		// TODO Auto-generated method stub
+		return dao.selectOne(cvo);
 	}
 
+	public void dailyMusicCount(ChartVO cvo) {
+		
+		dao.dailyMusicCount(cvo);
+	}
+
+	@Override
+	public int rowCount(Criteria cri) {
+		return dao.rowCount(cri);
+	}
+	
 }

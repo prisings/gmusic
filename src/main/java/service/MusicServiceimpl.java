@@ -28,9 +28,5 @@ public class MusicServiceimpl implements MusicService {
 
 	}
 
-	public List<MusicVO> selectdailyRank() {
-		// TODO Auto-generated method stub
-		return dao.selectdailyRank();
-	}
 
 }

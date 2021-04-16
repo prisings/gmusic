@@ -76,7 +76,7 @@
 				</c:forEach>
 				</div>
 				<div align="right">
-					<a href="dailyChart?part=jsp">더보기</a>
+					<a href="chart?part=${mv.part}">더보기</a>
 				</div>
 			</table>
 		</form>

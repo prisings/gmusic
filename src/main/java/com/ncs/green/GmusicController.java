@@ -41,6 +41,14 @@ public class GmusicController {
 		cvo = chartService.dailyOne(cvo); // vo값 불러오기 
 		cvo.setCount(cvo.getCount() + 1); 
 		chartService.dailyMusicCount(cvo);
+
+		cvo = chartService.weeklyOne(cvo); // vo값 불러오기 
+		cvo.setCount(cvo.getCount() + 1); 
+		chartService.weeklyMusicCount(cvo);
+
+		cvo = chartService.monthlyOne(cvo); // vo값 불러오기 
+		cvo.setCount(cvo.getCount() + 1); 
+		chartService.monthlyMusicCount(cvo);
 		
 		
 		

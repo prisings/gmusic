@@ -130,26 +130,34 @@ public class HomeController {
 		return mv;
 	}
 
-	@RequestMapping(value = "/dailyChart")
-	public ModelAndView dailyChart(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker , MusicVO vo) {
-		cri.setSnoEno();
-		mv.addObject("Banana", chartService.selectdailyRank(cri)); 
+	@RequestMapping(value = "/chart")
+	public ModelAndView dailyChart(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker,
+			MusicVO vo) { 
 
-		pageMaker.setCri(cri);
-		pageMaker.setTotalRow(chartService.rowCount(cri));
-		mv.addObject("pageMaker", pageMaker); 
+
 
 		String part = request.getParameter("part"); // 단순 페이징 스위치용입니다 topmaue에서 값을 넘겨 구분하도록 만든겁니다
-		// daily chart => 값이 daily  week chart => week month chart =
-		
-		if(part != null && part != "") {
+		// daily chart => 값이 daily week chart => week month chart =
+
+		cri.setSnoEno();
+		mv.addObject("Banana", chartService.selectdailyRank(cri));
+		if (part != null && part != "") {
+			if(part.equals("WEEKLY")) {
+				mv.addObject("Banana", chartService.selectweeklyRank(cri));
+			}
+			if(part.equals("MONTHLY")) {
+				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
+			}
 			mv.setViewName("chart/chartPage");
-			//여기는 chart page로 이동하는곳입니다.
-		}else {
+			// 여기는 chart page로 이동하는곳입니다.
+		} else {
 			mv.setViewName("chart/chart");
-			//여기는 home 실행시 ajax로 띄우는 곳입니다.
+			// 여기는 home 실행시 ajax로 띄우는 곳입니다.
 		}
-		
+		pageMaker.setCri(cri);
+		pageMaker.setTotalRow(chartService.rowCount(cri));
+		mv.addObject("pageMaker", pageMaker);
+		mv.addObject("part", part);
 		return mv;
 	}// 일일 차트 컨트롤러입니다.
 

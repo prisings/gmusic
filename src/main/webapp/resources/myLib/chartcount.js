@@ -2,7 +2,7 @@
 $(function(){
 	 $.ajax({
          type:'Get',
-         url:'dailyChart',
+         url:'chart',
          success:function(resultPage){
             $('#chartArea').html(resultPage);
             },
@@ -17,7 +17,7 @@ $(function(){
 $('#dailyChart').click(function(){
 	 $.ajax({
          type:'Get',
-         url:'dailyChart',
+         url:'chart',
          success:function(resultPage){
             $('#chartArea').html(resultPage);
             },
@@ -28,10 +28,10 @@ $('#dailyChart').click(function(){
 }); //dailyChart
 
 //** Ajax 주간차트
-$('#wlist').click(function(){
+$('#weeklyChart').click(function(){
 	 $.ajax({
          type:'Get',
-         url:'wlist',
+         url:'chart',
          success:function(resultPage){
             $('#chartArea').html(resultPage);
             },
@@ -42,10 +42,10 @@ $('#wlist').click(function(){
 }); //dlist
 
 //** 월간차트
-$('#monlist').click(function(){
+$('#monthlyChart').click(function(){
 	 $.ajax({
          type:'Get',
-         url:'monlist',
+         url:'chart',
          success:function(resultPage){
             $('#chartArea').html(resultPage);
             },

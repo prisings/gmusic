@@ -34,4 +34,32 @@ public class ChartDAO {
 		return sqlSession.selectOne(NS + "rowCount", cri);
 	}
 
+	public Object selectweeklyRank(Criteria cri) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NS + "selectweeklyRank", cri);
+	}
+
+	public Object selectmonthlyRank(Criteria cri) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NS + "selectmonthlyRank", cri);
+	}
+
+	public ChartVO weeklyOne(ChartVO cvo) {
+		return sqlSession.selectOne(NS + "weeklyOne", cvo);
+	}
+
+	public void weeklyMusicCount(ChartVO cvo) {
+		sqlSession.update(NS + "weeklyMusicCount", cvo);
+		
+	}
+
+	public ChartVO monthlyOne(ChartVO cvo) {
+		return sqlSession.selectOne(NS + "monthlyOne", cvo);
+	}
+
+	public void monthlyMusicCount(ChartVO cvo) {
+		sqlSession.update(NS + "monthlyMusicCount", cvo);
+		
+	}
+
 }

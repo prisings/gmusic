@@ -138,10 +138,10 @@ public class HomeController {
 
 		String part = request.getParameter("part"); // 단순 페이징 스위치용입니다 topmaue에서 값을 넘겨 구분하도록 만든겁니다
 		// daily chart => 값이 daily week chart => week month chart =
-
+		String ajax = request.getParameter("ajax");
 		cri.setSnoEno();
-		mv.addObject("Banana", chartService.selectdailyRank(cri));
 		if (part != null && part != "") {
+			mv.addObject("Banana", chartService.selectdailyRank(cri));
 			if(part.equals("WEEKLY")) {
 				mv.addObject("Banana", chartService.selectweeklyRank(cri));
 			}
@@ -150,7 +150,17 @@ public class HomeController {
 			}
 			mv.setViewName("chart/chartPage");
 			// 여기는 chart page로 이동하는곳입니다.
-		} else {
+		} else if(ajax != null && ajax !=""){
+			mv.addObject("Banana", chartService.selectdailyRank(cri));
+			mv.addObject("message", "DAILY");
+			if(ajax.equals("WEEKLYAJAX")) {
+				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
+				mv.addObject("message", "WEEKLY");
+			}
+			if(ajax.equals("MONTHLYAJAX")) {
+				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
+				mv.addObject("message", "MONTHLY");
+			}
 			mv.setViewName("chart/chart");
 			// 여기는 home 실행시 ajax로 띄우는 곳입니다.
 		}

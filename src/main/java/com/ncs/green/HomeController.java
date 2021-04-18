@@ -133,9 +133,6 @@ public class HomeController {
 	@RequestMapping(value = "/chart")
 	public ModelAndView dailyChart(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker,
 			MusicVO vo) { 
-
-
-
 		String part = request.getParameter("part"); // 단순 페이징 스위치용입니다 topmaue에서 값을 넘겨 구분하도록 만든겁니다
 		// daily chart => 값이 daily week chart => week month chart =
 		String ajax = request.getParameter("ajax");
@@ -149,12 +146,13 @@ public class HomeController {
 				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
 			}
 			mv.setViewName("chart/chartPage");
+			mv.addObject("part", part);
 			// 여기는 chart page로 이동하는곳입니다.
 		} else if(ajax != null && ajax !=""){
 			mv.addObject("Banana", chartService.selectdailyRank(cri));
 			mv.addObject("message", "DAILY");
 			if(ajax.equals("WEEKLYAJAX")) {
-				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
+				mv.addObject("Banana", chartService.selectweeklyRank(cri));
 				mv.addObject("message", "WEEKLY");
 			}
 			if(ajax.equals("MONTHLYAJAX")) {
@@ -167,7 +165,6 @@ public class HomeController {
 		pageMaker.setCri(cri);
 		pageMaker.setTotalRow(chartService.rowCount(cri));
 		mv.addObject("pageMaker", pageMaker);
-		mv.addObject("part", part);
 		return mv;
 	}// 일일 차트 컨트롤러입니다.
 

@@ -50,9 +50,6 @@ public class GmusicController {
 		cvo.setCount(cvo.getCount() + 1); 
 		chartService.monthlyMusicCount(cvo);
 		
-		
-		
-		
 	}
 
 	// musiclist

@@ -32,6 +32,23 @@ public class MusicDAO {
 		sqlSession.update(NS + "musicCount", vo);
 	}
 
+	// ** musicList
+	public List<MusicVO> musicList(Criteria cri) {
+		return sqlSession.selectList(NS + "musicList", cri);
+	} // musicList
+
+	public int totalRowCount() {
+		return sqlSession.selectOne(NS + "totalRowCount");
+	}
+
+	public List<MusicVO> releasedateList(Criteria cri) {
+		return sqlSession.selectList(NS + "releasedateList", cri);
+	} // genreList
+
+	public int releasedateRowCount() {
+		return sqlSession.selectOne(NS + "releasedateRowCount");
+	}
+
 	// ** genreList
 	public List<MusicVO> genreList(Criteria cri) {
 		return sqlSession.selectList(NS + "genreList", cri);
@@ -41,4 +58,42 @@ public class MusicDAO {
 		return sqlSession.selectOne(NS + "genreRowCount", vo);
 	}
 
+	/*-------------검색부분 추가--------------*/
+	// SearchCriteria PageList
+	public int searchRowCountSname(Criteria cri) {
+		return sqlSession.selectOne(NS + "searchRowCountSname", cri);
+	}
+
+	public int searchRowCountSingerName(Criteria cri) {
+		return sqlSession.selectOne(NS + "searchRowCountSingerName", cri);
+	}
+
+	public int searchRowCountLyrics(Criteria cri) {
+		return sqlSession.selectOne(NS + "searchRowCountLyrics", cri);
+	}
+
+	public List<MusicVO> searchSnameList(Criteria cri) {
+		return sqlSession.selectList(NS + "searchSnameList", cri);
+	}
+
+	public List<MusicVO> searchSingerNameList(Criteria cri) {
+		return sqlSession.selectList(NS + "searchSingerNameList", cri);
+	}
+
+	public List<MusicVO> searchLyricsList(Criteria cri) {
+		return sqlSession.selectList(NS + "searchLyricsList", cri);
+	}
+
+	// ** Criteria PageList
+	public List<MusicVO> criSnameList(Criteria cri) {
+		return sqlSession.selectList(NS + "pageSnameList", cri);
+	}
+
+	public List<MusicVO> criSingerNameList(Criteria cri) {
+		return sqlSession.selectList(NS + "pageSnameList", cri);
+	}
+
+	public List<MusicVO> criLyricsList(Criteria cri) {
+		return sqlSession.selectList(NS + "pageSnameList", cri);
+	}
 } // class

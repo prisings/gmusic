@@ -1,9 +1,7 @@
 package com.ncs.green;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,14 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import criteria.Criteria;
 import criteria.PageMaker;
 import service.ChartService;
 import service.MusicService;
-import vo.ChartVO;
 import vo.MusicVO;
 
 @Controller
@@ -131,31 +127,31 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/chart")
-	public ModelAndView dailyChart(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker,
-			MusicVO vo) { 
+	public ModelAndView chart(ModelAndView mv, HttpServletRequest request, Criteria cri, PageMaker pageMaker,
+			MusicVO vo) {
+
 		String part = request.getParameter("part"); // 단순 페이징 스위치용입니다 topmaue에서 값을 넘겨 구분하도록 만든겁니다
 		// daily chart => 값이 daily week chart => week month chart =
 		String ajax = request.getParameter("ajax");
 		cri.setSnoEno();
 		if (part != null && part != "") {
 			mv.addObject("Banana", chartService.selectdailyRank(cri));
-			if(part.equals("WEEKLY")) {
+			if (part.equals("WEEKLY")) {
 				mv.addObject("Banana", chartService.selectweeklyRank(cri));
 			}
-			if(part.equals("MONTHLY")) {
+			if (part.equals("MONTHLY")) {
 				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
 			}
 			mv.setViewName("chart/chartPage");
-			mv.addObject("part", part);
 			// 여기는 chart page로 이동하는곳입니다.
-		} else if(ajax != null && ajax !=""){
+		} else if (ajax != null && ajax != "") {
 			mv.addObject("Banana", chartService.selectdailyRank(cri));
 			mv.addObject("message", "DAILY");
-			if(ajax.equals("WEEKLYAJAX")) {
+			if (ajax.equals("WEEKLYAJAX")) {
 				mv.addObject("Banana", chartService.selectweeklyRank(cri));
 				mv.addObject("message", "WEEKLY");
 			}
-			if(ajax.equals("MONTHLYAJAX")) {
+			if (ajax.equals("MONTHLYAJAX")) {
 				mv.addObject("Banana", chartService.selectmonthlyRank(cri));
 				mv.addObject("message", "MONTHLY");
 			}
@@ -165,7 +161,8 @@ public class HomeController {
 		pageMaker.setCri(cri);
 		pageMaker.setTotalRow(chartService.rowCount(cri));
 		mv.addObject("pageMaker", pageMaker);
+		mv.addObject("part", part);
 		return mv;
-	}// 일일 차트 컨트롤러입니다.
+	}// 차트 컨트롤러입니다.
 
 } // class

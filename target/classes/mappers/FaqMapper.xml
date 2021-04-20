@@ -46,7 +46,7 @@ XML에서는  <,>등 비교연산자의 경우 XML규칙상 에러 나기때문�
   </choose>
 </sql>
 
-<select id="searchRowCount" resultType="int">
+<select id="searchRowCountF" resultType="int">
 <![CDATA[ 	
 	select count(*) from faq where ( seq > 0 ]]>
 	<!-- 조건 id : search -->

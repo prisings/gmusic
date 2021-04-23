@@ -196,7 +196,7 @@ public class GmusicController {
 		cri.setSnoEno();
 
 		mv.addObject("searchType", cri.getSearchType());
-		mv.addObject("UserKeyword", cri.getKeyword());
+		mv.addObject("UserKeyword", cri.getKeyword().replace("\"", "&quot;"));
 		cri.setKeyword(cri.getKeyword().replace(" ", ""));
 
 		if ("all".equals(cri.getSearchType())) {
@@ -217,10 +217,10 @@ public class GmusicController {
 			mv.addObject("Canana2", service.searchRowCountSname(cri));
 			cri.setSearchType("all");
 		}else {
-			
 			mv.addObject("Apple", service.searchSnameList(cri));
 			mv.addObject("Apple2", service.searchRowCountSname(cri));
 		}
+		
 
 
 		pageMaker.setCri(cri);

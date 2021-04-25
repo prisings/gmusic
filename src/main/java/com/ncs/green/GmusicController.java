@@ -1,8 +1,8 @@
 package com.ncs.green;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,35 +114,44 @@ public class GmusicController {
 		// 파라미터로 값을 받음
 		String snumVal = request.getParameter("snumVal");
 		request.getSession().setAttribute("snumValSession", snumVal);
+		// mv.addObject("snumValSession", snumVal);
 
 		MusicVO vo = new MusicVO();
 
 		// 스트링 배열 "," 기준으로 쪼개 담음
-		String splitsnumVal[] = snumVal.split(",");
+		if (snumVal != null && snumVal.length() > 0) {
 
-		// sql snum 형식이 int 이기 때문에 int 배열에 다시 담음
-		int intsnumVal[] = new int[splitsnumVal.length];
+			String splitsnumVal[] = snumVal.split(",");
 
-		for (int i = 0; i < splitsnumVal.length; i++) {
-			intsnumVal[i] = Integer.parseInt(splitsnumVal[i]);
-		}
+			// sql snum 형식이 int 이기 때문에 int 배열에 다시 담음
+			int intsnumVal[] = new int[splitsnumVal.length];
 
-		List<MusicVO> list = new ArrayList<MusicVO>();
-		for (int i = 0; i < intsnumVal.length; i++) {
-			vo.setSnum(intsnumVal[i]);
-			list.add(service.selectOne(vo));
-
-		}
-		if (list != null) {
-			if ("U".equals(request.getParameter("jcode"))) {
-				// 셔플 함수 참고
-				// https://zetawiki.com/wiki/%ED%95%A8%EC%88%98_shuffle()
-				Collections.shuffle(list);
+			for (int i = 0; i < splitsnumVal.length; i++) {
+				intsnumVal[i] = Integer.parseInt(splitsnumVal[i]);
 			}
-			mv.addObject("Banana", list);
+
+			List<MusicVO> list = new LinkedList<MusicVO>();
+			for (int i = 0; i < intsnumVal.length; i++) {
+				vo.setSnum(intsnumVal[i]);
+				vo = service.selectOne(vo);
+				if (vo.getLyrics() != null && vo.getLyrics().length() > 0) {
+					vo.setLyrics(vo.getLyrics().replace("\"", "&quot;"));
+				}
+				list.add(vo);
+
+			}
+			if (list != null) {
+				if ("U".equals(request.getParameter("jcode"))) {
+					// 셔플 함수 참고
+					// https://zetawiki.com/wiki/%ED%95%A8%EC%88%98_shuffle()
+					Collections.shuffle(list);
+				}
+				mv.addObject("Banana", list);
+			}
+			mv.setViewName("musicview/playlist");
+		} else {
 			mv.setViewName("musicview/playlist");
 		}
-
 		return mv;
 	} // playlist
 
@@ -216,12 +225,10 @@ public class GmusicController {
 			mv.addObject("Canana", list3);
 			mv.addObject("Canana2", service.searchRowCountSname(cri));
 			cri.setSearchType("all");
-		}else {
+		} else {
 			mv.addObject("Apple", service.searchSnameList(cri));
 			mv.addObject("Apple2", service.searchRowCountSname(cri));
 		}
-		
-
 
 		pageMaker.setCri(cri);
 		pageMaker.setTotalRow(service.searchRowCountSname(cri));

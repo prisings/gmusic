@@ -277,7 +277,7 @@ $(function(){
 				<li><button>
 						<a href="memberloginpage">로그인</a>
 					</button></li>
-				<li><button> 
+				<li><button>
 						<a href="checkterm">회원가입</a>
 					</button></li>
 			</c:if>

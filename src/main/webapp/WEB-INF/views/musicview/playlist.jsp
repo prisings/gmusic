@@ -363,7 +363,16 @@ body {
 		//url = 'playlist?snumVal=' + snumVal;
 		//window.open(url, "playlistView","toolbar=no,menubar=yes,scrollbars=no,resizable=no,width=340,height=720");
 
-		location.href = 'playlist?snumVal=' + snumVal;
+		// location.href = 'playlist2?snumVal=' + snumVal;
+		$.ajax({
+			type : 'post',
+			url : 'playlist?snumVal=' + snumVal,
+			success : function() {
+				console.log("삭제 성공");
+		 },error : function() {
+				console.log("삭제 실패");
+			}
+		});
 		opener.document.getElementById("snumVal").value = snumVal;
 
 		//삭제를 위한 값 넘기기 
@@ -391,6 +400,32 @@ body {
 
 		/* 삭제 버튼 */// 참고: 옵션 인덱스는 0부터 시작.
 		remove : function(obj) { // playlist.   obj는 playlist(선택한 노래 목록)이다.
+			var index = $("#playlist option").index($("#playlist option:selected"));
+			var snumValSession = $('#snumValss').val();
+			var snumValsplit = snumValSession.split(',');
+			var snumVal = '';
+			snumValsplit[index] = '';
+
+			for (var i = 0; i < snumValsplit.length - 1; i++) {
+				if (snumValsplit[i] != '') {
+					snumVal += snumValsplit[i] + ',';
+				}
+			}
+			$('#snumValss').val(snumVal);
+			console.log("1번 이예요 "+$('#snumValss').val());
+			console.log("2번 이예요 "+$('#snumValss').val());
+			opener.document.getElementById("snumVal").value = snumVal;
+			$.ajax({
+				type : 'post',
+				url : 'playlist2?snumVal=' + $('#snumValss').val(),
+				success : function(resultData) {
+					snumVal= resultData.snumTest;
+					console.log(snumVal);
+					console.log("삭제 성공");
+			 },error : function() {
+					console.log("삭제 실패");
+				}
+			});
 			for (var k = obj.options.length - 1; k >= 0; k--) { // playlist의 마지막인덱스 부터 0번쨰 인덱스 까지. 역순인 이유는 중간에 노래가 삭제되면 마지막 인덱스 k에 해당하는 옵션이 없어지므로 조건절의 오류가 나기 떄문이다.
 				if (obj.options[k].selected) { // playlist의 k번째 옵션이 selected(==true)라면
 					obj.options[k] = null; // 선택되어있는 곡을 playlist에서 지운다.
@@ -438,6 +473,7 @@ body {
 </c:if>
 </head>
 <body onload="autoplay()">
+<input type="hidden" id="snumValss" name="snumValss" value="${snumValSession}">
 	<div class="layer">
 		<span class="content">
 			<table id="playlistTable">

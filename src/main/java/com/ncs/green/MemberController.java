@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import criteria.Criteria;
+import criteria.PageMaker;
 import service.GmemberService;
 import service.MailSendService;
 import vo.GmemberVO;
@@ -35,6 +38,28 @@ public class MemberController {
 	// 메일 보내는거
 	@Autowired
 	private MailSendService mss;
+
+// ----------------------------회원관리 페이지 ----------------------------------------------	
+	@RequestMapping(value = "/management")
+	public ModelAndView managment(ModelAndView mv, HttpServletRequest request) {
+		mv.setViewName("adminpage/management");
+		return mv;
+
+	}
+
+	@RequestMapping(value = "/membermanagement")
+	public ModelAndView membermanagment(ModelAndView mv, HttpServletRequest request, Criteria cri,
+			PageMaker pageMaker) {
+
+		List<GmemberVO> list = service.selectList();
+		if (list != null) {
+			mv.addObject("Banana", list);
+		} 
+
+		mv.setViewName("adminpage/membermanagement");
+		return mv;
+
+	}
 
 // -----------------------------이용약관 및 회원가입 ---------------------------------------
 	@RequestMapping(value = "/checkterm")
@@ -245,7 +270,7 @@ public class MemberController {
 					request.getSession().setAttribute("loginGRADE", vo.getGrade());
 					request.getSession().setAttribute("loginPW", password);
 					request.getSession().setAttribute("userPickGenre1", vo.getGenre1()); // 섹션 1_1부분을 위해 추가
-					System.out.println("마이장르 확인용 => "+vo.getGenre1());
+					System.out.println("마이장르 확인용 => " + vo.getGenre1());
 //					mv.addObject("message", "로그인 성공!");
 					rttr.addFlashAttribute("message", "로그인 성공!");
 					mv.setViewName("redirect:home");

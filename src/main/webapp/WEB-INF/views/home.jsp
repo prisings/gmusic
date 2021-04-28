@@ -272,7 +272,7 @@ a {
 
 </head>
 <body>
-
+	
 	<div id="header">
 		<ul id="headermenu">
 			<!-- 조건주고 로그인 상태면 로그인 없애고 로그아웃으로 -->
@@ -298,6 +298,7 @@ a {
 						<a href="mypage?id=${loginID}"> 마이페이지</a>
 					</button></li>
 			</c:if>
+					<li><a href="management">dddd</a></li>
 		</ul>
 	</div>
 	<!-- header -->

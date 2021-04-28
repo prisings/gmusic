@@ -1,20 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page trimDirectiveWhitespaces="true"%>
-<%
- response.setHeader("Cache-Control","no-cache");
- response.setHeader("Pragma","no-cache");
- response.setDateHeader("Expires",0);
-%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>뮤직플레이리스트</title>
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
-<meta http-equiv="Cache-Control" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
-<meta http-equiv="Pragma" content="no-cache"/>
 <style>
 /* 중앙정렬코드 */
 .layer {
@@ -319,9 +312,8 @@ body {
    // 셔플
    function shuffle() { // 반복재생
       location.href='playlist?snumVal='+$('#snumValss').val()+'&jcode=U';
-
    } //shuffle
-   
+     
    // selectbox 위아래 이동하게 구현하기
    // https://zzznara2.tistory.com/457 그대로 가져옴
    // 테스트
@@ -336,6 +328,7 @@ body {
          
          var snumVal = '';
 
+
          snumValsplit[index] = '';
 
          for (var i = 0; i < snumValsplit.length - 1; i++) {
@@ -343,23 +336,24 @@ body {
                snumVal += snumValsplit[i] + ',';
             }
          }
-
-         //삭제를 위한 값 넘기기 
          $.ajax({
-            type : 'post',
-            url : 'playlist?snumVal=' + snumVal,
-            success : function() {
-               console.log("삭제 성공");
-               //window.onload = autoplay(); 
-            },
-            error : function() {
-               console.log("삭제 실패");
-            }
-         });
-         $('#snumValss').val(snumVal);
-         opener.document.getElementById("snumVal").value = snumVal;
-         var url='/green/playlist?snumVal='+$('#snumValss').val();
-         window.history.replaceState({}, document.title, url);
+             type : 'post',
+             url : 'playlist?snumVal=' + snumVal,
+             success : function() {
+                console.log("위로 성공");
+                //window.onload = autoplay(); 
+             },
+             error : function() {
+                console.log("위로 실패");
+             }
+          });
+          $('#snumValss').val(snumVal);
+          opener.document.getElementById("snumVal").value = snumVal;
+          var url='/green/playlist?snumVal='+$('#snumValss').val();
+          window.history.replaceState({}, document.title, url);
+          
+         //삭제를 위한 값 넘기기 
+         
          
          for (var k = obj.options.length - 1; k >= 0; k--) { // playlist의 마지막인덱스 부터 0번쨰 인덱스 까지. 역순인 이유는 중간에 노래가 삭제되면 마지막 인덱스 k에 해당하는 옵션이 없어지므로 조건절의 오류가 나기 떄문이다.
             if (obj.options[k].selected) { // playlist의 k번째 옵션이 selected(==true)라면

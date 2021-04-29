@@ -47,6 +47,19 @@ public class MemberController {
 
 	}
 
+	@RequestMapping(value = "/memberdeletes")
+	public ModelAndView memberdeletes(ModelAndView mv, HttpServletRequest request,GmemberVO vo) {
+		service.delete(vo);
+		
+		List<GmemberVO> list = service.selectList();
+		if (list != null) {
+			mv.addObject("Banana", list);
+		} 
+		
+		mv.setViewName("adminpage/membermanagement");
+		return mv;
+		
+	}
 	@RequestMapping(value = "/membermanagement")
 	public ModelAndView membermanagment(ModelAndView mv, HttpServletRequest request, Criteria cri,
 			PageMaker pageMaker) {

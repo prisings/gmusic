@@ -4,8 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="resources/myLib/jquery-3.2.1.min.js"></script>
 <style>
-#button {
+.button {
 	border: 0;
 	outline: 0;
 	background-color: white;
@@ -31,6 +32,28 @@
 	font-size: 14px;
 }
 </style>
+<script>
+$(function(){
+	$('#memberdelete').click(function() {
+		var id = $('#memberdelete').attr('value');
+		var result = confirm('정말 삭제 하시겠습니까?')
+		if(result == true){
+			$.ajax({ // nav topmenu
+				type : 'Get',
+				url : 'memberdeletes?id=' + id,  // 컨트롤러에서 selectOne sql문을 이용하여 id에 해당하는 값을 불러오기 위한 전달
+				success : function(resultPage) {
+					$(location).attr("href", "management");
+				},
+				error : function() {
+				}
+			});//ajax	
+		}else{
+			return false
+			$(location).attr("href", "management");
+		}
+	});	
+});//ready
+</script>
 </head>
 <body>
 	<table id="table">
@@ -65,14 +88,14 @@
 					</c:otherwise>
 				</c:choose>
 				<td>
-					<button id="button">change</button>
+					<button class="button">change</button>
 				</td>
 				<td>
-					<button id="button">change</button>
+					<button class="button">change</button>
 				</td>
 				<td>
-					<button id="button">
-						<img src="resources/image/delete.png" width="30px" height="30px">
+					<button class="button" id ="memberdelete" value="${row.id}">
+						<img src="resources/image/delete.png" width="20px" height="20px">
 					</button>
 				</td>
 			</tr>

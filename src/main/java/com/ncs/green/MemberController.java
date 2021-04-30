@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,31 +45,63 @@ public class MemberController {
 	public ModelAndView managment(ModelAndView mv, HttpServletRequest request) {
 		mv.setViewName("adminpage/management");
 		return mv;
+	}
+
+	@RequestMapping(value = "/memberpointchange")
+	public ModelAndView memberpointchange(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
+		service.pointChange(vo);
+		List<GmemberVO> list = service.selectList();
+		if (list != null) {
+			mv.addObject("Banana", list);
+		}
+		mv.setViewName("adminpage/membermanagement");
+		return mv;
+
+	}
+
+	@RequestMapping(value = "/membergradechange")
+	public ModelAndView membergradechange(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
+		service.gradeChange(vo);
+
+		List<GmemberVO> list = service.selectList();
+		if (list != null) {
+			mv.addObject("Banana", list);
+		}
+		mv.setViewName("adminpage/membermanagement");
+		return mv;
 
 	}
 
 	@RequestMapping(value = "/memberdeletes")
-	public ModelAndView memberdeletes(ModelAndView mv, HttpServletRequest request,GmemberVO vo) {
+	public ModelAndView memberdeletes(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {
 		service.delete(vo);
-		
+
 		List<GmemberVO> list = service.selectList();
 		if (list != null) {
 			mv.addObject("Banana", list);
 		} 
-		
+
 		mv.setViewName("adminpage/membermanagement");
 		return mv;
-		
+ 
 	}
+  
 	@RequestMapping(value = "/membermanagement")
 	public ModelAndView membermanagment(ModelAndView mv, HttpServletRequest request, Criteria cri,
 			PageMaker pageMaker) {
+		cri.setSnoEno();
+		mv.addObject("Banana", service.searchMemberList(cri));
+		List<GmemberVO> vo = new ArrayList<GmemberVO>();
+		vo = service.searchMemberList(cri);
+		
+		for (GmemberVO gmemberVO : vo) {
+			System.out.println(gmemberVO);
+		}
+		
+		pageMaker.setCri(cri);
+		pageMaker.setTotalRow(service.searchRowCount(cri));
 
-		List<GmemberVO> list = service.selectList();
-		if (list != null) {
-			mv.addObject("Banana", list);
-		} 
-
+		mv.addObject("pageMaker", pageMaker);
 		mv.setViewName("adminpage/membermanagement");
 		return mv;
 
@@ -123,7 +156,7 @@ public class MemberController {
 
 		// 실습2) ver02 (배포환경 or 개발환경)
 		if (realPath.contains(".eclipse.")) {
-			realPath = "C:/NamCheolWoo/gproject/src/main/webapp/resources/uploadImage/";
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources/uploadImage/";
 		}
@@ -346,7 +379,7 @@ public class MemberController {
 		// ** 경로
 		String realPath = request.getRealPath("/");
 		if (realPath.contains(".eclipse.")) {
-			realPath = "C:/NamCheolWoo/gproject/src/main/webapp/resources/uploadImage/";
+			realPath = "D:/Jeong/gproject/src/main/webapp/resources/uploadImage/";
 		} else {
 			realPath += "resources/uploadImage/";
 		}

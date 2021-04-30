@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="resources/myLib/jquery-3.2.1.min.js"></script>
+<script src="resources/myLib/membermanagement.js"></script>
 <style>
 .button {
 	border: 0;
@@ -33,29 +34,39 @@
 }
 </style>
 <script>
-$(function(){
-	$('#memberdelete').click(function() {
-		var id = $('#memberdelete').attr('value');
-		var result = confirm('정말 삭제 하시겠습니까?')
-		if(result == true){
-			$.ajax({ // nav topmenu
-				type : 'Get',
-				url : 'memberdeletes?id=' + id,  // 컨트롤러에서 selectOne sql문을 이용하여 id에 해당하는 값을 불러오기 위한 전달
-				success : function(resultPage) {
-					$(location).attr("href", "management");
-				},
-				error : function() {
-				}
-			});//ajax	
-		}else{
-			return false
-			$(location).attr("href", "management");
-		}
-	});	
-});//ready
+	/* $(document).ready(function(){.......}); */
+	$(function() {
+		// SearchType에 '---'인 keyword클리어
+		$('#searchType').change(function() {
+			if ($(this).val() == 'n') {
+				$('#keyword').val('');
+			}
+		});
+		$('#searchBtn').on(
+				"click",
+				function() {
+					self.location = "membermanagement" + "${pageMaker.makeQuery(1)}"
+							+ "&searchType=" + $('#searchType').val()
+							+ "&keyword=" + $('#keyword').val();
+					// => ?currPage=7&rowPerPage=10&searchType=tc&keyword=java
+				}); //click
+	});//ready
 </script>
 </head>
 <body>
+	<div id="searchdiv">
+		<div id="logo">
+			<h1>GMUSIC</h1>
+			<form action="membermanagement" id="search" name="search" class="search">
+				<select name="searchType" id="searchType" style="display: none">
+					<option value="all" selected>All</option>
+				</select> 
+				<input type="text" name="keyword" id="keyword" maxlength="35" size="50" style="vertical-align: middle;" value="${UserKeyword}">
+				<button type="button" id="searchBtn" style="vertical-align: middle;">Search</button>
+			</form>
+		</div>
+	</div>
+	<br>
 	<table id="table">
 		<tr class="category" align="center" height="2" bgcolor="ghostwhite">
 			<td>ID</td>
@@ -88,19 +99,50 @@ $(function(){
 					</c:otherwise>
 				</c:choose>
 				<td>
-					<button class="button">change</button>
+					<button class="button" id="membergradechange" value="${row.id}">change</button>
 				</td>
 				<td>
-					<button class="button">change</button>
+					<button class="button" id="memberpointchange" value="${row.id}">change</button>
 				</td>
 				<td>
-					<button class="button" id ="memberdelete" value="${row.id}">
+					<button class="button" id="memberdelete" value="${row.id}">
 						<img src="resources/image/delete.png" width="20px" height="20px">
 					</button>
 				</td>
 			</tr>
 		</c:forEach>
-
 	</table>
+			<div align="center">
+			<!-- ver 01 : pageMaker.makeQuery(?) -->
+			<!-- ver 02 : pageMaker.searchQuery(?) -->
+			<!-- 1) First << , Prev < : enabeld 여부 -->
+			<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
+				<a href="qna${pageMaker.searchQuery(1)}">&#8666;</a>&nbsp; <!-- First -->
+				<!-- "qna?currPage=1" -->
+				<a href="qna${pageMaker.searchQuery(pageMaker.sPageNo-1)}">&#8636;</a>
+				<!-- Prev -->
+			</c:if>
+
+			<!-- 2) sPage~ePage까지 displayPageNo 값 만큼 출력 -->
+			<c:forEach var="i" begin="${pageMaker.sPageNo}" end="${pageMaker.ePageNo}">
+				<c:if test="${i==pageMaker.cri.currPage}">
+					<font style="font-weight: bold;" color="navy">${i}&nbsp;</font>
+				</c:if>
+				<c:if test="${i!=pageMaker.cri.currPage}">
+					<a href="qna${pageMaker.searchQuery(i)}">${i}</a>&nbsp;
+		</c:if>
+
+				<!-- 삼항식과 비교 
+		<c:out value="${i==pageMaker.cri.currPage ? 'class=active' : ''}"/>
+		-->
+			</c:forEach>
+
+			<!-- 3) Next > , Last >> : enabled 여부 -->
+			<c:if test="${pageMaker.next && pageMaker.ePageNo>0}">
+				<a href="qna${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;&#8640;</a>&nbsp; <!-- Next -->
+				<a href="qna${pageMaker.searchQuery(pageMaker.lastPageNo)}">&#8667;</a>&nbsp;&nbsp; <!-- Last -->
+
+			</c:if>
+		</div>
 </body>
 </html>

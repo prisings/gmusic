@@ -55,29 +55,28 @@ public class GmemberServiceImpl implements GmemberService {
 		return dao.userDuplicationCheck(vo);
 	}
 
-	@Override
 	public int pointChange(GmemberVO vo) {
 		// TODO Auto-generated method stub
 		return dao.pointChange(vo);
 	}
 
-	@Override
 	public int gradeChange(GmemberVO vo) {
 		// TODO Auto-generated method stub
 		return dao.gradeChange(vo);
 	}
 
-	@Override
 	public List<GmemberVO> searchMemberList(Criteria cri) {
 		return dao.searchMemberList(cri);
 	}
 
-	@Override
 	public int searchRowCount(Criteria cri) {
 		// TODO Auto-generated method stub
 		return dao.searchRowCount(cri);
 	}
 
-
+	//아이디 찾기
+	public GmemberVO searchIDCheck(GmemberVO vo) {
+		return dao.searchIDCheck(vo);
+	}
 
 }

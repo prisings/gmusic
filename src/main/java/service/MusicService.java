@@ -29,15 +29,15 @@ public interface MusicService {
 	// ** SearchCriteria PageList
 	public int searchRowCountSname(Criteria cri);
 
+	// 추가 수정 삭제
+	public int insert(MusicVO vo);
 
+	public int update(MusicVO vo);
+
+	public int delete(MusicVO vo);
 
 //	// ** Criteria PageList
 	public List<MusicVO> searchSnameList(Criteria cri);
-//
-//	public List<MusicVO> searchSingerNameList(Criteria cri);
-//
-//	public List<MusicVO> searchLyricsList(Criteria cri);
-
 
 
 }// interface

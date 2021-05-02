@@ -121,7 +121,7 @@ section {
 		<ul>
 			<li><a href="home">메인페이지</a>
 			<li><a id="membermanagementajax">회원관리</a>
-			<li><a href="">음악추가</a>
+			<li><a id="musicinsertf">음악추가</a>
 		</ul>
 	</nav>
 	<div id="section"></div>

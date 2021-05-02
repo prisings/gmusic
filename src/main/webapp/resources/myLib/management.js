@@ -24,4 +24,18 @@ $(function(){ //ready로 감싸야 id식별 가능
 				}
 		});//ajax
 	});
+	
+	$('#musicinsertf').click(function(){
+		$.ajax({ // nav topmenu
+				type:'Get',
+				url:'musicinsertf',
+				success:function(resultPage){
+					$('#section').html('');
+					$('#section').html(resultPage);
+					},
+				error:function(){
+					$('#section').html("~~ 오류발생 ~~");
+				}
+		});//ajax
+	});
 });//ready

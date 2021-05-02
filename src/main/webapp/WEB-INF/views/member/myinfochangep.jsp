@@ -12,14 +12,15 @@ var pCheck=false;
 var p2Check=false;
 
 $(function(){
-	$('#password').focusout(function() {
-		pCheck=pwCheck();
-	}); //password
+	   $('#genre1').val('${vo.genre1}').prop("selected",true);
+	   $('#password').focusout(function() {
+	      pCheck=pwCheck();
+	   }); //password
 
-	$('#password2').focusout(function() {
-		p2Check=pw2Check();
-	}); //ready
-}); //password2
+	   $('#password2').focusout(function() {
+	      p2Check=pw2Check();
+	   }); //ready
+	}); //password2
 //--------------- js파일이 적용이안되서 직접 입력------------------
 function pwCheck(){
 	var password=$("#password").val();
@@ -272,7 +273,6 @@ div>input, #email2 {
 						<span class="font1">선호장르</span>
 						<div class="box2">
 							<select name="genre1" class="genre" id="genre1" size="1">
-								<option selected="selected" value="${vo.genre1}">${vo.genre1}
 								<option value="N">선택 안함
 								<option value="dance">댄스
 								<option value="ballad">발라드

@@ -65,7 +65,7 @@ public class GmemberDAO {
 	public int gradeChange(GmemberVO vo) {
 		return sqlSession.update(NS + "membergradechange", vo);
 	}
-
+	//페이징
 	public List<GmemberVO> searchMemberList(Criteria cri) {
 		return sqlSession.selectList(NS + "searchMemberList", cri);
 	}
@@ -73,5 +73,10 @@ public class GmemberDAO {
 	public int searchRowCount(Criteria cri) {
 		return sqlSession.selectOne(NS+"searchRowCount",cri);
 	}
-
+	//페이징
+	// 아이디 찾기
+	public GmemberVO searchIDCheck(GmemberVO vo) {
+		return sqlSession.selectOne(NS+"searchIDCheck",vo);
+	}
+	
 }

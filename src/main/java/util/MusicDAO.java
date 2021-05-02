@@ -68,17 +68,18 @@ public class MusicDAO {
 	public List<MusicVO> searchSnameList(Criteria cri) {
 		return sqlSession.selectList(NS + "searchSnameList", cri);
 	}
+	// 추가 수정 삭제
+	
+	public int insert(MusicVO vo) {
+	      return sqlSession.insert(NS + "insert", vo);
+	   } // insert
 
-//	// ** Criteria PageList
-//	public List<MusicVO> criSnameList(Criteria cri) {
-//		return sqlSession.selectList(NS + "pageSnameList", cri);
-//	}
-//
-//	public List<MusicVO> criSingerNameList(Criteria cri) {
-//		return sqlSession.selectList(NS + "pageSnameList", cri);
-//	}
-//
-//	public List<MusicVO> criLyricsList(Criteria cri) {
-//		return sqlSession.selectList(NS + "pageSnameList", cri);
-//	}
+	   public int update(MusicVO vo) {
+	      return sqlSession.update(NS + "update", vo);
+	   } // update
+
+	   public int delete(MusicVO vo) {
+	      return sqlSession.delete(NS + "delete", vo);
+	   } // delete
+	
 } // class

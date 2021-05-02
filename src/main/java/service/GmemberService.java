@@ -36,4 +36,7 @@ public interface GmemberService {
 	public List<GmemberVO> searchMemberList(Criteria cri);
 	public int searchRowCount(Criteria cri);
 	
+	//아이디 찾기
+	public GmemberVO searchIDCheck(GmemberVO vo);
+	
 }

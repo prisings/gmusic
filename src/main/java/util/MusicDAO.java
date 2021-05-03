@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import criteria.Criteria;
 import vo.MusicVO;
+import vo.MyListVO;
 
 // ** Board CRUD 구현
 @Repository
@@ -64,22 +65,33 @@ public class MusicDAO {
 		return sqlSession.selectOne(NS + "searchRowCountSname", cri);
 	}
 
-
 	public List<MusicVO> searchSnameList(Criteria cri) {
 		return sqlSession.selectList(NS + "searchSnameList", cri);
 	}
 	// 추가 수정 삭제
-	
+
 	public int insert(MusicVO vo) {
-	      return sqlSession.insert(NS + "insert", vo);
-	   } // insert
+		return sqlSession.insert(NS + "insert", vo);
+	} // insert
 
-	   public int update(MusicVO vo) {
-	      return sqlSession.update(NS + "update", vo);
-	   } // update
+	public int update(MusicVO vo) {
+		return sqlSession.update(NS + "update", vo);
+	} // update
 
-	   public int delete(MusicVO vo) {
-	      return sqlSession.delete(NS + "delete", vo);
-	   } // delete
-	
+	public int delete(MusicVO vo) {
+		return sqlSession.delete(NS + "delete", vo);
+	} // delete
+
+	public List<MusicVO> cartlist(String id) {
+		return sqlSession.selectList(NS + "cartlist", id);
+	}
+
+	public MusicVO cartselectOne(MusicVO vo) {
+		return sqlSession.selectOne(NS + "cartselectOne", vo);
+	}
+
+	public int myListInsert(MyListVO vo) {
+		return sqlSession.insert(NS + "myListInsert", vo);
+	}
+
 } // class

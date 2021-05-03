@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,9 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import criteria.Criteria;
 import criteria.PageMaker;
 import service.ChartService;
+import service.GmemberService;
 import service.MusicService;
 import vo.ChartVO;
+import vo.GmemberVO;
 import vo.MusicVO;
+import vo.MyListVO;
 
 @Controller
 public class GmusicController {
@@ -31,7 +36,115 @@ public class GmusicController {
 	MusicService service;
 
 	@Autowired
+	GmemberService memberservice;
+
+	@Autowired
 	ChartService chartService;
+
+	// 장바구니 현재는 최신음악에서 회원등급 c나 vip의 경우에 다운로드를 클릭시 작동하는 컨트롤러이다
+	@RequestMapping(value = "/cartView")
+	public ModelAndView cartView(HttpServletRequest request, ModelAndView mv) {
+
+		// 파라미터로 값을 받음
+		String cartVal = request.getParameter("cartVal");
+		System.out.println("************** getParameter cartVal => " + cartVal);
+		HttpSession session = request.getSession(false);
+		String id = (String) session.getAttribute("loginID");
+		String code = request.getParameter("code");
+		// 스트링 배열 "," 기준으로 쪼개 담음
+		if (cartVal != null && cartVal.length() > 0) {
+			String splitcartVal[] = cartVal.split(",");
+			int intcartVal[] = new int[splitcartVal.length];
+
+			for (int i = 0; i < splitcartVal.length; i++) {
+				intcartVal[i] = Integer.parseInt(splitcartVal[i]);
+			}
+			// playlist처럼 값을 받아와서 list에 값을 넣어주는방식을 따라함
+			List<MusicVO> list = new ArrayList<MusicVO>();
+			// 중복을 막기위해 list2를 선언
+			List<MusicVO> list2 = new ArrayList<MusicVO>();
+			for (int i = 0; i < intcartVal.length; i++) {
+				MusicVO vo = new MusicVO();
+				vo.setSnum(intcartVal[i]);
+				vo = service.cartselectOne(vo);
+				list.add(vo);
+			}
+
+			// list에 contains함수를 이용 중복을 제거한뒤 list2에 add한다.
+			for (int i = 0; i < intcartVal.length; i++) {
+				if (!list2.contains(list.get(i))) {
+					list2.add(list.get(i));
+				}
+			}
+
+			mv.addObject("Banana", list2);
+			// list2값넘겨주기
+
+			// intcartVal의 크기 재설정
+			intcartVal = new int[list2.size()];
+
+			// list2의 snum을 배열안에 담기
+			for (int i = 0; i < intcartVal.length; i++) {
+				intcartVal[i] = list2.get(i).getSnum();
+
+			}
+
+			// 아이디에 해당하는 snum 값을 mylist에 담기
+			List<MusicVO> myList = service.cartlist(id);
+			int myCartVal[] = new int[myList.size()];
+			for (int i = 0; i < myList.size(); i++) {
+				myCartVal[i] = myList.get(i).getSnum();
+			}
+			// cart테이블에 내가 가진 곡을 비교하여 없는 값만 나타내기 위한 코드
+			int count = 0;
+			// 내가 가지고 있는 곡이라면 값이 0으로 대입되고 count된다
+			for (int i = 0; i < intcartVal.length; i++) {
+				for (int j = 0; j < myCartVal.length; j++) {
+					if (intcartVal[i] == myCartVal[j]) {
+						intcartVal[i] = 0;
+						count++;
+					}
+				}
+			}
+			// 내가 가진 곡의 개수
+			int myMusic = count;
+			// 내가 선택한 곡의 개수(다운로드 클릭시)
+			int allMusic = intcartVal.length;
+			// 내가 결제해야할 곡의 개수
+			int payMusic = intcartVal.length - count;
+
+			mv.addObject("myMusic", myMusic);
+			mv.addObject("allMusic", allMusic);
+			mv.addObject("price", payMusic * 300);
+			Arrays.sort(intcartVal);
+
+			if ("pay".equals(code)) {
+				for (int i = 0; i < intcartVal.length; i++) {
+					if (intcartVal[i] != 0) {
+						MyListVO vo = new MyListVO();
+						vo.setSnum(intcartVal[i]);
+						vo.setId(id);
+						service.myListInsert(vo);
+					}
+				}
+				GmemberVO vo = new GmemberVO();
+				vo.setId(id);
+				vo = memberservice.selectOne(vo);
+				if (vo != null && vo.getPoint() - (payMusic * 300) > 0) {
+					vo.setPoint(vo.getPoint() - (payMusic * 300));
+					memberservice.pointChange(vo);
+				}
+				request.getSession().setAttribute("loginVO", vo);// 세션 통합 (비밀번호 제외)
+			}
+
+		}
+		/* if(pay코드랑 같이오면 update) */
+		request.getSession().setAttribute("cartValSession", cartVal);
+		mv.setViewName("payment/cartPage");
+		// cartPage는 playList와 비슷한 페이지라 할수있다
+		return mv;
+
+	}
 
 	@RequestMapping(value = "/musicCount")
 	public void musicCount(HttpServletRequest request, ModelAndView mv, MusicVO vo, ChartVO cvo) {
@@ -85,230 +198,230 @@ public class GmusicController {
 
 	/*-------------------------음악 추가 업데이트 삭제-------------------------*/
 
-	   // ** 음악추가
-	   @RequestMapping(value = "/musicinsertf")
-	   public ModelAndView musicinsertf(ModelAndView mv) {
-	      mv.setViewName("musicview/musicInsertForm");
-	      return mv;
-	   }// musicinsertf
+	// ** 음악추가
+	@RequestMapping(value = "/musicinsertf")
+	public ModelAndView musicinsertf(ModelAndView mv) {
+		mv.setViewName("musicview/musicInsertForm");
+		return mv;
+	}// musicinsertf
 
-	   @RequestMapping(value = "/musicinsert")
-	   public ModelAndView musicinsert(HttpServletRequest request, ModelAndView mv, MusicVO vo, RedirectAttributes rttr)
-	         throws IOException {
-	      // ** Uploadfile (Image) 처리
-	      // => MultipartFile 타입의 uploadfilef 의 정보에서 화일명을 get,
-	      // => upload된 image 를 서버의 정해진 폴더 (물리적위치)에 저장 하고, -> file1
-	      // => 이 위치에 대한 정보를 table에 저장 (vo에 set) -> file2
+	@RequestMapping(value = "/musicinsert")
+	public ModelAndView musicinsert(HttpServletRequest request, ModelAndView mv, MusicVO vo, RedirectAttributes rttr)
+			throws IOException {
+		// ** Uploadfile (Image) 처리
+		// => MultipartFile 타입의 uploadfilef 의 정보에서 화일명을 get,
+		// => upload된 image 를 서버의 정해진 폴더 (물리적위치)에 저장 하고, -> file1
+		// => 이 위치에 대한 정보를 table에 저장 (vo에 set) -> file2
 
-	      // ** 실제화일을 보관할 물리적 위치 찾기
-	      // 1) 현재 작업중인 이클립스 기준 (배포전, ver01)
-	      // => D:/jaepil/MyWork/Spring02/src/main/webapp/resources/uploadImage
-	      // 2) 배포후에는 서버 내에서의 위치가 됨.
-	      // => getRealPath: D:\jaepil\IDESet\apache-tomcat-9.0.41\webapps\Spring03\
-	      // 필요한 위치:
-	      // D:/jaepil/IDESet/apache-tomcat-9.0.41/webapps/Spring03/resources/uploadImage
+		// ** 실제화일을 보관할 물리적 위치 찾기
+		// 1) 현재 작업중인 이클립스 기준 (배포전, ver01)
+		// => D:/jaepil/MyWork/Spring02/src/main/webapp/resources/uploadImage
+		// 2) 배포후에는 서버 내에서의 위치가 됨.
+		// => getRealPath: D:\jaepil\IDESet\apache-tomcat-9.0.41\webapps\Spring03\
+		// 필요한 위치:
+		// D:/jaepil/IDESet/apache-tomcat-9.0.41/webapps/Spring03/resources/uploadImage
 
-	      // ** 경로
-	      String downloadPath = request.getRealPath("/");
-	      String imagePath = request.getRealPath("/");
-	      System.out.println("realPath_ver01 :" + downloadPath);
-	      // realPath_ver01->
-	      // D:\jaepil\MyWork\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\gproject\
-	      // 실습1) ver01
-	      // realPath =
-	      // "D:/jaepil/MyWork/gproject/src/main/webapp/resources/albumimage/";
+		// ** 경로
+		String downloadPath = request.getRealPath("/");
+		String imagePath = request.getRealPath("/");
+		System.out.println("realPath_ver01 :" + downloadPath);
+		// realPath_ver01->
+		// D:\jaepil\MyWork\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\gproject\
+		// 실습1) ver01
+		// realPath =
+		// "D:/jaepil/MyWork/gproject/src/main/webapp/resources/albumimage/";
 
-	      // 실습2) ver02 (배포환경 or 개발환경)
-	      if (downloadPath.contains(".eclipse.")) {
-	         downloadPath = "D:/Jeong/gproject/src/main/webapp/resources/music/" + vo.getGenre() + "/";
-	      } else {
-	         downloadPath += "resources/music/" + vo.getGenre() + "/";
-	      }
-	      System.out.println("downloadPath :" + downloadPath);
+		// 실습2) ver02 (배포환경 or 개발환경)
+		if (downloadPath.contains(".eclipse.")) {
+			downloadPath = "D:/Jeong/gproject/src/main/webapp/resources/music/" + vo.getGenre() + "/";
+		} else {
+			downloadPath += "resources/music/" + vo.getGenre() + "/";
+		}
+		System.out.println("downloadPath :" + downloadPath);
 
-	      if (imagePath.contains(".eclipse.")) {
-	         imagePath = "D:/Jeong/gproject/src/main/webapp/resources/albumimage/" + vo.getGenre() + "/";
-	      } else {
-	         imagePath += "resources/albumimage/" + vo.getGenre() + "/";
-	      }
-	      System.out.println("imagePath :" + imagePath);
+		if (imagePath.contains(".eclipse.")) {
+			imagePath = "D:/Jeong/gproject/src/main/webapp/resources/albumimage/" + vo.getGenre() + "/";
+		} else {
+			imagePath += "resources/albumimage/" + vo.getGenre() + "/";
+		}
+		System.out.println("imagePath :" + imagePath);
 
-	      // ** 폴더 만들기 (File 클래스활용)
-	      // => 저장 경로에 폴더가 없는 경우 만들어 준다
-	      File f1 = new File(downloadPath); // 매개변수로 지정된 정보에 대한 File 객체 생성
-	      System.out.println(" 생성직후 f1=> " + f1);
-	      if (!f1.exists())
-	         f1.mkdir();
+		// ** 폴더 만들기 (File 클래스활용)
+		// => 저장 경로에 폴더가 없는 경우 만들어 준다
+		File f1 = new File(downloadPath); // 매개변수로 지정된 정보에 대한 File 객체 생성
+		System.out.println(" 생성직후 f1=> " + f1);
+		if (!f1.exists())
+			f1.mkdir();
 
-	      File f2 = new File(imagePath); // 매개변수로 지정된 정보에 대한 File 객체 생성
-	      System.out.println(" 생성직후 f2=> " + f2);
-	      if (!f2.exists())
-	         f2.mkdir();
-	      // realPath 디렉터리가 존재하는지 검사 (uploadImage 폴더 존재 확인)
-	      // => 존재하지 않으면 디렉토리 생성
+		File f2 = new File(imagePath); // 매개변수로 지정된 정보에 대한 File 객체 생성
+		System.out.println(" 생성직후 f2=> " + f2);
+		if (!f2.exists())
+			f2.mkdir();
+		// realPath 디렉터리가 존재하는지 검사 (uploadImage 폴더 존재 확인)
+		// => 존재하지 않으면 디렉토리 생성
 
-	      // ** MultipartFile
-	      // => 업로드한 파일에 대한 모든 정보를 가지고 있으며 이의 처리를 위한 메서드를 제공한다.
-	      // String getOriginalFilename(), void transferTo(File destFile),
-	      // boolean isEmpty()
-	      MultipartFile downloadfilef = null;
-	      MultipartFile imagefilef = null;
-	      // => 기본 Image 설정
-	      String musicfile1, musicfile2 = null;
-	      String imagefile1, imagefile2 = null;
+		// ** MultipartFile
+		// => 업로드한 파일에 대한 모든 정보를 가지고 있으며 이의 처리를 위한 메서드를 제공한다.
+		// String getOriginalFilename(), void transferTo(File destFile),
+		// boolean isEmpty()
+		MultipartFile downloadfilef = null;
+		MultipartFile imagefilef = null;
+		// => 기본 Image 설정
+		String musicfile1, musicfile2 = null;
+		String imagefile1, imagefile2 = null;
 
-	      // 전송된 음악 파일이 있는지 확인
-	      downloadfilef = vo.getDownloadfilef();
-	      System.out.println("vo.getDownloadfilef() => " + vo.getDownloadfilef());
-	      if (downloadfilef != null && !downloadfilef.isEmpty()) {
-	         musicfile1 = downloadPath + downloadfilef.getOriginalFilename();
-	         // 드라이브에 저장되는 실제 경로와 화일명
-	         downloadfilef.transferTo(new File(musicfile1)); // file 붙여넣기
-	         musicfile2 = "resources/music/" + vo.getGenre() + "/" + downloadfilef.getOriginalFilename();
-	      }
-	      vo.setDownloadfile(musicfile2);
-	      System.out.println("vo.getDownloadfile() => " + vo.getDownloadfile());
+		// 전송된 음악 파일이 있는지 확인
+		downloadfilef = vo.getDownloadfilef();
+		System.out.println("vo.getDownloadfilef() => " + vo.getDownloadfilef());
+		if (downloadfilef != null && !downloadfilef.isEmpty()) {
+			musicfile1 = downloadPath + downloadfilef.getOriginalFilename();
+			// 드라이브에 저장되는 실제 경로와 화일명
+			downloadfilef.transferTo(new File(musicfile1)); // file 붙여넣기
+			musicfile2 = "resources/music/" + vo.getGenre() + "/" + downloadfilef.getOriginalFilename();
+		}
+		vo.setDownloadfile(musicfile2);
+		System.out.println("vo.getDownloadfile() => " + vo.getDownloadfile());
 
-	      // 전송된 사진 파일이 있는지 확인
-	      imagefilef = vo.getImagefilef();
-	      System.out.println("vo.getImagefilef() => " + vo.getImagefilef());
-	      if (imagefilef != null && !imagefilef.isEmpty()) {
-	         imagefile1 = imagePath + imagefilef.getOriginalFilename();
-	         // 드라이브에 저장되는 실제 경로와 화일명
-	         imagefilef.transferTo(new File(imagefile1)); // file 붙여넣기
-	         imagefile2 = "resources/albumimage/" + vo.getGenre() + "/" + imagefilef.getOriginalFilename();
-	      }
-	      vo.setImage(imagefile2);
-	      System.out.println("vo.getImage() => " + vo.getImage());
+		// 전송된 사진 파일이 있는지 확인
+		imagefilef = vo.getImagefilef();
+		System.out.println("vo.getImagefilef() => " + vo.getImagefilef());
+		if (imagefilef != null && !imagefilef.isEmpty()) {
+			imagefile1 = imagePath + imagefilef.getOriginalFilename();
+			// 드라이브에 저장되는 실제 경로와 화일명
+			imagefilef.transferTo(new File(imagefile1)); // file 붙여넣기
+			imagefile2 = "resources/albumimage/" + vo.getGenre() + "/" + imagefilef.getOriginalFilename();
+		}
+		vo.setImage(imagefile2);
+		System.out.println("vo.getImage() => " + vo.getImage());
 
-	      // ** 유튜브링크 처리
-	      String musicurl = "https://www.youtube.com/embed/" + vo.getMusicurl();
-	      System.out.println("musicurl => " + musicurl);
-	      vo.setMusicurl(musicurl);
+		// ** 유튜브링크 처리
+		String musicurl = "https://www.youtube.com/embed/" + vo.getMusicurl();
+		System.out.println("musicurl => " + musicurl);
+		vo.setMusicurl(musicurl);
 
-	      int cnt = service.insert(vo);
-	      if (cnt > 0) {
+		int cnt = service.insert(vo);
+		if (cnt > 0) {
 
-	         rttr.addFlashAttribute("message", "~~ 음악등록 성공 ~~");
-	         mv.setViewName("redirect:musiclist");
-	      } else {
-	         rttr.addFlashAttribute("message", "~~ 음악등록 실패 !!! 다시 하세요 ~~");
-	         mv.setViewName("musicview/musicInsertForm");
-	      }
-	      return mv;
-	   }// musicinsert
+			rttr.addFlashAttribute("message", "~~ 음악등록 성공 ~~");
+			mv.setViewName("redirect:musiclist");
+		} else {
+			rttr.addFlashAttribute("message", "~~ 음악등록 실패 !!! 다시 하세요 ~~");
+			mv.setViewName("musicview/musicInsertForm");
+		}
+		return mv;
+	}// musicinsert
 
-	   @RequestMapping(value = "/musicupdatef")
-	   public ModelAndView musicupdatef(ModelAndView mv, MusicVO vo, RedirectAttributes rttr) {
-	      vo = service.selectOne(vo);
-	      if (vo != null) {
-	         mv.addObject("Apple", vo);
-	         mv.setViewName("musicview/musicUpdateForm");
-	      } else {
-	         mv.addObject("message", "~~ 번호에 해당하는 곡이 존재하지 않습니다 ~~");
-	         mv.setViewName("redirect:musiclist");
-	      }
-	      return mv;
-	   } // musicupdatef
+	@RequestMapping(value = "/musicupdatef")
+	public ModelAndView musicupdatef(ModelAndView mv, MusicVO vo, RedirectAttributes rttr) {
+		vo = service.selectOne(vo);
+		if (vo != null) {
+			mv.addObject("Apple", vo);
+			mv.setViewName("musicview/musicUpdateForm");
+		} else {
+			mv.addObject("message", "~~ 번호에 해당하는 곡이 존재하지 않습니다 ~~");
+			mv.setViewName("redirect:musiclist");
+		}
+		return mv;
+	} // musicupdatef
 
-	   @RequestMapping(value = "/musicupdate")
-	   public ModelAndView musicupdate(HttpServletRequest request, ModelAndView mv, MusicVO vo, RedirectAttributes rttr)
-	         throws IOException {
-	      String downloadPath = request.getRealPath("/");
-	      String imagePath = request.getRealPath("/");
-	      System.out.println("realPath_ver01 :" + downloadPath);
+	@RequestMapping(value = "/musicupdate")
+	public ModelAndView musicupdate(HttpServletRequest request, ModelAndView mv, MusicVO vo, RedirectAttributes rttr)
+			throws IOException {
+		String downloadPath = request.getRealPath("/");
+		String imagePath = request.getRealPath("/");
+		System.out.println("realPath_ver01 :" + downloadPath);
 
-	      if (downloadPath.contains(".eclipse.")) {
-	         downloadPath = "D:/Jeong/gproject/src/main/webapp/resources/music/" + vo.getGenre() + "/";
-	      } else {
-	         downloadPath += "resources/music/" + vo.getGenre() + "/";
-	      }
-	      System.out.println("downloadPath :" + downloadPath);
+		if (downloadPath.contains(".eclipse.")) {
+			downloadPath = "D:/Jeong/gproject/src/main/webapp/resources/music/" + vo.getGenre() + "/";
+		} else {
+			downloadPath += "resources/music/" + vo.getGenre() + "/";
+		}
+		System.out.println("downloadPath :" + downloadPath);
 
-	      if (imagePath.contains(".eclipse.")) {
-	         imagePath = "D:/Jeong/gproject/src/main/webapp/resources/albumimage/" + vo.getGenre() + "/";
-	      } else {
-	         imagePath += "resources/albumimage/" + vo.getGenre() + "/";
-	      }
-	      System.out.println("imagePath :" + imagePath);
+		if (imagePath.contains(".eclipse.")) {
+			imagePath = "D:/Jeong/gproject/src/main/webapp/resources/albumimage/" + vo.getGenre() + "/";
+		} else {
+			imagePath += "resources/albumimage/" + vo.getGenre() + "/";
+		}
+		System.out.println("imagePath :" + imagePath);
 
-	      // ** 폴더 만들기 (File 클래스활용)
-	      // => 저장 경로에 폴더가 없는 경우 만들어 준다
-	      File f1 = new File(downloadPath); // 매개변수로 지정된 정보에 대한 File 객체 생성
-	      System.out.println(" 생성직후 f1=> " + f1);
-	      if (!f1.exists())
-	         f1.mkdir();
+		// ** 폴더 만들기 (File 클래스활용)
+		// => 저장 경로에 폴더가 없는 경우 만들어 준다
+		File f1 = new File(downloadPath); // 매개변수로 지정된 정보에 대한 File 객체 생성
+		System.out.println(" 생성직후 f1=> " + f1);
+		if (!f1.exists())
+			f1.mkdir();
 
-	      File f2 = new File(imagePath); // 매개변수로 지정된 정보에 대한 File 객체 생성
-	      System.out.println(" 생성직후 f2=> " + f2);
-	      if (!f2.exists())
-	         f2.mkdir();
-	      // realPath 디렉터리가 존재하는지 검사 (uploadImage 폴더 존재 확인)
-	      // => 존재하지 않으면 디렉토리 생성
+		File f2 = new File(imagePath); // 매개변수로 지정된 정보에 대한 File 객체 생성
+		System.out.println(" 생성직후 f2=> " + f2);
+		if (!f2.exists())
+			f2.mkdir();
+		// realPath 디렉터리가 존재하는지 검사 (uploadImage 폴더 존재 확인)
+		// => 존재하지 않으면 디렉토리 생성
 
-	      // ** MultipartFile
-	      // => 업로드한 파일에 대한 모든 정보를 가지고 있으며 이의 처리를 위한 메서드를 제공한다.
-	      // String getOriginalFilename(), void transferTo(File destFile),
-	      // boolean isEmpty()
-	      MultipartFile downloadfilef = null;
-	      MultipartFile imagefilef = null;
-	      // => 기본 Image 설정
-	      String musicfile1, musicfile2 = null;
-	      String imagefile1, imagefile2 = null;
+		// ** MultipartFile
+		// => 업로드한 파일에 대한 모든 정보를 가지고 있으며 이의 처리를 위한 메서드를 제공한다.
+		// String getOriginalFilename(), void transferTo(File destFile),
+		// boolean isEmpty()
+		MultipartFile downloadfilef = null;
+		MultipartFile imagefilef = null;
+		// => 기본 Image 설정
+		String musicfile1, musicfile2 = null;
+		String imagefile1, imagefile2 = null;
 
-	      // 전송된 음악 파일이 있는지 확인
-	      downloadfilef = vo.getDownloadfilef();
-	      System.out.println("vo.getDownloadfilef() => " + vo.getDownloadfilef());
-	      if (downloadfilef != null && !downloadfilef.isEmpty()) {
-	         musicfile1 = downloadPath + downloadfilef.getOriginalFilename();
-	         // 드라이브에 저장되는 실제 경로와 화일명
-	         downloadfilef.transferTo(new File(musicfile1)); // file 붙여넣기
-	         musicfile2 = "resources/music/" + vo.getGenre() + "/" + downloadfilef.getOriginalFilename();
-	      }
-	      vo.setDownloadfile(musicfile2);
-	      System.out.println("vo.getDownloadfile() => " + vo.getDownloadfile());
+		// 전송된 음악 파일이 있는지 확인
+		downloadfilef = vo.getDownloadfilef();
+		System.out.println("vo.getDownloadfilef() => " + vo.getDownloadfilef());
+		if (downloadfilef != null && !downloadfilef.isEmpty()) {
+			musicfile1 = downloadPath + downloadfilef.getOriginalFilename();
+			// 드라이브에 저장되는 실제 경로와 화일명
+			downloadfilef.transferTo(new File(musicfile1)); // file 붙여넣기
+			musicfile2 = "resources/music/" + vo.getGenre() + "/" + downloadfilef.getOriginalFilename();
+		}
+		vo.setDownloadfile(musicfile2);
+		System.out.println("vo.getDownloadfile() => " + vo.getDownloadfile());
 
-	      // 전송된 사진 파일이 있는지 확인
-	      imagefilef = vo.getImagefilef();
-	      System.out.println("vo.getImagefilef() => " + vo.getImagefilef());
-	      if (imagefilef != null && !imagefilef.isEmpty()) {
-	         imagefile1 = imagePath + imagefilef.getOriginalFilename();
-	         // 드라이브에 저장되는 실제 경로와 화일명
-	         imagefilef.transferTo(new File(imagefile1)); // file 붙여넣기
-	         imagefile2 = "resources/albumimage/" + vo.getGenre() + "/" + imagefilef.getOriginalFilename();
-	      }
-	      vo.setImage(imagefile2);
-	      System.out.println("vo.getImage() => " + vo.getImage());
+		// 전송된 사진 파일이 있는지 확인
+		imagefilef = vo.getImagefilef();
+		System.out.println("vo.getImagefilef() => " + vo.getImagefilef());
+		if (imagefilef != null && !imagefilef.isEmpty()) {
+			imagefile1 = imagePath + imagefilef.getOriginalFilename();
+			// 드라이브에 저장되는 실제 경로와 화일명
+			imagefilef.transferTo(new File(imagefile1)); // file 붙여넣기
+			imagefile2 = "resources/albumimage/" + vo.getGenre() + "/" + imagefilef.getOriginalFilename();
+		}
+		vo.setImage(imagefile2);
+		System.out.println("vo.getImage() => " + vo.getImage());
 
-	      // ** 유튜브링크 처리
-	      String musicurl = "https://www.youtube.com/embed/" + vo.getMusicurl();
-	      System.out.println("musicurl => " + musicurl);
-	      vo.setMusicurl(musicurl);
-	      
-	      if (service.update(vo) > 0) {
-	         rttr.addFlashAttribute("message", vo.getSnum() + "번 곡이 수정되었습니다.");
-	         mv.setViewName("redirect:musiclist");
-	      } else {
-	         rttr.addFlashAttribute("message", "수정에 실패 하셨습니다.");
-	         mv.setViewName("redirect:musicupdatef?snum=" + vo.getSnum()); // 컨트롤러를 통해 수정페이지로 다시가라
-	      }
-	      return mv;
-	   } // musicupdate
+		// ** 유튜브링크 처리
+		String musicurl = "https://www.youtube.com/embed/" + vo.getMusicurl();
+		System.out.println("musicurl => " + musicurl);
+		vo.setMusicurl(musicurl);
 
-	   @RequestMapping(value = "/musicdelete")
-	   public ModelAndView musicdelete(ModelAndView mv, MusicVO vo, RedirectAttributes rttr) {
-	      if (service.delete(vo) > 0) {
-	         rttr.addFlashAttribute("message", vo.getSnum() + "번 곡이 삭제 되었습니다.");
-	         mv.setViewName("redirect:musiclist");
-	      } else {
-	         rttr.addFlashAttribute("message", "삭제가 올바르게 되지 않았습니다.");
-	         mv.setViewName("redirect:musiclist");
-	      }
-	      return mv;
-	   } // musicdelete
+		if (service.update(vo) > 0) {
+			rttr.addFlashAttribute("message", vo.getSnum() + "번 곡이 수정되었습니다.");
+			mv.setViewName("redirect:musiclist");
+		} else {
+			rttr.addFlashAttribute("message", "수정에 실패 하셨습니다.");
+			mv.setViewName("redirect:musicupdatef?snum=" + vo.getSnum()); // 컨트롤러를 통해 수정페이지로 다시가라
+		}
+		return mv;
+	} // musicupdate
 
-	   /*-------------------------음악 추가 업데이트 삭제-------------------------*/
-	
+	@RequestMapping(value = "/musicdelete")
+	public ModelAndView musicdelete(ModelAndView mv, MusicVO vo, RedirectAttributes rttr) {
+		if (service.delete(vo) > 0) {
+			rttr.addFlashAttribute("message", vo.getSnum() + "번 곡이 삭제 되었습니다.");
+			mv.setViewName("redirect:musiclist");
+		} else {
+			rttr.addFlashAttribute("message", "삭제가 올바르게 되지 않았습니다.");
+			mv.setViewName("redirect:musiclist");
+		}
+		return mv;
+	} // musicdelete
+
+	/*-------------------------음악 추가 업데이트 삭제-------------------------*/
+
 	// ** 장르음악
 	@RequestMapping(value = "/genrelist")
 	public ModelAndView genrelist(HttpServletRequest request, ModelAndView mv, Criteria cri, PageMaker pageMaker,
@@ -340,56 +453,56 @@ public class GmusicController {
 		return mv;
 	}// genrelist
 
-	   @RequestMapping(value = "/playlist")
-	   public ModelAndView playlist(HttpServletRequest request, ModelAndView mv) {
-	      // 파라미터로 값을 받음
-	      String snumVal = request.getParameter("snumVal");
+	@RequestMapping(value = "/playlist")
+	public ModelAndView playlist(HttpServletRequest request, ModelAndView mv) {
+		// 파라미터로 값을 받음
+		String snumVal = request.getParameter("snumVal");
 
-	      System.out.println("************** getParameter snumVal => " + snumVal);
+		System.out.println("************** getParameter snumVal => " + snumVal);
 
-	      // 스트링 배열 "," 기준으로 쪼개 담음
-	      if (snumVal != null && snumVal.length() > 0) {
-	         String splitsnumVal[] = snumVal.split(",");
+		// 스트링 배열 "," 기준으로 쪼개 담음
+		if (snumVal != null && snumVal.length() > 0) {
+			String splitsnumVal[] = snumVal.split(",");
 
-	         if ("U".equals(request.getParameter("jcode"))) {
-	            // 셔플 함수 참고
-	            // https://zetawiki.com/wiki/%ED%95%A8%EC%88%98_shuffle()
-	            List<String> list = Arrays.asList(splitsnumVal);
-	            Collections.shuffle(list);
-	            snumVal = "";
-	            for (int i = 0; i < splitsnumVal.length; i++) {
-	               System.out.println(list.get(i));
-	               splitsnumVal[i] = list.get(i);
+			if ("U".equals(request.getParameter("jcode"))) {
+				// 셔플 함수 참고
+				// https://zetawiki.com/wiki/%ED%95%A8%EC%88%98_shuffle()
+				List<String> list = Arrays.asList(splitsnumVal);
+				Collections.shuffle(list);
+				snumVal = "";
+				for (int i = 0; i < splitsnumVal.length; i++) {
+					System.out.println(list.get(i));
+					splitsnumVal[i] = list.get(i);
 
-	               snumVal += list.get(i) + ",";
-	            }
-	         }
+					snumVal += list.get(i) + ",";
+				}
+			}
 
-	         // sql snum 형식이 int 이기 때문에 int 배열에 다시 담음
-	         int intsnumVal[] = new int[splitsnumVal.length];
+			// sql snum 형식이 int 이기 때문에 int 배열에 다시 담음
+			int intsnumVal[] = new int[splitsnumVal.length];
 
-	         for (int i = 0; i < splitsnumVal.length; i++) {
-	            intsnumVal[i] = Integer.parseInt(splitsnumVal[i]);
-	         }
+			for (int i = 0; i < splitsnumVal.length; i++) {
+				intsnumVal[i] = Integer.parseInt(splitsnumVal[i]);
+			}
 
-	         List<MusicVO> list = new ArrayList<MusicVO>();
-	         for (int i = 0; i < intsnumVal.length; i++) {
-	            MusicVO vo = new MusicVO();
-	            vo.setSnum(intsnumVal[i]);
-	            vo = service.selectOne(vo);
-	            if (vo.getLyrics() != null && vo.getLyrics().length() > 0) {
-	               vo.setLyrics(vo.getLyrics().replace("\"", "&quot;"));
-	            }
-	            list.add(vo);
-	         }
+			List<MusicVO> list = new ArrayList<MusicVO>();
+			for (int i = 0; i < intsnumVal.length; i++) {
+				MusicVO vo = new MusicVO();
+				vo.setSnum(intsnumVal[i]);
+				vo = service.selectOne(vo);
+				if (vo.getLyrics() != null && vo.getLyrics().length() > 0) {
+					vo.setLyrics(vo.getLyrics().replace("\"", "&quot;"));
+				}
+				list.add(vo);
+			}
 
-	         mv.addObject("Banana", list);
-	      }
-	      request.getSession().setAttribute("snumValSession", snumVal);
-	      mv.setViewName("musicview/playlist");
-	      return mv;
-	   } // playlist
-	
+			mv.addObject("Banana", list);
+		}
+		request.getSession().setAttribute("snumValSession", snumVal);
+		mv.setViewName("musicview/playlist");
+		return mv;
+	} // playlist
+
 	// ** 가사 보기
 	@RequestMapping(value = "/lyricsview")
 	public ModelAndView lyricsview(HttpServletRequest request, ModelAndView mv, MusicVO vo) {

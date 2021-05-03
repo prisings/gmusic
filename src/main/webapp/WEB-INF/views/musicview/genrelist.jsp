@@ -153,7 +153,7 @@
       
 	});//ready *
    
-
+	
    
 	// window.open post 방식으로 전달하기
 	// https://darkhorizon.tistory.com/284 참고
@@ -200,7 +200,9 @@
 			}
 		}	
 	} //getCheckboxValue
-
+	function payPage(){
+		location.href='payPage';
+	}//payPage 
 </script>
 <style>
 body {

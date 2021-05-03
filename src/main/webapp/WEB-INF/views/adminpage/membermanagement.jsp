@@ -45,9 +45,10 @@
 		$('#searchBtn').on(
 				"click",
 				function() {
-					self.location = "membermanagement" + "${pageMaker.makeQuery(1)}"
-							+ "&searchType=" + $('#searchType').val()
-							+ "&keyword=" + $('#keyword').val();
+					self.location = "membermanagement"
+							+ "${pageMaker.makeQuery(1)}" + "&searchType="
+							+ $('#searchType').val() + "&keyword="
+							+ $('#keyword').val();
 					// => ?currPage=7&rowPerPage=10&searchType=tc&keyword=java
 				}); //click
 	});//ready
@@ -60,7 +61,7 @@
 			<form action="membermanagement" id="search" name="search" class="search">
 				<select name="searchType" id="searchType" style="display: none">
 					<option value="all" selected>All</option>
-				</select> 
+				</select>
 				<input type="text" name="keyword" id="keyword" maxlength="35" size="50" style="vertical-align: middle;" value="${UserKeyword}">
 				<button type="button" id="searchBtn" style="vertical-align: middle;">Search</button>
 			</form>
@@ -112,37 +113,37 @@
 			</tr>
 		</c:forEach>
 	</table>
-			<div align="center">
-			<!-- ver 01 : pageMaker.makeQuery(?) -->
-			<!-- ver 02 : pageMaker.searchQuery(?) -->
-			<!-- 1) First << , Prev < : enabeld 여부 -->
-			<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
-				<a href="qna${pageMaker.searchQuery(1)}">&#8666;</a>&nbsp; <!-- First -->
-				<!-- "qna?currPage=1" -->
-				<a href="qna${pageMaker.searchQuery(pageMaker.sPageNo-1)}">&#8636;</a>
-				<!-- Prev -->
-			</c:if>
-
-			<!-- 2) sPage~ePage까지 displayPageNo 값 만큼 출력 -->
-			<c:forEach var="i" begin="${pageMaker.sPageNo}" end="${pageMaker.ePageNo}">
-				<c:if test="${i==pageMaker.cri.currPage}">
-					<font style="font-weight: bold;" color="navy">${i}&nbsp;</font>
-				</c:if>
-				<c:if test="${i!=pageMaker.cri.currPage}">
-					<a href="qna${pageMaker.searchQuery(i)}">${i}</a>&nbsp;
+	<div align="center">
+		<!-- ver 01 : pageMaker.makeQuery(?) -->
+		<!-- ver 02 : pageMaker.searchQuery(?) -->
+		<!-- 1) First << , Prev < : enabeld 여부 -->
+		<c:if test="${pageMaker.prev && pageMaker.sPageNo>1}">
+			<a href="membermanagement${pageMaker.searchQuery(1)}">&#8666;</a>&nbsp; <!-- First -->
+			<!-- "membermanagement?currPage=1" -->
+			<a href="membermanagement${pageMaker.searchQuery(pageMaker.sPageNo-1)}">&#8636;</a>
+			<!-- Prev -->
 		</c:if>
 
-				<!-- 삼항식과 비교 
+		<!-- 2) sPage~ePage까지 displayPageNo 값 만큼 출력 -->
+		<c:forEach var="i" begin="${pageMaker.sPageNo}" end="${pageMaker.ePageNo}">
+			<c:if test="${i==pageMaker.cri.currPage}">
+				<font style="font-weight: bold;" color="navy">${i}&nbsp;</font>
+			</c:if>
+			<c:if test="${i!=pageMaker.cri.currPage}">
+				<a href="membermanagement${pageMaker.searchQuery(i)}">${i}</a>&nbsp;
+		</c:if>
+
+			<!-- 삼항식과 비교 
 		<c:out value="${i==pageMaker.cri.currPage ? 'class=active' : ''}"/>
 		-->
-			</c:forEach>
+		</c:forEach>
 
-			<!-- 3) Next > , Last >> : enabled 여부 -->
-			<c:if test="${pageMaker.next && pageMaker.ePageNo>0}">
-				<a href="qna${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;&#8640;</a>&nbsp; <!-- Next -->
-				<a href="qna${pageMaker.searchQuery(pageMaker.lastPageNo)}">&#8667;</a>&nbsp;&nbsp; <!-- Last -->
+		<!-- 3) Next > , Last >> : enabled 여부 -->
+		<c:if test="${pageMaker.next && pageMaker.ePageNo>0}">
+			<a href="membermanagement${pageMaker.searchQuery(pageMaker.ePageNo+1)}">&nbsp;&nbsp;&#8640;</a>&nbsp; <!-- Next -->
+			<a href="membermanagement${pageMaker.searchQuery(pageMaker.lastPageNo)}">&#8667;</a>&nbsp;&nbsp; <!-- Last -->
 
-			</c:if>
-		</div>
+		</c:if>
+	</div>
 </body>
 </html>

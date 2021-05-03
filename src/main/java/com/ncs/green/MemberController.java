@@ -45,7 +45,7 @@ public class MemberController {
 	public ModelAndView managment(ModelAndView mv, HttpServletRequest request) {
 		mv.setViewName("adminpage/management");
 		return mv;
-	}
+	}  
 
 	@RequestMapping(value = "/memberpointchange")
 	public ModelAndView memberpointchange(ModelAndView mv, HttpServletRequest request, GmemberVO vo) {

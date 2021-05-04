@@ -116,12 +116,13 @@ public class GmusicController {
 			mv.addObject("myMusic", myMusic);
 			mv.addObject("allMusic", allMusic);
 			mv.addObject("price", payMusic * 300);
-			Arrays.sort(intcartVal);
-
+			//결제 버튼을 누를시 code값 pay가 들어온다면 실행한다
 			if ("pay".equals(code)) {
+				//intcartVal 배열에 있는 값중 0을 제외한 값을 insert한다 (위쪽부분에서 0은 내가 소유한 곡을 0으로 변환했음)
 				for (int i = 0; i < intcartVal.length; i++) {
 					if (intcartVal[i] != 0) {
 						MyListVO vo = new MyListVO();
+						//해당하는 음악번호와 아이디 값을 넣어준다
 						vo.setSnum(intcartVal[i]);
 						vo.setId(id);
 						service.myListInsert(vo);
@@ -130,10 +131,12 @@ public class GmusicController {
 				GmemberVO vo = new GmemberVO();
 				vo.setId(id);
 				vo = memberservice.selectOne(vo);
+				//결제시 내가 가진 포인트가 결제금액과 비교했을때 0보다 작으면 결제가 안되도록 설정
 				if (vo != null && vo.getPoint() - (payMusic * 300) > 0) {
 					vo.setPoint(vo.getPoint() - (payMusic * 300));
 					memberservice.pointChange(vo);
 				}
+				//결제후 포인트값을 새로고침해주기 위한 세션값 적용
 				request.getSession().setAttribute("loginVO", vo);// 세션 통합 (비밀번호 제외)
 			}
 

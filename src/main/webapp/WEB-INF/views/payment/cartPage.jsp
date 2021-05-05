@@ -1,4 +1,3 @@
-<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page trimDirectiveWhitespaces="true"%>
@@ -203,23 +202,62 @@ body {
    }
    
    function payButton() {
-	   
       var check = confirm("결제 하시겠습니까?");
-    	  if(check == true){
-		      if (${loginVO.point} < ${price}) {
-		
-		    	  alert("현재 포인트가 부족합니다.\n충전 후 이용해 주세요");
-		       
-		      }else{
-			       
-			    	location.href="cartView?code=pay&cartVal=" + $('#cartValss').val();
-			    	
-		       }
-	      }else{
-	    	  return false;
-	      }
+         if(check == true){
+            if (${loginVO.point} < ${price}) {
+               alert("현재 포인트가 부족합니다.\n충전 후 이용해 주세요");
+            }else{
+               $.ajax({
+                    type : 'post',
+                    url : 'cartView?code=pay&cartVal=' + $('#cartValss').val(),
+                    success : function(resultData) {
+                       console.log(resultData.aaa);
+                       //json으로 데이터값 전송받기 
+                       if (resultData.aaa == 'T') {
+                       // -> T가 올경우 오류발생이 없고 결제가 정상적으로 진행됨을 뜻함
+                       //each funtion 반복문
+                        $(".sss").each( function(i) {
+                             console.log(i);
+                       //트리거 -> DB의 트리거와 같다고 생각하면 된다. 
+                                 $( this ).trigger("click");
+                                 fnSleep(100);
+                       // 동시실행시 마지막 loaction만을 인식하기때문에 딜레이를주어 전부 다운이 실행되도록 만든다.
+                             } );
+                        
+                        
+                       location.reload();
+                       alert("결제 성공")
+                       
+           	       }
+                    },
+                    error : function() {
+                       console.log("결제 실패");
+                    }
+                 });
+             }
+         }else{
+            return false;
+         }
    }
    
+   fnSleep = function (delay){
+       
+       var start = new Date().getTime();
+       while (start + delay > new Date().getTime());
+
+   };
+   
+$(function() { //ready
+      
+      
+$('.sss').on('click', function () {
+   var downloadfile = $(this).val();
+    
+    location.href="dnload?dnfile="+downloadfile;
+
+});
+   
+});//ready *
 </script>
 <c:if test="${message!=null}">
 	<script>
@@ -250,6 +288,7 @@ body {
 									</td>
 									<td class="won">300원</td>
 									<td>
+										<button hidden="hidden" id="${vs.index}" class="sss" name="sss" value="${row.downloadfile}"></button>
 										<button type="button" class="deleteButton" onclick="deleteButton(${row.snum})">X</button>
 									</td>
 								</tr>

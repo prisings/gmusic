@@ -245,7 +245,7 @@
 				}else{
 					$('input[name=cartVal]').attr('value',result);
 				}
-			 	
+			 	 
 				document.musiclistForm.submit();
 				} else {
 				alert("선택된 곡이 없습니다.");

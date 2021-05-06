@@ -306,7 +306,9 @@ a {
 						<a href="mypage?id=${loginID}"> 마이페이지</a>
 					</button></li>
 			</c:if>
-			<li><a href="management">dddd</a></li>
+				<li><a href="management">관리자페이지</a></li>
+			<c:if test="${loginVO.grade == 'admin' }">
+			</c:if>
 		</ul>
 	</div>
 	<!-- header -->

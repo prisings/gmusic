@@ -231,7 +231,7 @@
 		    
 			if(result != null && result.length > 0){
 				url = "cartView";
-				window.open(url, "cartView","toolbar=no,menubar=yes,scrollbars=no,resizable=no,width=340,height=720");
+				window.open(url, "cartView","toolbar=no,menubar=yes,scrollbars=no,resizable=no,width=720,height=620");
 			   
 				document.musiclistForm.action =url;
 				document.musiclistForm.method="post";
@@ -593,7 +593,7 @@ a {
 				<button type="button" onclick="cartPage()">다운로드</button>
 			</c:if>
 			<c:if test="${loginVO.grade == 'admin' || loginVO.grade == 'vvip'}">
-				<button type="button" onclick="getCheckboxValue()">다운로드</button>
+				<button type="button" onclick="cartPage()">다운로드</button>
 			</c:if>
 
 			<div id='result'></div>
@@ -610,8 +610,10 @@ a {
 					<td width="40">듣 기</td>
 					<td width="40">다 운</td>
 					<td width="40">뮤 비</td>
+					<c:if test="${loginVO.grade == 'admin' }">
 					<td width="40">수 정</td>
 					<td width="40">삭 제</td>
+					</c:if>
 				</tr>
 				<c:forEach var="row" items="${Banana}" varStatus="vs">
 					<tr>
@@ -656,6 +658,7 @@ a {
 								<img src="resources/image/videos_icon.png" width="30" height="30">
 							</button>
 						</td>
+						<c:if test="${loginVO.grade == 'admin' }">	
 						<td align="center">
 							<a href="musicupdatef?snum=${row.snum}">
 								<span>수정</span>
@@ -675,6 +678,7 @@ a {
                         }
                      </script>
 						</td>
+						</c:if>
 					</tr>
 				</c:forEach>
 			</table>

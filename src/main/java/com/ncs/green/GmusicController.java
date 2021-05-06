@@ -40,122 +40,128 @@ public class GmusicController {
 
 	@Autowired
 	ChartService chartService;
-	   // 장바구니 현재는 최신음악에서 회원등급 c나 vip의 경우에 다운로드를 클릭시 작동하는 컨트롤러이다
-	   @RequestMapping(value = "/cartView")
-	   public ModelAndView cartView(HttpServletRequest request, ModelAndView mv) { //서블릿에 transaction을 적용
 
-	      // 파라미터로 값을 받음
-	      String cartVal = request.getParameter("cartVal");
-	      System.out.println("************** getParameter cartVal => " + cartVal);
-	      HttpSession session = request.getSession(false);
-	      String id = (String) session.getAttribute("loginID");
-	      String code = request.getParameter("code");
-	      // 스트링 배열 "," 기준으로 쪼개 담음
-	      if (cartVal != null && cartVal.length() > 0) {
-	         String splitcartVal[] = cartVal.split(",");
-	         int intcartVal[] = new int[splitcartVal.length];
+	// 장바구니 현재는 최신음악에서 회원등급 c나 vip의 경우에 다운로드를 클릭시 작동하는 컨트롤러이다
+	@RequestMapping(value = "/cartView")
+	public ModelAndView cartView(HttpServletRequest request, ModelAndView mv) { // 서블릿에 transaction을 적용
 
-	         for (int i = 0; i < splitcartVal.length; i++) {
-	            intcartVal[i] = Integer.parseInt(splitcartVal[i]);
-	         }
-	         // playlist처럼 값을 받아와서 list에 값을 넣어주는방식을 따라함
-	         List<MusicVO> list = new ArrayList<MusicVO>();
-	         // 중복을 막기위해 list2를 선언
-	         List<MusicVO> list2 = new ArrayList<MusicVO>();
-	         for (int i = 0; i < intcartVal.length; i++) {
-	            MusicVO vo = new MusicVO();
-	            vo.setSnum(intcartVal[i]);
-	            vo = service.selectOne(vo);
-	            list.add(vo);
-	         }
+		// 파라미터로 값을 받음
+		String cartVal = request.getParameter("cartVal");
+		System.out.println("************** getParameter cartVal => " + cartVal);
+		HttpSession session = request.getSession(false);
+		String id = (String) session.getAttribute("loginID");
+		String code = request.getParameter("code");
+		// 스트링 배열 "," 기준으로 쪼개 담음
+		if (cartVal != null && cartVal.length() > 0) {
+			String splitcartVal[] = cartVal.split(",");
+			int intcartVal[] = new int[splitcartVal.length];
 
-	         // list에 contains함수를 이용 중복을 제거한뒤 list2에 add한다.
-	         for (int i = 0; i < intcartVal.length; i++) {
-	            if (!list2.contains(list.get(i))) {
-	               list2.add(list.get(i));
-	            }
-	         }
+			for (int i = 0; i < splitcartVal.length; i++) {
+				intcartVal[i] = Integer.parseInt(splitcartVal[i]);
+			}
+			// playlist처럼 값을 받아와서 list에 값을 넣어주는방식을 따라함
+			List<MusicVO> list = new ArrayList<MusicVO>();
+			// 중복을 막기위해 list2를 선언
+			List<MusicVO> list2 = new ArrayList<MusicVO>();
+			for (int i = 0; i < intcartVal.length; i++) {
+				MusicVO vo = new MusicVO();
+				vo.setSnum(intcartVal[i]);
+				vo = service.selectOne(vo);
+				list.add(vo);
+			}
 
-	         mv.addObject("Banana", list2);
-	         // list2값넘겨주기
+			// list에 contains함수를 이용 중복을 제거한뒤 list2에 add한다.
+			for (int i = 0; i < intcartVal.length; i++) {
+				if (!list2.contains(list.get(i))) {
+					list2.add(list.get(i));
+				}
+			}
 
-	         // intcartVal의 크기 재설정
-	         intcartVal = new int[list2.size()];
+			mv.addObject("Banana", list2);
+			// list2값넘겨주기
 
-	         // list2의 snum을 배열안에 담기
-	         for (int i = 0; i < intcartVal.length; i++) {
-	            intcartVal[i] = list2.get(i).getSnum();
+			// intcartVal의 크기 재설정
+			intcartVal = new int[list2.size()];
 
-	         }
+			// list2의 snum을 배열안에 담기
+			for (int i = 0; i < intcartVal.length; i++) {
+				intcartVal[i] = list2.get(i).getSnum();
 
-	         // 아이디에 해당하는 snum 값을 mylist에 담기
-	         List<MusicVO> myList = service.cartlist(id);
-	         int myCartVal[] = new int[myList.size()];
-	         for (int i = 0; i < myList.size(); i++) {
-	            myCartVal[i] = myList.get(i).getSnum();
-	         }
-	         // cart테이블에 내가 가진 곡을 비교하여 없는 값만 나타내기 위한 코드
-	         int count = 0;
-	         // 내가 가지고 있는 곡이라면 값이 0으로 대입되고 count된다
-	         for (int i = 0; i < intcartVal.length; i++) {
-	            for (int j = 0; j < myCartVal.length; j++) {
-	               if (intcartVal[i] == myCartVal[j]) {
-	                  intcartVal[i] = 0;
-	                  count++;
-	               }
-	            }
-	         }
-	         // 내가 가진 곡의 개수
-	         int myMusic = count;
-	         // 내가 선택한 곡의 개수(다운로드 클릭시)
-	         int allMusic = intcartVal.length;
-	         // 내가 결제해야할 곡의 개수
-	         int payMusic = intcartVal.length - count;
+			}
 
-	         mv.addObject("myMusic", myMusic);
-	         mv.addObject("allMusic", allMusic);
-	         mv.addObject("price", payMusic * 300);
-	         // 결제 버튼을 누를시 code값 pay가 들어온다면 실행한다
+			// 아이디에 해당하는 snum 값을 mylist에 담기
+			List<MusicVO> myList = service.cartlist(id);
+			int myCartVal[] = new int[myList.size()];
+			for (int i = 0; i < myList.size(); i++) {
+				myCartVal[i] = myList.get(i).getSnum();
+			}
+			// cart테이블에 내가 가진 곡을 비교하여 없는 값만 나타내기 위한 코드
+			int count = 0;
+			// 내가 가지고 있는 곡이라면 값이 0으로 대입되고 count된다
+			for (int i = 0; i < intcartVal.length; i++) {
+				for (int j = 0; j < myCartVal.length; j++) {
+					if (intcartVal[i] == myCartVal[j]) {
+						intcartVal[i] = 0;
+						count++;
+					}
+				}
+			}
+			// 내가 가진 곡의 개수
+			int myMusic = count;
+			// 내가 선택한 곡의 개수(다운로드 클릭시)
+			int allMusic = intcartVal.length;
+			// 내가 결제해야할 곡의 개수
+			int payMusic = intcartVal.length - count;
 
-	         if ("pay".equals(code)) {
-	            // intcartVal 배열에 있는 값중 0을 제외한 값을 insert한다 (위쪽부분에서 0은 내가 소유한 곡을 0으로 변환했음)
-	            for (int i = 0; i < intcartVal.length; i++) {
-	               if (intcartVal[i] != 0) {
-	                  MyListVO vo = new MyListVO();
-	                  // 해당하는 음악번호와 아이디 값을 넣어준다
-	                  vo.setSnum(intcartVal[i]);
-	                  vo.setId(id);
-	                  service.myListInsert(vo);
-	                  //cmd에 create unique index snum_id on mylist (snum, id);를 적용하고
-	                  //service.myListInsert(vo);가 2번이루어질경우
-	                  //무결성에 위배되게된다.
-	                  //이러한경우 에러가 발생하여 아래 코드를 전부 실행 x 
-	                  //DB또한 롤백되어 결제또한 실행되지 않는다. (다운로드도 마찬가지)
-	               }
-	            }
-	            GmemberVO vo = new GmemberVO();
-	            vo.setId(id);
-	            vo = memberservice.selectOne(vo);
-	            // 결제시 내가 가진 포인트가 결제금액과 비교했을때 0보다 작으면 결제가 안되도록 설정
-	            if (vo != null && vo.getPoint() - (payMusic * 300) > 0) {
-	               vo.setPoint(vo.getPoint() - (payMusic * 300));
-	               memberservice.pointChange(vo);
-	            }
-	            // 결제후 포인트값을 새로고침해주기 위한 세션값 적용
-	            request.getSession().setAttribute("loginVO", vo);// 세션 통합 (비밀번호 제외)
-	            mv.addObject("aaa", 'T');
-	            mv.setViewName("jsonView");
-	            return mv;
-	         }
+			mv.addObject("myMusic", myMusic);
+			mv.addObject("allMusic", allMusic);
+			mv.addObject("price", payMusic * 300);
+			// 결제 버튼을 누를시 code값 pay가 들어온다면 실행한다
+			GmemberVO vo = new GmemberVO();
+			vo.setId(id);
+			vo = memberservice.selectOne(vo);
+			if ("vvip".equals(vo.getGrade())) {
+				mv.addObject("price", 0);
+				mv.addObject("myMusic", allMusic);
+			}
+			if ("pay".equals(code)) {
+				if (!"vvip".equals(vo.getGrade())) {
+					// intcartVal 배열에 있는 값중 0을 제외한 값을 insert한다 (위쪽부분에서 0은 내가 소유한 곡을 0으로 변환했음)
+					for (int i = 0; i < intcartVal.length; i++) {
+						if (intcartVal[i] != 0) {
+							MyListVO vos = new MyListVO();
+							// 해당하는 음악번호와 아이디 값을 넣어준다
+							vos.setSnum(intcartVal[i]);
+							vos.setId(id);
+							service.myListInsert(vos);
+							// cmd에 create unique index snum_id on mylist (snum, id);를 적용하고
+							// service.myListInsert(vo);가 2번이루어질경우
+							// 무결성에 위배되게된다.
+							// 이러한경우 에러가 발생하여 아래 코드를 전부 실행 x
+							// DB또한 롤백되어 결제또한 실행되지 않는다. (다운로드도 마찬가지)
+						}
+					}
+					// 결제시 내가 가진 포인트가 결제금액과 비교했을때 0보다 작으면 결제가 안되도록 설정
+					if (vo != null && vo.getPoint() - (payMusic * 300) > 0) {
+						vo.setPoint(vo.getPoint() - (payMusic * 300));
+						memberservice.pointChange(vo);
+					}
+				}
+				// 결제후 포인트값을 새로고침해주기 위한 세션값 적용
+				request.getSession().setAttribute("loginVO", vo);// 세션 통합 (비밀번호 제외)
+				mv.addObject("aaa", 'T');
+				mv.setViewName("jsonView");
+				return mv;
+			}
 
-	      }
-	      /* if(pay코드랑 같이오면 update) */
-	      request.getSession().setAttribute("cartValSession", cartVal);
-	      mv.setViewName("payment/cartPage");
-	      // cartPage는 playList와 비슷한 페이지라 할수있다
-	      return mv;
+		}
+		/* if(pay코드랑 같이오면 update) */
+		request.getSession().setAttribute("cartValSession", cartVal);
+		mv.setViewName("payment/cartPage");
+		// cartPage는 playList와 비슷한 페이지라 할수있다
+		return mv;
 
-	   }
+	}
 
 	@RequestMapping(value = "/musicCount")
 	public void musicCount(HttpServletRequest request, ModelAndView mv, MusicVO vo, ChartVO cvo) {

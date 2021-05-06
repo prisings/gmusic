@@ -277,6 +277,30 @@ a {
 }
 /*footer---------------------------- */
 </style>
+<script>
+	function passbuy(grade) {
+		
+		  var check = confirm("결제 하시겠습니까?");
+		  var price = 0; 
+		  if(grade == "vvip"){
+			 price = 10000;
+		  }else{
+			 price = 5000; 
+		  }
+		  if(check == true){
+	            if (${loginVO.point} < price) {
+	               alert("현재 포인트가 부족합니다.\n충전 후 이용해 주세요");
+	            }else{
+				  console.log(grade);
+	              location.href = 'passbuy?grade=' + grade;
+	              alert("결제 성공")
+	             }
+	         }else{
+	            return false;
+	         } 
+	    
+	   }
+</script>
 <c:if test="${message!=null}">
 	<script>
 		alert('${message}');
@@ -346,8 +370,14 @@ a {
 				무제한 음악감상<br> 무제한 뮤직비디오 감상<br> 무제한 다운로드<br>
 			</div>
 			<div class="fontdiv4">
+				<c:if test="${loginVO.grade != 'vvip' && loginVO.grade == 'c'}">
 				10000원
-				<button type="button">구매하기</button>
+					<button type="button" onclick="passbuy('vvip')">구매하기</button>
+				</c:if>
+				<c:if test="${loginVO.grade != 'vvip' && loginVO.grade == 'vip'}">
+				5000원
+					<button type="button" onclick="passbuy('upgrade')">구매하기</button>
+				</c:if>
 			</div>
 		</div>
 		<div class="box1 div1">
@@ -362,7 +392,9 @@ a {
 			</div>
 			<div class="fontdiv4">
 				5000원
-				<button type="button">구매하기</button>
+				<c:if test="${loginVO.grade != 'vvip' && loginVO.grade != 'vip'}">
+					<button type="button" onclick="passbuy('vip')">구매하기</button>
+				</c:if>
 			</div>
 		</div>
 	</div>
